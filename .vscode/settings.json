@@ -1,4 +1,27 @@
 {
-    "editor.fontFamily": "Monaco",
-    "editor.fontLigatures": true
+	/*     File & Editor Settings */
+	"editor.fontFamily": "Monaco",
+	/*   To enable for font ligatures :  "editor.fontFamily": "Fira Code", */
+	"editor.fontLigatures": true,
+	"editor.formatOnPaste": true,
+	"editor.formatOnSave": true,
+	"workbench.editor.highlightModifiedTabs": true,
+	"files.autoSave": "afterDelay",
+	"files.autoSaveDelay": 100,
+	"files.trimFinalNewlines": true,
+	"explorer.sortOrder": "type",
+	"editor.cursorStyle": "block",
+	"editor.cursorBlinking": "blink",
+
+	/*     Git Settings */
+	"git.enableSmartCommit": true,
+	"git.autofetch": true,
+	"git.autofetchPeriod": 180,
+	"git.confirmForcePush": true,
+	"git.allowForcePush": true,
+	"git.autoStash": true,
+	"git.showPushSuccessNotification": true,
+	"git.useForcePushWithLease": true,
+	"git.alwaysSignOff": true,
+	"github.gitAuthentication": true
 }
