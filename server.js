@@ -16,9 +16,11 @@ liveReloadServer.server.once('connection', () => {
 		liveReloadServer.refresh('/');
 	}, 100);
 });
-// ligne 17 à activer pour relaunch sur autosave
+// ligne 20 à activer pour relaunch sur autosave
 app.use(connectLivereload());
+app.use('/public', express.static('public'));
 app.use('/static', express.static('static'));
+/* app.use('/node_modules', express.static('node_modules')); */
 app.get('/', function (req, res) {
 	res.sendFile(dirUrl + '/index.html');
 });
@@ -31,4 +33,3 @@ app.listen(port);
 console.log('Connection successful !');
 console.log('Opening this link ' + url + ' in you Web Browser...');
 opn(url);
-
