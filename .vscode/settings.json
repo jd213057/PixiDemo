@@ -10,8 +10,8 @@
 	"files.autoSaveDelay": 100,
 	"files.trimFinalNewlines": true,
 	"explorer.sortOrder": "type",
-	"editor.cursorStyle": "block",
-	"editor.cursorBlinking": "blink",
+	"editor.cursorStyle": "line-thin",
+	"editor.cursorBlinking": "expand",
 
 	/*     Git Settings */
 	"git.enableSmartCommit": true,

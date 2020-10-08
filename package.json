@@ -4,7 +4,7 @@
   "description": "A pixi.js demo",
   "main": "main.js",
   "scripts": {
-    "start": "node_modules/.bin/nodemon -w index.js & node server.js",
+    "start": "node_modules/.bin/nodemon -w main.js & node server.js",
     "start server": "nodemon --ignore public",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

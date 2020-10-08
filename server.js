@@ -20,7 +20,7 @@ liveReloadServer.server.once('connection', () => {
 app.use(connectLivereload());
 app.use('/public', express.static('public'));
 app.use('/static', express.static('static'));
-/* app.use('/node_modules', express.static('node_modules')); */
+app.use('/node_modules', express.static('node_modules'));
 app.get('/', function (req, res) {
 	res.sendFile(dirUrl + '/index.html');
 });

@@ -4,7 +4,7 @@ setControls();
 
 const app = new PIXI.Application({
 	height: 550,
-	width: 600,
+	width: 900,
 	/* 	backgroundColor: 0x1099bb, */
 	transparent: true,
 });
@@ -121,7 +121,7 @@ let warriorAttacking2Img = [
 let textureArray = [];
 let texture = PIXI.Texture.from(pathToAnimation + '/Run/Run__000.png');
 
-for (let i = 0; i < 12; i++) {
+for (let i = 0; i <= 12; i++) {
 	let texture = PIXI.Texture.from(warriorRunningImg[i]);
 	textureArray.push(texture);
 }
@@ -137,44 +137,44 @@ app.stage.addChild(warrior);
 
 let animationCount = 0;
 // Listen for animate update
-app.ticker.add(() => {
-	const animationSpeed = 0.01;
-	animationCount = Math.ceil(animationCount + animationSpeed);
-	warrior.texture = textureArray[animationCount % 12];
+app.ticker.add((delta) => {
+	const animationSpeed = delta/3;
+	animationCount = Math.round(animationCount + animationSpeed) % textureArray.length;
+	warrior.texture = textureArray[animationCount];
 });
 
 function setControls() {
 	document.getElementById('Attack').addEventListener('click', () => {
 		textureArray = [];
-		for (let i = 0; i < 10; i++) {
+		for (let i = 0; i <= 10; i++) {
 			let texture = PIXI.Texture.from(warriorAttackingImg[i]);
 			textureArray.push(texture);
 		}
 	});
 	document.getElementById('Attack2').addEventListener('click', () => {
 		textureArray = [];
-		for (let i = 0; i < 21; i++) {
+		for (let i = 0; i <= 21; i++) {
 			let texture = PIXI.Texture.from(warriorAttacking2Img[i]);
 			textureArray.push(texture);
 		}
 	});
 	document.getElementById('Idle').addEventListener('click', () => {
 		textureArray = [];
-		for (let i = 0; i < 25; i++) {
+		for (let i = 0; i <= 25; i++) {
 			let texture = PIXI.Texture.from(warriorIdlingImg[i]);
 			textureArray.push(texture);
 		}
 	});
 	document.getElementById('Jump').addEventListener('click', () => {
 		textureArray = [];
-		for (let i = 0; i < 2; i++) {
+		for (let i = 0; i <= 2; i++) {
 			let texture = PIXI.Texture.from(warriorJumpingImg[i]);
 			textureArray.push(texture);
 		}
 	});
 	document.getElementById('Die').addEventListener('click', () => {
 		textureArray = [];
-		for (let i = 0; i < 17; i++) {
+		for (let i = 0; i <= 17; i++) {
 			let texture = PIXI.Texture.from(warriorDyingImg[i]);
 			textureArray.push(texture);
 		}
