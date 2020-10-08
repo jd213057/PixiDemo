@@ -10,9 +10,22 @@ const app = new PIXI.Application({
 });
 
 document.getElementById('screen').appendChild(app.view);
+
+const pathToImgFolder = '/static/assets/images/';
+let backgroundImage = PIXI.Texture.from(
+	pathToImgFolder + 'Background/platformer_0.png'
+);
+let backgroundSprite = new PIXI.Sprite(backgroundImage);
+backgroundSprite.anchor.set(0.0);
+backgroundSprite.height = 550;
+backgroundSprite.width = 900;
+backgroundSprite.zIndex = 1;
+app.stage.addChild(backgroundSprite);
+
+// path starting point from server.js where script js is served
 const pathToAnimation = '/static/assets/images/Warrior/Animations';
 // create a new Sprite from an image path
-// path starting point from index.html where script js is called
+
 let warriorRunningImg = [
 	pathToAnimation + '/Run/Run__000.png',
 	pathToAnimation + '/Run/Run__001.png',
@@ -132,13 +145,14 @@ warrior.anchor.set(0.5);
 // move the sprite to the center of the screen
 warrior.x = app.screen.width / 2;
 warrior.y = app.screen.height / 2;
+warrior.zIndex = 2;
 
 app.stage.addChild(warrior);
 
 let animationCount = 0;
 // Listen for animate update
 app.ticker.add((delta) => {
-	const animationSpeed = delta/3;
+	const animationSpeed = delta/2;
 	animationCount = Math.round(animationCount + animationSpeed) % textureArray.length;
 	warrior.texture = textureArray[animationCount];
 });
@@ -186,4 +200,10 @@ function setControls() {
 			textureArray.push(texture);
 		}
 	});
+
+/* 	function setKeyboardControls() {
+		window.addEventListener() {
+
+		}
+	} */
 }
