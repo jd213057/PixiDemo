@@ -31,3 +31,7 @@ html {
 	justify-content: space-evenly;
 	margin: 2em 0em;
 }
+
+	button {
+		width: 10em;
+	}

@@ -1,6 +1,14 @@
-/* import * as PIXI from '/static/pixi.js'; */
+/* import loaders from './loaders.js';  */
+
+const attackSound = new Audio(
+	'static/assets/audio/sounds/street-fighter-sound-hadouken.mp3'
+);
+const walkingSound = new Audio('static/assets/audio/sounds/step_lth4.mp3');
 
 setControls();
+setKeyboardControls();
+setBackgroundVolume();
+setAudioEvents();
 
 const app = new PIXI.Application({
 	height: 550,
@@ -25,7 +33,6 @@ app.stage.addChild(backgroundSprite);
 // path starting point from server.js where script js is served
 const pathToAnimation = '/static/assets/images/Warrior/Animations';
 // create a new Sprite from an image path
-
 let warriorRunningImg = [
 	pathToAnimation + '/Run/Run__000.png',
 	pathToAnimation + '/Run/Run__001.png',
@@ -132,78 +139,203 @@ let warriorAttacking2Img = [
 	pathToAnimation + '/Attack 2/Attack2__021.png',
 ];
 let textureArray = [];
-let texture = PIXI.Texture.from(pathToAnimation + '/Run/Run__000.png');
+let texture = PIXI.Texture.from(pathToAnimation + '/Idle/Idle__000.png');
+textureArray.push(texture);
 
-for (let i = 0; i <= 12; i++) {
-	let texture = PIXI.Texture.from(warriorRunningImg[i]);
-	textureArray.push(texture);
-}
 let warrior = new PIXI.AnimatedSprite(textureArray);
 // center the sprite's anchor point
 warrior.anchor.set(0.5);
 
 // move the sprite to the center of the screen
 warrior.x = app.screen.width / 2;
-warrior.y = app.screen.height / 2;
+warrior.y = app.screen.height / 2 - 25;
 warrior.zIndex = 2;
 
 app.stage.addChild(warrior);
 
 let animationCount = 0;
+let isMoving = false;
 // Listen for animate update
 app.ticker.add((delta) => {
-	const animationSpeed = delta/2;
-	animationCount = Math.round(animationCount + animationSpeed) % textureArray.length;
-	warrior.texture = textureArray[animationCount];
+	if (isMoving) {
+		const animationSpeed = delta / 2;
+		animationCount =
+			Math.round(animationCount + animationSpeed) % textureArray.length;
+		warrior.texture = textureArray[animationCount];
+	}
 });
+
+var playingSound = false;
+
+// Controls functions :
 
 function setControls() {
 	document.getElementById('Attack').addEventListener('click', () => {
-		textureArray = [];
-		for (let i = 0; i <= 10; i++) {
-			let texture = PIXI.Texture.from(warriorAttackingImg[i]);
-			textureArray.push(texture);
-		}
+		loadSmallAttackTexture();
 	});
 	document.getElementById('Attack2').addEventListener('click', () => {
-		textureArray = [];
-		for (let i = 0; i <= 21; i++) {
-			let texture = PIXI.Texture.from(warriorAttacking2Img[i]);
-			textureArray.push(texture);
-		}
+		loadBigAttackTexture();
 	});
 	document.getElementById('Idle').addEventListener('click', () => {
-		textureArray = [];
-		for (let i = 0; i <= 25; i++) {
-			let texture = PIXI.Texture.from(warriorIdlingImg[i]);
-			textureArray.push(texture);
-		}
+		loadIdleTexture();
 	});
 	document.getElementById('Jump').addEventListener('click', () => {
-		textureArray = [];
-		for (let i = 0; i <= 2; i++) {
-			let texture = PIXI.Texture.from(warriorJumpingImg[i]);
-			textureArray.push(texture);
-		}
+		loadJumpTexture();
 	});
 	document.getElementById('Die').addEventListener('click', () => {
-		textureArray = [];
-		for (let i = 0; i <= 17; i++) {
-			let texture = PIXI.Texture.from(warriorDyingImg[i]);
-			textureArray.push(texture);
-		}
+		loadDieTexture();
 	});
 	document.getElementById('Run').addEventListener('click', () => {
-		textureArray = [];
-		for (let i = 0; i <= 12; i++) {
-			let texture = PIXI.Texture.from(warriorRunningImg[i]);
-			textureArray.push(texture);
+		loadRunTexture();
+	});
+}
+
+function setKeyboardControls() {
+	window.addEventListener('keydown', (e) => {
+		if (e.keyCode == 37) {
+			moveLeft();
+		}
+		if (e.keyCode == 39) {
+			moveRigth();
+		}
+		if (e.keyCode == 65) {
+			smallAttack();
+		}
+		if (e.keyCode == 90) {
+			bigAttack();
 		}
 	});
+	window.addEventListener('keyup', () => {
+		warrior.y = 250;
+		stop();
+	});
+}
 
-/* 	function setKeyboardControls() {
-		window.addEventListener() {
+// Move functions :
 
-		}
-	} */
+function moveLeft() {
+	playSound(walkingSound);
+	warrior.scale.x = -1;
+	warrior.x -= 25;
+	loadRunTexture();
+}
+
+function moveRigth() {
+	playSound(walkingSound);
+	warrior.scale.x = 1;
+	warrior.x += 25;
+	loadRunTexture();
+}
+
+function stop() {
+	textureArray = [];
+	let texture = PIXI.Texture.from(pathToAnimation + '/Idle/Idle__000.png');
+	textureArray.push(texture);
+	playingSound = false;
+	stopSound();
+}
+
+function smallAttack() {
+	playSound(attackSound);
+	loadSmallAttackTexture();
+}
+
+function bigAttack() {
+	playSound(attackSound);
+	loadBigAttackTexture();
+}
+
+//Audio functions:
+
+function setBackgroundVolume() {
+	const backgroundAudio = document.getElementById('audio');
+	backgroundAudio.volume = 0.05;
+}
+
+function playSound(sound) {
+	if (!playingSound) {
+		sound.currentTime = 0;
+		sound.volume = 1;
+		sound.play();
+	}
+	playingSound = true;
+}
+
+function stopSound() {
+	attackSound.pause();
+	walkingSound.pause();
+}
+
+function setAudioEvents() {
+	attackSound.addEventListener('play', () => {
+		attackSound.volume = 0.5;
+	});
+	attackSound.addEventListener('ended', () => {
+		playingSound = false;
+	});
+	walkingSound.addEventListener('ended', () => {
+		playingSound = false;
+	});
+}
+
+// TextureLoader functions :
+
+function loadSmallAttackTexture() {
+	textureArray = [];
+	for (let i = 0; i <= 10; i++) {
+		let texture = PIXI.Texture.from(warriorAttackingImg[i]);
+		textureArray.push(texture);
+	}
+	warrior.y = 260;
+	isMoving = true;
+}
+
+function loadBigAttackTexture() {
+	textureArray = [];
+	for (let i = 0; i <= 21; i++) {
+		let texture = PIXI.Texture.from(warriorAttacking2Img[i]);
+		textureArray.push(texture);
+	}
+	warrior.y = 225;
+	isMoving = true;
+}
+
+function loadIdleTexture() {
+	warrior.y = 250;
+	textureArray = [];
+	for (let i = 0; i <= 25; i++) {
+		let texture = PIXI.Texture.from(warriorIdlingImg[i]);
+		textureArray.push(texture);
+	}
+	isMoving = true;
+}
+
+function loadJumpTexture() {
+	warrior.y = 250;
+	textureArray = [];
+	for (let i = 0; i <= 2; i++) {
+		let texture = PIXI.Texture.from(warriorJumpingImg[i]);
+		textureArray.push(texture);
+	}
+	isMoving = true;
+}
+
+function loadRunTexture() {
+	warrior.y = 250;
+	textureArray = [];
+	for (let i = 0; i <= 12; i++) {
+		let texture = PIXI.Texture.from(warriorRunningImg[i]);
+		textureArray.push(texture);
+	}
+	isMoving = true;
+}
+
+function loadDieTexture() {
+	warrior.y = 270;
+	textureArray = [];
+	for (let i = 0; i <= 17; i++) {
+		let texture = PIXI.Texture.from(warriorDyingImg[i]);
+		textureArray.push(texture);
+	}
+	isMoving = true;
 }
