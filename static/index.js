@@ -4,6 +4,8 @@ const attackSound = new Audio(
 	'static/assets/audio/sounds/street-fighter-sound-hadouken.mp3'
 );
 const walkingSound = new Audio('static/assets/audio/sounds/step_lth4.mp3');
+let animationCount = 0;
+let isMoving = false;
 
 setControls();
 setKeyboardControls();
@@ -141,8 +143,8 @@ let warriorAttacking2Img = [
 let textureArray = [];
 let texture = PIXI.Texture.from(pathToAnimation + '/Idle/Idle__000.png');
 textureArray.push(texture);
-
 let warrior = new PIXI.AnimatedSprite(textureArray);
+loadIdleTexture();
 // center the sprite's anchor point
 warrior.anchor.set(0.5);
 
@@ -153,8 +155,7 @@ warrior.zIndex = 2;
 
 app.stage.addChild(warrior);
 
-let animationCount = 0;
-let isMoving = false;
+
 // Listen for animate update
 app.ticker.add((delta) => {
 	if (isMoving) {
@@ -228,9 +229,7 @@ function moveRigth() {
 }
 
 function stop() {
-	textureArray = [];
-	let texture = PIXI.Texture.from(pathToAnimation + '/Idle/Idle__000.png');
-	textureArray.push(texture);
+	loadIdleTexture();
 	playingSound = false;
 	stopSound();
 }
@@ -271,7 +270,7 @@ function setAudioEvents() {
 		attackSound.volume = 0.5;
 	});
 	attackSound.addEventListener('ended', () => {
-		playingSound = false;
+			playingSound = false;
 	});
 	walkingSound.addEventListener('ended', () => {
 		playingSound = false;
