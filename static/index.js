@@ -248,7 +248,7 @@ function bigAttack() {
 
 function setBackgroundVolume() {
 	const backgroundAudio = document.getElementById('audio');
-	backgroundAudio.volume = 0.05;
+	backgroundAudio.volume = 0.3;
 }
 
 function playSound(sound) {
