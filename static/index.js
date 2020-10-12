@@ -6,6 +6,7 @@ const attackSound = new Audio(
 const walkingSound = new Audio('static/assets/audio/sounds/step_lth4.mp3');
 let animationCount = 0;
 let isMoving = false;
+let isJumping = false;
 
 setControls();
 setKeyboardControls();
@@ -23,12 +24,12 @@ document.getElementById('screen').appendChild(app.view);
 
 const pathToImgFolder = '/static/assets/images/';
 let backgroundImage = PIXI.Texture.from(
-	pathToImgFolder + 'Background/platformer_0.png'
+	pathToImgFolder + 'Levels/level_01.png'
 );
 let backgroundSprite = new PIXI.Sprite(backgroundImage);
 backgroundSprite.anchor.set(0.0);
-backgroundSprite.height = 550;
-backgroundSprite.width = 900;
+backgroundSprite.height = 642;
+backgroundSprite.width = 3073;
 backgroundSprite.zIndex = 1;
 app.stage.addChild(backgroundSprite);
 
@@ -149,8 +150,12 @@ loadIdleTexture();
 warrior.anchor.set(0.5);
 
 // move the sprite to the center of the screen
-warrior.x = app.screen.width / 2;
-warrior.y = app.screen.height / 2 - 25;
+const scaleX = 0.2;
+const scaleY = 0.2;
+warrior.scale.x = scaleX;
+warrior.scale.y = scaleY;
+warrior.x = (app.screen.width / 2) - 350;
+warrior.y = (app.screen.height / 2) - 28.5;
 warrior.zIndex = 2;
 
 app.stage.addChild(warrior);
@@ -158,7 +163,25 @@ app.stage.addChild(warrior);
 
 // Listen for animate update
 app.ticker.add((delta) => {
-	if (isMoving) {
+if (isJumping){
+const initialY = warrior.y;
+const initialX = warrior.y
+const g = 1;
+const p = 1.5;
+const upVector = initialY + p;
+const downVector = -g * delta;
+const xVector = p - delta;
+if(warrior.y >= initialY) {
+	warrior.y = -(upVector + downVector);
+}
+if (isMoving && xVector > 0) {
+		warrior.x = initialX + xVector;
+}
+if (warrior.y - initialY < 0.1) {
+	isJumping = false;
+}
+}
+	else if (isMoving) {
 		const animationSpeed = delta / 2;
 		animationCount =
 			Math.round(animationCount + animationSpeed) % textureArray.length;
@@ -196,6 +219,9 @@ function setKeyboardControls() {
 		if (e.keyCode == 37) {
 			moveLeft();
 		}
+		if (e.keyCode == 38) {
+			jump();
+		}
 		if (e.keyCode == 39) {
 			moveRigth();
 		}
@@ -207,7 +233,7 @@ function setKeyboardControls() {
 		}
 	});
 	window.addEventListener('keyup', () => {
-		warrior.y = 250;
+		/* warrior.y = 250; */
 		stop();
 	});
 }
@@ -216,16 +242,21 @@ function setKeyboardControls() {
 
 function moveLeft() {
 	playSound(walkingSound);
-	warrior.scale.x = -1;
-	warrior.x -= 25;
+	warrior.scale.x = -scaleX;
+	warrior.x -= 5;
 	loadRunTexture();
 }
 
 function moveRigth() {
 	playSound(walkingSound);
-	warrior.scale.x = 1;
-	warrior.x += 25;
+	warrior.scale.x = scaleX;
+	warrior.x += 5;
 	loadRunTexture();
+}
+
+function jump() {
+	loadJumpTexture();
+	isJumping = true;
 }
 
 function stop() {
