@@ -1,4 +1,4 @@
-export class loaders {
+export default class loaders {
 	pathToAnimation = '/static/assets/images/Warrior/Animations';
 
 	warriorLoader = {
@@ -109,5 +109,6 @@ export class loaders {
 		},
 	};
 }
-/* 
-module.exports = {loaders}; */
+
+/* export {loaders}; */
+/* module.exports = {loaders}; */

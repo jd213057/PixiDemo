@@ -5,6 +5,7 @@
 	"editor.fontLigatures": true,
 	"editor.formatOnPaste": true,
 	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"workbench.editor.highlightModifiedTabs": true,
 	"files.autoSave": "afterDelay",
 	"files.autoSaveDelay": 100,

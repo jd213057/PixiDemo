@@ -1,4 +1,7 @@
-/* import loaders from './loaders.js';  */
+import loaders from '/static/loaders.js';
+/* const loaders = require('/static/loaders.js'); */
+/* import * as loaders from '/static/loaders.js'; */
+console.log(loaders);
 
 const attackSound = new Audio(
 	'static/assets/audio/sounds/street-fighter-sound-hadouken.mp3'
@@ -7,6 +10,7 @@ const walkingSound = new Audio('static/assets/audio/sounds/step_lth4.mp3');
 let animationCount = 0;
 let isMoving = false;
 let isJumping = false;
+let isColliding = false;
 
 setControls();
 setKeyboardControls();
@@ -16,7 +20,6 @@ setAudioEvents();
 const app = new PIXI.Application({
 	height: 550,
 	width: 900,
-	/* 	backgroundColor: 0x1099bb, */
 	transparent: true,
 });
 
@@ -24,14 +27,35 @@ document.getElementById('screen').appendChild(app.view);
 
 const pathToImgFolder = '/static/assets/images/';
 let backgroundImage = PIXI.Texture.from(
-	pathToImgFolder + 'Levels/level_01.png'
+	pathToImgFolder + 'Levels/firstmaplevel_background.png'
 );
 let backgroundSprite = new PIXI.Sprite(backgroundImage);
 backgroundSprite.anchor.set(0.0);
 backgroundSprite.height = 642;
 backgroundSprite.width = 3073;
-backgroundSprite.zIndex = 1;
 app.stage.addChild(backgroundSprite);
+
+let colliderImage = PIXI.Texture.from(
+	pathToImgFolder + 'Levels/simple_ground.png'
+);
+let colliderSprite = new PIXI.Sprite(colliderImage);
+colliderSprite.anchor.set(0.0);
+colliderSprite.x = 0;
+colliderSprite.y = 288;
+colliderSprite.scale.x = 0.5;
+colliderSprite.scale.y = 0.1;
+app.stage.addChild(colliderSprite);
+
+let colliderWallImage = PIXI.Texture.from(
+	pathToImgFolder + 'Levels/simple_wall.png'
+);
+let colliderWallSprite = new PIXI.Sprite(colliderWallImage);
+colliderWallSprite.anchor.set(0.0);
+colliderWallSprite.x = 350;
+colliderWallSprite.y = 0;
+colliderWallSprite.scale.x = 0.1;
+colliderWallSprite.scale.y = 0.35;
+app.stage.addChild(colliderWallSprite);
 
 // path starting point from server.js where script js is served
 const pathToAnimation = '/static/assets/images/Warrior/Animations';
@@ -145,6 +169,7 @@ let textureArray = [];
 let texture = PIXI.Texture.from(pathToAnimation + '/Idle/Idle__000.png');
 textureArray.push(texture);
 let warrior = new PIXI.AnimatedSprite(textureArray);
+
 loadIdleTexture();
 // center the sprite's anchor point
 warrior.anchor.set(0.5);
@@ -154,34 +179,35 @@ const scaleX = 0.2;
 const scaleY = 0.2;
 warrior.scale.x = scaleX;
 warrior.scale.y = scaleY;
-warrior.x = (app.screen.width / 2) - 350;
-warrior.y = (app.screen.height / 2) - 28.5;
-warrior.zIndex = 2;
+warrior.x = app.screen.width / 2 - 350;
+warrior.y = app.screen.height / 2 - 28.5;
 
 app.stage.addChild(warrior);
 
-
 // Listen for animate update
 app.ticker.add((delta) => {
-if (isJumping){
-const initialY = warrior.y;
-const initialX = warrior.y
-const g = 1;
-const p = 1.5;
-const upVector = initialY + p;
-const downVector = -g * delta;
-const xVector = p - delta;
-if(warrior.y >= initialY) {
-	warrior.y = -(upVector + downVector);
-}
-if (isMoving && xVector > 0) {
-		warrior.x = initialX + xVector;
-}
-if (warrior.y - initialY < 0.1) {
-	isJumping = false;
-}
-}
-	else if (isMoving) {
+	const warriorBox = warrior.getBounds();
+	/* 	const colliderBox = colliderSprite.getBounds(); */
+	const wallBox = colliderWallSprite.getBounds();
+	isColliding = detectCollision(warriorBox, wallBox);
+	if (isJumping) {
+		const initialY = warrior.y;
+		const initialX = warrior.y;
+		const g = 1;
+		const p = 1.5;
+		const upVector = initialY + p;
+		const downVector = -g * delta;
+		const xVector = p - delta;
+		if (warrior.y >= initialY) {
+			warrior.y = -(upVector + downVector);
+		}
+		if (isMoving && xVector > 0) {
+			warrior.x = initialX + xVector;
+		}
+		if (warrior.y - initialY < 0.1) {
+			isJumping = false;
+		}
+	} else if (isMoving) {
 		const animationSpeed = delta / 2;
 		animationCount =
 			Math.round(animationCount + animationSpeed) % textureArray.length;
@@ -216,14 +242,22 @@ function setControls() {
 
 function setKeyboardControls() {
 	window.addEventListener('keydown', (e) => {
+		const warriorBox = warrior.getBounds();
+		const wallBox = colliderWallSprite.getBounds();
 		if (e.keyCode == 37) {
-			moveLeft();
+			warriorBox.x -= 5;
+			if (!detectCollision(warriorBox, colliderWallSprite)) {
+				moveLeft();
+			}
 		}
 		if (e.keyCode == 38) {
 			jump();
 		}
 		if (e.keyCode == 39) {
-			moveRigth();
+			warriorBox.x += 5;
+			if (!detectCollision(warriorBox, colliderWallSprite)) {
+				moveRigth();
+			}
 		}
 		if (e.keyCode == 65) {
 			smallAttack();
@@ -241,17 +275,21 @@ function setKeyboardControls() {
 // Move functions :
 
 function moveLeft() {
-	playSound(walkingSound);
-	warrior.scale.x = -scaleX;
-	warrior.x -= 5;
-	loadRunTexture();
+	if (!isColliding) {
+		playSound(walkingSound);
+		warrior.scale.x = -scaleX;
+		warrior.x -= 5;
+		loadRunTexture();
+	}
 }
 
 function moveRigth() {
-	playSound(walkingSound);
-	warrior.scale.x = scaleX;
-	warrior.x += 5;
-	loadRunTexture();
+	if (!isColliding) {
+		playSound(walkingSound);
+		warrior.scale.x = scaleX;
+		warrior.x += 5;
+		loadRunTexture();
+	}
 }
 
 function jump() {
@@ -273,6 +311,15 @@ function smallAttack() {
 function bigAttack() {
 	playSound(attackSound);
 	loadBigAttackTexture();
+}
+
+function detectCollision(sprite1, sprite2) {
+	return (
+		sprite1.x + sprite1.width > sprite2.x &&
+		sprite1.x < sprite2.x + sprite2.width &&
+		sprite1.y + sprite1.height > sprite2.y &&
+		sprite1.y < sprite2.y + sprite2.height
+	);
 }
 
 //Audio functions:
@@ -301,7 +348,7 @@ function setAudioEvents() {
 		attackSound.volume = 0.5;
 	});
 	attackSound.addEventListener('ended', () => {
-			playingSound = false;
+		playingSound = false;
 	});
 	walkingSound.addEventListener('ended', () => {
 		playingSound = false;
