@@ -6,6 +6,7 @@ const attackSound = new Audio(
 const walkingSound = new Audio('static/assets/audio/sounds/step_lth4.mp3');
 let animationCount = 0;
 let isMoving = false;
+let direction = 1;
 let isJumping = false;
 let isColliding = false;
 
@@ -137,18 +138,22 @@ function setKeyboardControls() {
 		const warriorBox = warrior.getBounds();
 		const wallBox = colliderWallSprite.getBounds();
 		if (e.keyCode == 37) {
-			warriorBox.x -= 5;
+			warriorBox.x -= 1;
 			if (!detectCollision(warriorBox, colliderWallSprite)) {
-				moveLeft();
+				direction = -1;
+				warrior.scale.x = -scaleX;
+				move();
 			}
 		}
 		if (e.keyCode == 38) {
 			jump();
 		}
 		if (e.keyCode == 39) {
-			warriorBox.x += 5;
+			warriorBox.x += 1;
 			if (!detectCollision(warriorBox, colliderWallSprite)) {
-				moveRight();
+				direction = 1;
+				warrior.scale.x = scaleX;
+				move();
 			}
 		}
 		if (e.keyCode == 65) {
@@ -159,27 +164,16 @@ function setKeyboardControls() {
 		}
 	});
 	window.addEventListener('keyup', () => {
-		/* warrior.y = 250; */
 		stop();
 	});
 }
 
 // Move functions :
 
-function moveLeft() {
+function move() {
+	playSound(walkingSound);
 	if (!isColliding) {
-		playSound(walkingSound);
-		warrior.scale.x = -scaleX;
-		warrior.x -= 5;
-		loadRunTexture();
-	}
-}
-
-function moveRight() {
-	if (!isColliding) {
-		playSound(walkingSound);
-		warrior.scale.x = scaleX;
-		warrior.x += 5;
+		warrior.x += 5 * direction;
 		loadRunTexture();
 	}
 }

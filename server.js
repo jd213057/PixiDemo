@@ -14,7 +14,7 @@ liveReloadServer.watch(__dirname);
 liveReloadServer.server.once('connection', () => {
 	setTimeout(() => {
 		liveReloadServer.refresh('/');
-	}, 100);
+	}, 1000);
 });
 // ligne 20 à activer pour relaunch sur autosave
 app.use(connectLivereload());
