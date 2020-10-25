@@ -1,7 +1,6 @@
 {
 	/*     File & Editor Settings */
-	"editor.fontFamily": "Monaco",
-	/*   To enable for font ligatures :  "editor.fontFamily": "Fira Code", */
+	"editor.fontFamily": "Cascadia Code",
 	"editor.fontLigatures": true,
 	"editor.formatOnPaste": true,
 	"editor.formatOnSave": true,
