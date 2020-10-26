@@ -5,12 +5,16 @@ const attackSound = new Audio(
 );
 const walkingSound = new Audio('static/assets/audio/sounds/step_lth4.mp3');
 let animationCount = 0;
-let isMoving = false;
 let direction = 1;
 let isJumping = false;
 let onFloor = false;
-let isColliding = false;
-let collidersList = [];
+let isAboutToCollide = false;
+let wallCollidersList = [];
+let floorCollidersList = [];
+let warriorWideBox = new PIXI.Rectangle();
+let warriorNarrowBox = new PIXI.Rectangle();
+let leftCollision = false;
+let rightCollision = false;
 
 setControls();
 setKeyboardControls();
@@ -49,19 +53,28 @@ app.stage.addChild(colliderFloorSprite);
 let colliderWallImage = PIXI.Texture.from(
 	pathToImgFolder + 'Levels/simple_wall.png'
 );
-let colliderWallSprite = new PIXI.Sprite(colliderWallImage);
-colliderWallSprite.anchor.set(0.0);
-colliderWallSprite.x = 350;
-colliderWallSprite.y = 200;
-colliderWallSprite.width = 20;
-colliderWallSprite.height = 113;
-app.stage.addChild(colliderWallSprite);
+let leftColliderWallSprite = new PIXI.Sprite(colliderWallImage);
+leftColliderWallSprite.anchor.set(0.0);
+leftColliderWallSprite.x = 0;
+leftColliderWallSprite.y = 200;
+leftColliderWallSprite.width = 20;
+leftColliderWallSprite.height = 113;
+app.stage.addChild(leftColliderWallSprite);
+let rightColliderWallSprite = new PIXI.Sprite(colliderWallImage);
+rightColliderWallSprite.anchor.set(0.0);
+rightColliderWallSprite.x = 350;
+rightColliderWallSprite.y = 200;
+rightColliderWallSprite.width = 20;
+rightColliderWallSprite.height = 113;
+app.stage.addChild(rightColliderWallSprite);
 
 // path starting point from server.js where script js is served
-const pathToAnimation = '/static/assets/images/Warrior/Animations';
+const pathToAnimation = '/static/assets/images/';
 
 let textureArray = [];
-let texture = PIXI.Texture.from(pathToAnimation + '/Idle/Idle__000.png');
+let texture = PIXI.Texture.from(
+	pathToAnimation + 'Adventurer/Idle/adventurer-idle-00.png'
+);
 textureArray.push(texture);
 let warrior = new PIXI.AnimatedSprite(textureArray);
 
@@ -71,34 +84,32 @@ warrior.anchor.set(0.5);
 
 // move the sprite to the center of the screen
 
-warrior.width = 70;
-warrior.height = 75;
-/* warrior.scale.x = 0.2;
-warrior.scale.y = 0.2; */
+warrior.scale.x = 2;
+warrior.scale.y = 2;
 warrior.x = app.screen.width / 2 - 350;
-/* warrior.y = app.screen.height / 2 - 28.5; */
 warrior.y = app.screen.height / 2 - 150;
 let vx = 0;
 let vy = 5;
 app.stage.addChild(warrior);
 
-const wallBox = colliderWallSprite.getBounds();
+const rightWallBox = rightColliderWallSprite.getBounds();
+const leftWallBox = leftColliderWallSprite.getBounds();
 const floorBox = colliderFloorSprite.getBounds();
-collidersList.push(floorBox, wallBox);
+wallCollidersList.push(leftWallBox, rightWallBox);
+floorCollidersList.push(floorBox);
 
 // Listen for animate update
 app.ticker.add((delta) => {
-	const warriorBox = warrior.getBounds();
-/* 	warriorBox.x += 5;
-	warriorBox.y += 1; */
-	isColliding = detectCollision(warriorBox);
-	applyingGravity();
-	if (isMoving) {
-		const animationSpeed = delta / 2;
-		animationCount =
-			Math.round(animationCount + animationSpeed) % textureArray.length;
-		warrior.texture = textureArray[animationCount];
+	warriorNarrowBox = warrior.getBounds();
+	calculateWideBox();
+	isAboutToCollide = detectFloorCollision(warriorWideBox);
+	if (!isAboutToCollide) {
+		applyingGravity();
 	}
+	const animationSpeed = delta / 4;
+	animationCount =
+		Math.round(animationCount + animationSpeed) % textureArray.length;
+	warrior.texture = textureArray[animationCount];
 });
 
 var playingSound = false;
@@ -128,47 +139,58 @@ function setControls() {
 
 function setKeyboardControls() {
 	window.addEventListener('keydown', (e) => {
-		const warriorBounds = warrior.getBounds();
-		warriorBounds.y += 1;
-		if (e.keyCode == 37) {
-			warriorBounds.x -= 1;
-			if (!detectCollision(warriorBounds)) {
-				direction = -1;
-				warrior.scale.x = -1;
+		console.log(leftCollision);
+		if (e.keyCode === 37) {
+			if (direction === 1) {
+				warrior.scale.x = -2;
+			}
+			direction = -1;
+			if (rightCollision || !detectWallCollision(warriorWideBox)) {
 				move();
 			}
+			leftCollision = detectWallCollision(warriorWideBox) ? true : false;
 		}
-		if (e.keyCode == 38) {
+		if (e.keyCode === 39) {
+			if (direction === -1) {
+				warrior.scale.x = 2;
+			}
+			direction = 1;
+			warrior.y -= 5;
+			if (leftCollision || !detectWallCollision(warriorWideBox)) {
+				move();
+			}
+			rightCollision = detectWallCollision(warriorWideBox) ? true : false;
+		}
+
+		if (e.keyCode === 38) {
 			jump();
 		}
-		if (e.keyCode == 39) {
-			warriorBounds.x += 1;
-			if (!detectCollision(warriorBounds)) {
-				direction = 1;
-				warrior.scale.x = 1;
-				move();
-			}
-		}
-		if (e.keyCode == 65) {
+
+		if (e.keyCode === 65) {
 			smallAttack();
 		}
-		if (e.keyCode == 90) {
+		if (e.keyCode === 90) {
 			bigAttack();
 		}
 	});
-	window.addEventListener('keyup', () => {
+	window.addEventListener('keyup', (e) => {
 		stop();
 	});
 }
 
 // Move functions :
 
+function calculateWideBox() {
+	warriorWideBox.x = warriorNarrowBox.x + 1;
+	warriorWideBox.width = warriorNarrowBox.width - 30;
+	warriorWideBox.y = warriorNarrowBox.y + 1;
+	warriorWideBox.height = warriorNarrowBox.height - 1;
+}
+
 function move() {
 	playSound(walkingSound);
-	if (!detectCollision(warrior.getBounds()) && onFloor) {
-		warrior.x += 5 * direction;
-		loadRunTexture();
-	}
+	loadRunTexture();
+	warrior.x += 5 * direction;
 }
 
 function jump() {
@@ -194,8 +216,22 @@ function bigAttack() {
 
 // Physics functions:
 
-function detectCollision(playerBox) {
-	for (const collider of collidersList) {
+function detectWallCollision(playerBox) {
+	for (const collider of wallCollidersList) {
+		if (
+			playerBox.x + playerBox.width > collider.x &&
+			playerBox.x < collider.x + collider.width &&
+			playerBox.y + playerBox.height > collider.y &&
+			playerBox.y < collider.y + collider.height
+		) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function detectFloorCollision(playerBox) {
+	for (const collider of floorCollidersList) {
 		if (
 			playerBox.x + playerBox.width > collider.x &&
 			playerBox.x < collider.x + collider.width &&
@@ -209,12 +245,7 @@ function detectCollision(playerBox) {
 }
 
 function applyingGravity() {
-	if (!isColliding && !onFloor) {
-		warrior.y += vy;
-	} else {
-		onFloor = true;
-		vy = 0;
-	}
+	warrior.y += vy;
 }
 
 //Audio functions:
@@ -254,48 +285,36 @@ function setAudioEvents() {
 
 function loadSmallAttackTexture() {
 	textureArray = [];
-	let loaderArray = loaders.warriorLoader.warriorAttackingImg;
+	let loaderArray = loaders.adventurerLoader.adventurerAttacking1Anim;
 	loaderArray.forEach((img) => textureArray.push(new PIXI.Texture.from(img)));
-	warrior.y = 250;
-	isMoving = true;
 }
 
 function loadBigAttackTexture() {
 	textureArray = [];
-	let loaderArray = loaders.warriorLoader.warriorAttacking2Img;
+	let loaderArray = loaders.adventurerLoader.adventurerAttacking2Anim;
 	loaderArray.forEach((img) => textureArray.push(new PIXI.Texture.from(img)));
-	warrior.y = 245;
-	isMoving = true;
 }
 
 function loadIdleTexture() {
-	warrior.y = 245;
 	textureArray = [];
-	let loaderArray = loaders.warriorLoader.warriorIdlingImg;
+	let loaderArray = loaders.adventurerLoader.adventurerIdlingAnim;
 	loaderArray.forEach((img) => textureArray.push(new PIXI.Texture.from(img)));
-	isMoving = true;
 }
 
 function loadJumpTexture() {
-	warrior.y = 250;
 	textureArray = [];
-	let loaderArray = loaders.warriorLoader.warriorJumpingImg;
+	let loaderArray = loaders.adventurerLoader.adventurerJumpingAnim;
 	loaderArray.forEach((img) => textureArray.push(new PIXI.Texture.from(img)));
-	isMoving = true;
 }
 
 function loadRunTexture() {
-	warrior.y = 250;
 	textureArray = [];
-	let loaderArray = loaders.warriorLoader.warriorRunningImg;
+	let loaderArray = loaders.adventurerLoader.adventurerRunningAnim;
 	loaderArray.forEach((img) => textureArray.push(new PIXI.Texture.from(img)));
-	isMoving = true;
 }
 
 function loadDieTexture() {
-	warrior.y = 260;
 	textureArray = [];
-	let loaderArray = loaders.warriorLoader.warriorDyingImg;
+	let loaderArray = loaders.adventurerLoader.adventurerDyingAnim;
 	loaderArray.forEach((img) => textureArray.push(new PIXI.Texture.from(img)));
-	isMoving = true;
 }
