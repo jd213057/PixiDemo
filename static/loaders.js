@@ -157,5 +157,3 @@ const loaders = {
 	},
 };
 export default loaders;
-/* export {loaders}; */
-/* module.exports.loaders = loaders; */

@@ -13,8 +13,8 @@ let wallCollidersList = [];
 let floorCollidersList = [];
 let warriorWideBox = new PIXI.Rectangle();
 let warriorNarrowBox = new PIXI.Rectangle();
-let leftCollision = false;
-let rightCollision = false;
+let leftCollisionBox = new PIXI.Rectangle();
+let rightCollisionBox = new PIXI.Rectangle();
 
 setControls();
 setKeyboardControls();
@@ -101,7 +101,7 @@ floorCollidersList.push(floorBox);
 // Listen for animate update
 app.ticker.add((delta) => {
 	warriorNarrowBox = warrior.getBounds();
-	calculateWideBox();
+	calculateWideBoxes();
 	isAboutToCollide = detectFloorCollision(warriorWideBox);
 	if (!isAboutToCollide) {
 		applyingGravity();
@@ -139,27 +139,20 @@ function setControls() {
 
 function setKeyboardControls() {
 	window.addEventListener('keydown', (e) => {
-		console.log(leftCollision);
 		if (e.keyCode === 37) {
-			if (direction === 1) {
-				warrior.scale.x = -2;
-			}
+			warrior.scale.x = -2;
 			direction = -1;
-			if (rightCollision || !detectWallCollision(warriorWideBox)) {
+			if (!detectWallCollision(leftCollisionBox)) {
 				move();
 			}
-			leftCollision = detectWallCollision(warriorWideBox) ? true : false;
 		}
 		if (e.keyCode === 39) {
-			if (direction === -1) {
-				warrior.scale.x = 2;
-			}
+			warrior.scale.x = 2;
 			direction = 1;
 			warrior.y -= 5;
-			if (leftCollision || !detectWallCollision(warriorWideBox)) {
+			if (!detectWallCollision(rightCollisionBox)) {
 				move();
 			}
-			rightCollision = detectWallCollision(warriorWideBox) ? true : false;
 		}
 
 		if (e.keyCode === 38) {
@@ -180,11 +173,19 @@ function setKeyboardControls() {
 
 // Move functions :
 
-function calculateWideBox() {
+function calculateWideBoxes() {
 	warriorWideBox.x = warriorNarrowBox.x + 1;
 	warriorWideBox.width = warriorNarrowBox.width - 30;
 	warriorWideBox.y = warriorNarrowBox.y + 1;
 	warriorWideBox.height = warriorNarrowBox.height - 1;
+	leftCollisionBox.x = warriorNarrowBox.x + 10;
+	leftCollisionBox.width = warriorNarrowBox.width / 2 - 15;
+	leftCollisionBox.y = warriorNarrowBox.y - 1;
+	leftCollisionBox.height = warriorNarrowBox.height + 1;
+	rightCollisionBox.x = warriorNarrowBox.x + warriorNarrowBox.width / 2;
+	rightCollisionBox.width = warriorNarrowBox.width / 2 - 15;
+	rightCollisionBox.y = warriorNarrowBox.y - 1;
+	rightCollisionBox.height = warriorNarrowBox.height + 1;
 }
 
 function move() {
