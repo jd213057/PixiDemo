@@ -1,4 +1,5 @@
 import loaders from './loaders.js';
+import colliders from './colliders.js';
 
 const attackSound = new Audio(
 	'static/assets/audio/sounds/street-fighter-sound-hadouken.mp3'
@@ -11,10 +12,12 @@ let onFloor = false;
 let isAboutToCollide = false;
 let wallCollidersList = [];
 let floorCollidersList = [];
-let warriorWideBox = new PIXI.Rectangle();
 let warriorNarrowBox = new PIXI.Rectangle();
+let bottomCollisionBox = new PIXI.Rectangle();
 let leftCollisionBox = new PIXI.Rectangle();
 let rightCollisionBox = new PIXI.Rectangle();
+let vx = 0;
+let vy = 5;
 
 setControls();
 setKeyboardControls();
@@ -39,33 +42,15 @@ backgroundSprite.height = 642;
 backgroundSprite.width = 3073;
 app.stage.addChild(backgroundSprite);
 
-let colliderImage = PIXI.Texture.from(
-	pathToImgFolder + 'Levels/simple_ground.png'
+let colliderFloorSprite = createBasicCollider(colliders.colliderFloorSprite);
+let leftColliderWallSprite = createBasicCollider(
+	colliders.leftColliderWallSprite
 );
-let colliderFloorSprite = new PIXI.Sprite(colliderImage);
-colliderFloorSprite.anchor.set(0.0);
-colliderFloorSprite.x = 0;
-colliderFloorSprite.y = 288;
-colliderFloorSprite.width = 350;
-colliderFloorSprite.height = 25;
+let rightColliderWallSprite = createBasicCollider(
+	colliders.rightColliderWallSprite
+);
 app.stage.addChild(colliderFloorSprite);
-
-let colliderWallImage = PIXI.Texture.from(
-	pathToImgFolder + 'Levels/simple_wall.png'
-);
-let leftColliderWallSprite = new PIXI.Sprite(colliderWallImage);
-leftColliderWallSprite.anchor.set(0.0);
-leftColliderWallSprite.x = 0;
-leftColliderWallSprite.y = 200;
-leftColliderWallSprite.width = 20;
-leftColliderWallSprite.height = 113;
 app.stage.addChild(leftColliderWallSprite);
-let rightColliderWallSprite = new PIXI.Sprite(colliderWallImage);
-rightColliderWallSprite.anchor.set(0.0);
-rightColliderWallSprite.x = 350;
-rightColliderWallSprite.y = 200;
-rightColliderWallSprite.width = 20;
-rightColliderWallSprite.height = 113;
 app.stage.addChild(rightColliderWallSprite);
 
 // path starting point from server.js where script js is served
@@ -88,8 +73,6 @@ warrior.scale.x = 2;
 warrior.scale.y = 2;
 warrior.x = app.screen.width / 2 - 350;
 warrior.y = app.screen.height / 2 - 150;
-let vx = 0;
-let vy = 5;
 app.stage.addChild(warrior);
 
 const rightWallBox = rightColliderWallSprite.getBounds();
@@ -102,9 +85,12 @@ floorCollidersList.push(floorBox);
 app.ticker.add((delta) => {
 	warriorNarrowBox = warrior.getBounds();
 	calculateWideBoxes();
-	isAboutToCollide = detectFloorCollision(warriorWideBox);
+	isAboutToCollide = detectFloorCollision(bottomCollisionBox);
 	if (!isAboutToCollide) {
 		applyingGravity();
+	}
+	if (isJumping) {
+		makeJump();
 	}
 	const animationSpeed = delta / 4;
 	animationCount =
@@ -113,6 +99,19 @@ app.ticker.add((delta) => {
 });
 
 var playingSound = false;
+
+// Build Map functions
+
+function createBasicCollider(colliderConf) {
+	let newTexture = PIXI.Texture.from(colliderConf.imgPath);
+	let newCollider = new PIXI.Sprite(newTexture);
+	newCollider.anchor.set(colliderConf.anchor);
+	newCollider.x = colliderConf.x;
+	newCollider.y = colliderConf.y;
+	newCollider.width = colliderConf.width;
+	newCollider.height = colliderConf.height;
+	return newCollider;
+}
 
 // Controls functions :
 
@@ -174,10 +173,12 @@ function setKeyboardControls() {
 // Move functions :
 
 function calculateWideBoxes() {
-	warriorWideBox.x = warriorNarrowBox.x + 1;
-	warriorWideBox.width = warriorNarrowBox.width - 30;
-	warriorWideBox.y = warriorNarrowBox.y + 1;
-	warriorWideBox.height = warriorNarrowBox.height - 1;
+	bottomCollisionBox.x =
+		warriorNarrowBox.x + (1 / 3) * warriorNarrowBox.width;
+	bottomCollisionBox.width = (1 / 3) * warriorNarrowBox.width;
+	bottomCollisionBox.y =
+		warriorNarrowBox.y + (2 / 3) * warriorNarrowBox.height;
+	bottomCollisionBox.height = (1 / 3) * warriorNarrowBox.height + 1;
 	leftCollisionBox.x = warriorNarrowBox.x + 10;
 	leftCollisionBox.width = warriorNarrowBox.width / 2 - 15;
 	leftCollisionBox.y = warriorNarrowBox.y - 1;
@@ -189,19 +190,35 @@ function calculateWideBoxes() {
 }
 
 function move() {
-	playSound(walkingSound);
-	loadRunTexture();
-	warrior.x += 5 * direction;
+	if (!isJumping && onFloor) {
+		playSound(walkingSound);
+		loadRunTexture();
+		vx = 5;
+		warrior.x += vx * direction;
+	}
 }
 
 function jump() {
 	loadJumpTexture();
-	isJumping = true;
+	if (!isJumping && onFloor) {
+		isJumping = true;
+		onFloor = false;
+		makeJump();
+		setTimeout(() => {
+			isJumping = false;
+		}, 750);
+	}
 }
 
 function stop() {
-	loadIdleTexture();
+	if (!isJumping && onFloor) {
+		loadIdleTexture();
+	}
 	playingSound = false;
+	setTimeout(() => {
+		vx = 0;
+	}, 250);
+	vx = 0;
 	stopSound();
 }
 
@@ -239,6 +256,8 @@ function detectFloorCollision(playerBox) {
 			playerBox.y + playerBox.height > collider.y &&
 			playerBox.y < collider.y + collider.height
 		) {
+			isJumping = false;
+			onFloor = true;
 			return true;
 		}
 	}
@@ -247,6 +266,12 @@ function detectFloorCollision(playerBox) {
 
 function applyingGravity() {
 	warrior.y += vy;
+}
+
+function makeJump() {
+	vx -= 0.1 * direction;
+	warrior.x += vx;
+	warrior.y -= vy + 5;
 }
 
 //Audio functions:
