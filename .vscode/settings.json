@@ -12,6 +12,8 @@
 	"explorer.sortOrder": "type",
 	"editor.cursorStyle": "line-thin",
 	"editor.cursorBlinking": "expand",
+	// change line 16 to true if you want to enable type check
+	"javascript.implicitProjectConfig.checkJs": false,
 
 	/*     Git Settings */
 	"git.enableSmartCommit": true,

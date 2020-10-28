@@ -1,3 +1,6 @@
+/**
+ * js file responsible to serve web pages to application
+ */
 const livereload = require('livereload');
 const connectLivereload = require('connect-livereload');
 var express = require('express');

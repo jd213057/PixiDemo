@@ -42,18 +42,12 @@ backgroundSprite.height = 642;
 backgroundSprite.width = 3073;
 app.stage.addChild(backgroundSprite);
 
-let colliderFloorSprite = createBasicCollider(colliders.colliderFloorSprite);
-let leftColliderWallSprite = createBasicCollider(
-	colliders.leftColliderWallSprite
-);
-let rightColliderWallSprite = createBasicCollider(
-	colliders.rightColliderWallSprite
-);
-app.stage.addChild(colliderFloorSprite);
-app.stage.addChild(leftColliderWallSprite);
-app.stage.addChild(rightColliderWallSprite);
+setColliders(colliders);
 
 // path starting point from server.js where script js is served
+/**
+ * @type {string}
+ */
 const pathToAnimation = '/static/assets/images/';
 
 let textureArray = [];
@@ -75,12 +69,6 @@ warrior.x = app.screen.width / 2 - 350;
 warrior.y = app.screen.height / 2 - 150;
 app.stage.addChild(warrior);
 
-const rightWallBox = rightColliderWallSprite.getBounds();
-const leftWallBox = leftColliderWallSprite.getBounds();
-const floorBox = colliderFloorSprite.getBounds();
-wallCollidersList.push(leftWallBox, rightWallBox);
-floorCollidersList.push(floorBox);
-
 // Listen for animate update
 app.ticker.add((delta) => {
 	warriorNarrowBox = warrior.getBounds();
@@ -101,6 +89,24 @@ app.ticker.add((delta) => {
 var playingSound = false;
 
 // Build Map functions
+
+function setColliders(collidersConf) {
+	let floorCollidersObject = collidersConf.floorColliders;
+	let wallCollidersObject = collidersConf.wallColliders;
+	let collider;
+	for (const floorConf in floorCollidersObject) {
+		collider = createBasicCollider(floorCollidersObject[floorConf]);
+		app.stage.addChild(
+			collider
+		);
+		floorCollidersList.push(collider.getBounds());
+	}
+	for (const wallConf in wallCollidersObject) {
+		collider = createBasicCollider(wallCollidersObject[wallConf]);
+		app.stage.addChild(collider);
+		wallCollidersList.push(collider);
+	}
+}
 
 function createBasicCollider(colliderConf) {
 	let newTexture = PIXI.Texture.from(colliderConf.imgPath);

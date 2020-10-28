@@ -6,7 +6,8 @@
 	"scripts": {
 		"start": "node_modules/.bin/nodemon -w index.js & node server.js",
 		"start server": "nodemon --ignore public",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"doc": "jsdoc -c jsdoc.json"
 	},
 	"author": "John",
 	"license": "ISC",
@@ -14,6 +15,7 @@
 		"connect-livereload": "^0.6.1",
 		"express": "^4.17.1",
 		"install": "^0.13.0",
+		"jsdoc": "^3.6.6",
 		"livereload": "^0.9.1",
 		"npm": "^6.14.8",
 		"opn": "^6.0.0",
