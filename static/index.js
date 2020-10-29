@@ -96,9 +96,7 @@ function setColliders(collidersConf) {
 	let collider;
 	for (const floorConf in floorCollidersObject) {
 		collider = createBasicCollider(floorCollidersObject[floorConf]);
-		app.stage.addChild(
-			collider
-		);
+		app.stage.addChild(collider);
 		floorCollidersList.push(collider.getBounds());
 	}
 	for (const wallConf in wallCollidersObject) {
@@ -143,34 +141,52 @@ function setControls() {
 }
 
 function setKeyboardControls() {
-	window.addEventListener('keydown', (e) => {
-		if (e.keyCode === 37) {
-			warrior.scale.x = -2;
-			direction = -1;
-			if (!detectWallCollision(leftCollisionBox)) {
-				move();
+	window.addEventListener(
+		'keydown',
+		(e) => {
+			if (e.defaultPrevented) {
+				return; // Ne devrait rien faire si l'événement de la touche était déjà consommé.
 			}
-		}
-		if (e.keyCode === 39) {
-			warrior.scale.x = 2;
-			direction = 1;
-			warrior.y -= 5;
-			if (!detectWallCollision(rightCollisionBox)) {
-				move();
+
+			switch (e.key) {
+				case 'ArrowDown':
+					crouch();
+					break;
+				case 'ArrowUp':
+					jump();
+					break;
+				case 'ArrowLeft':
+					warrior.scale.x = -2;
+					direction = -1;
+					if (!detectWallCollision(leftCollisionBox)) {
+						move();
+					}
+					break;
+				case 'ArrowRight':
+					warrior.scale.x = 2;
+					direction = 1;
+					warrior.y -= 5;
+					if (!detectWallCollision(rightCollisionBox)) {
+						move();
+					}
+					break;
+				case 'é':
+					takePotion();
+					break;
+				case 'a':
+					smallAttack();
+					break;
+				case 'z':
+					bigAttack();
+					break;
+				default:
+					return; 
 			}
-		}
+			e.preventDefault();
+		},
+		true
+	);
 
-		if (e.keyCode === 38) {
-			jump();
-		}
-
-		if (e.keyCode === 65) {
-			smallAttack();
-		}
-		if (e.keyCode === 90) {
-			bigAttack();
-		}
-	});
 	window.addEventListener('keyup', (e) => {
 		stop();
 	});
@@ -236,6 +252,14 @@ function smallAttack() {
 function bigAttack() {
 	playSound(attackSound);
 	loadBigAttackTexture();
+}
+
+function crouch() {
+	loadCrouchTexture();
+}
+
+function takePotion() {
+	loadTakePotionTexture();
 }
 
 // Physics functions:
@@ -348,5 +372,17 @@ function loadRunTexture() {
 function loadDieTexture() {
 	textureArray = [];
 	let loaderArray = loaders.adventurerLoader.adventurerDyingAnim;
+	loaderArray.forEach((img) => textureArray.push(new PIXI.Texture.from(img)));
+}
+
+function loadCrouchTexture() {
+	textureArray = [];
+	let loaderArray = loaders.adventurerLoader.adventurerCrouchingAnim;
+	loaderArray.forEach((img) => textureArray.push(new PIXI.Texture.from(img)));
+}
+
+function loadTakePotionTexture() {
+	textureArray = [];
+	let loaderArray = loaders.adventurerLoader.adventurerTakingPotionAnim;
 	loaderArray.forEach((img) => textureArray.push(new PIXI.Texture.from(img)));
 }

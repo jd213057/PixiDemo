@@ -46,6 +46,17 @@ const loaders = {
 			pathToAnimation + 'Adventurer/Attack2/adventurer-attack2-04.png',
 			pathToAnimation + 'Adventurer/Attack2/adventurer-attack2-05.png',
 		],
+		adventurerCrouchingAnim: [
+			pathToAnimation + 'Adventurer/Crouch/adventurer-crouch-00.png',
+			pathToAnimation + 'Adventurer/Crouch/adventurer-crouch-01.png',
+			pathToAnimation + 'Adventurer/Crouch/adventurer-crouch-02.png',
+			pathToAnimation + 'Adventurer/Crouch/adventurer-crouch-03.png',
+		],
+		adventurerTakingPotionAnim: [
+			pathToAnimation + 'Adventurer/Items/adventurer-items-00.png',
+			pathToAnimation + 'Adventurer/Items/adventurer-items-01.png',
+			pathToAnimation + 'Adventurer/Items/adventurer-items-02.png',
+		],
 	},
 
 	warriorLoader: {
