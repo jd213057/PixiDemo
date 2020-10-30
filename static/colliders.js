@@ -1,5 +1,10 @@
+/**
+ * @type {string}
+ */
 const pathToImgFolder = '/static/assets/images/';
-
+/**
+ * @type {Object}
+ */
 const wallColliders = {
 	wallCollider1: {
 		imgPath: pathToImgFolder + 'Levels/simple_wall.png',
@@ -26,7 +31,9 @@ const wallColliders = {
 		height: 113,
 	},
 };
-
+/**
+ * @type {Object}
+ */
 const floorColliders = {
 	floorCollider1: {
 		imgPath: pathToImgFolder + 'Levels/simple_ground.png',

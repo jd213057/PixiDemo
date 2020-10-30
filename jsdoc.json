@@ -1,7 +1,8 @@
 {
 	"source": {
-		"include": ["static"],
+		"include": ["./"],
 		"includePattern": ".js$",
+		"exclude": ["node_modules"],
 		"excludePattern": "(node_module/|docs)"
 	},
 	"plugins": ["plugins/markdown"],

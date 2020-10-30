@@ -1,22 +1,66 @@
 import loaders from './loaders.js';
 import colliders from './colliders.js';
-
+/**
+ * @type {HTMLAudioElement}
+ */
 const attackSound = new Audio(
 	'static/assets/audio/sounds/street-fighter-sound-hadouken.mp3'
 );
+/**
+ * @type {HTMLAudioElement}
+ */
 const walkingSound = new Audio('static/assets/audio/sounds/step_lth4.mp3');
+/**
+ * @type {number}
+ */
 let animationCount = 0;
+/**
+ * @type {number}
+ */
 let direction = 1;
+/**
+ * @type {boolean}
+ */
 let isJumping = false;
+/**
+ * @type {boolean}
+ */
 let onFloor = false;
+/**
+ * @type {boolean}
+ */
 let isAboutToCollide = false;
+/**
+ * @type {Array}
+ */
 let wallCollidersList = [];
+/**
+ * @type {Array}
+ */
 let floorCollidersList = [];
+/**
+ * @type {PIXI.Rectangle}
+ */
 let warriorNarrowBox = new PIXI.Rectangle();
+/**
+ * @type {PIXI.Rectangle}
+ */
 let bottomCollisionBox = new PIXI.Rectangle();
+/**
+ * @type {PIXI.Rectangle}
+ */
 let leftCollisionBox = new PIXI.Rectangle();
+/**
+ * @type {PIXI.Rectangle}
+ */
 let rightCollisionBox = new PIXI.Rectangle();
+/**
+ * @type {number}
+ */
 let vx = 0;
+/**
+ * @type {number}
+ */
 let vy = 5;
 
 setControls();

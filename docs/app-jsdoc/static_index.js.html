@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: index.js</title>
+    <title>JSDoc: Source: static/index.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: index.js</h1>
+    <h1 class="page-title">Source: static/index.js</h1>
 
     
 
@@ -28,23 +28,67 @@
         <article>
             <pre class="prettyprint source linenums"><code>import loaders from './loaders.js';
 import colliders from './colliders.js';
-
+/**
+ * @type {HTMLAudioElement}
+ */
 const attackSound = new Audio(
 	'static/assets/audio/sounds/street-fighter-sound-hadouken.mp3'
 );
+/**
+ * @type {HTMLAudioElement}
+ */
 const walkingSound = new Audio('static/assets/audio/sounds/step_lth4.mp3');
+/**
+ * @type {number}
+ */
 let animationCount = 0;
+/**
+ * @type {number}
+ */
 let direction = 1;
+/**
+ * @type {boolean}
+ */
 let isJumping = false;
+/**
+ * @type {boolean}
+ */
 let onFloor = false;
+/**
+ * @type {boolean}
+ */
 let isAboutToCollide = false;
+/**
+ * @type {Array}
+ */
 let wallCollidersList = [];
+/**
+ * @type {Array}
+ */
 let floorCollidersList = [];
+/**
+ * @type {PIXI.Rectangle}
+ */
 let warriorNarrowBox = new PIXI.Rectangle();
+/**
+ * @type {PIXI.Rectangle}
+ */
 let bottomCollisionBox = new PIXI.Rectangle();
+/**
+ * @type {PIXI.Rectangle}
+ */
 let leftCollisionBox = new PIXI.Rectangle();
+/**
+ * @type {PIXI.Rectangle}
+ */
 let rightCollisionBox = new PIXI.Rectangle();
+/**
+ * @type {number}
+ */
 let vx = 0;
+/**
+ * @type {number}
+ */
 let vy = 5;
 
 setControls();
@@ -70,16 +114,7 @@ backgroundSprite.height = 642;
 backgroundSprite.width = 3073;
 app.stage.addChild(backgroundSprite);
 
-let colliderFloorSprite = createBasicCollider(colliders.colliderFloorSprite);
-let leftColliderWallSprite = createBasicCollider(
-	colliders.leftColliderWallSprite
-);
-let rightColliderWallSprite = createBasicCollider(
-	colliders.rightColliderWallSprite
-);
-app.stage.addChild(colliderFloorSprite);
-app.stage.addChild(leftColliderWallSprite);
-app.stage.addChild(rightColliderWallSprite);
+setColliders(colliders);
 
 // path starting point from server.js where script js is served
 /**
@@ -106,12 +141,6 @@ warrior.x = app.screen.width / 2 - 350;
 warrior.y = app.screen.height / 2 - 150;
 app.stage.addChild(warrior);
 
-const rightWallBox = rightColliderWallSprite.getBounds();
-const leftWallBox = leftColliderWallSprite.getBounds();
-const floorBox = colliderFloorSprite.getBounds();
-wallCollidersList.push(leftWallBox, rightWallBox);
-floorCollidersList.push(floorBox);
-
 // Listen for animate update
 app.ticker.add((delta) => {
 	warriorNarrowBox = warrior.getBounds();
@@ -132,6 +161,22 @@ app.ticker.add((delta) => {
 var playingSound = false;
 
 // Build Map functions
+
+function setColliders(collidersConf) {
+	let floorCollidersObject = collidersConf.floorColliders;
+	let wallCollidersObject = collidersConf.wallColliders;
+	let collider;
+	for (const floorConf in floorCollidersObject) {
+		collider = createBasicCollider(floorCollidersObject[floorConf]);
+		app.stage.addChild(collider);
+		floorCollidersList.push(collider.getBounds());
+	}
+	for (const wallConf in wallCollidersObject) {
+		collider = createBasicCollider(wallCollidersObject[wallConf]);
+		app.stage.addChild(collider);
+		wallCollidersList.push(collider);
+	}
+}
 
 function createBasicCollider(colliderConf) {
 	let newTexture = PIXI.Texture.from(colliderConf.imgPath);
@@ -168,34 +213,52 @@ function setControls() {
 }
 
 function setKeyboardControls() {
-	window.addEventListener('keydown', (e) => {
-		if (e.keyCode === 37) {
-			warrior.scale.x = -2;
-			direction = -1;
-			if (!detectWallCollision(leftCollisionBox)) {
-				move();
+	window.addEventListener(
+		'keydown',
+		(e) => {
+			if (e.defaultPrevented) {
+				return; // Ne devrait rien faire si l'événement de la touche était déjà consommé.
 			}
-		}
-		if (e.keyCode === 39) {
-			warrior.scale.x = 2;
-			direction = 1;
-			warrior.y -= 5;
-			if (!detectWallCollision(rightCollisionBox)) {
-				move();
+
+			switch (e.key) {
+				case 'ArrowDown':
+					crouch();
+					break;
+				case 'ArrowUp':
+					jump();
+					break;
+				case 'ArrowLeft':
+					warrior.scale.x = -2;
+					direction = -1;
+					if (!detectWallCollision(leftCollisionBox)) {
+						move();
+					}
+					break;
+				case 'ArrowRight':
+					warrior.scale.x = 2;
+					direction = 1;
+					warrior.y -= 5;
+					if (!detectWallCollision(rightCollisionBox)) {
+						move();
+					}
+					break;
+				case 'é':
+					takePotion();
+					break;
+				case 'a':
+					smallAttack();
+					break;
+				case 'z':
+					bigAttack();
+					break;
+				default:
+					return; 
 			}
-		}
+			e.preventDefault();
+		},
+		true
+	);
 
-		if (e.keyCode === 38) {
-			jump();
-		}
-
-		if (e.keyCode === 65) {
-			smallAttack();
-		}
-		if (e.keyCode === 90) {
-			bigAttack();
-		}
-	});
 	window.addEventListener('keyup', (e) => {
 		stop();
 	});
@@ -261,6 +324,14 @@ function smallAttack() {
 function bigAttack() {
 	playSound(attackSound);
 	loadBigAttackTexture();
+}
+
+function crouch() {
+	loadCrouchTexture();
+}
+
+function takePotion() {
+	loadTakePotionTexture();
 }
 
 // Physics functions:
@@ -375,6 +446,18 @@ function loadDieTexture() {
 	let loaderArray = loaders.adventurerLoader.adventurerDyingAnim;
 	loaderArray.forEach((img) => textureArray.push(new PIXI.Texture.from(img)));
 }
+
+function loadCrouchTexture() {
+	textureArray = [];
+	let loaderArray = loaders.adventurerLoader.adventurerCrouchingAnim;
+	loaderArray.forEach((img) => textureArray.push(new PIXI.Texture.from(img)));
+}
+
+function loadTakePotionTexture() {
+	textureArray = [];
+	let loaderArray = loaders.adventurerLoader.adventurerTakingPotionAnim;
+	loaderArray.forEach((img) => textureArray.push(new PIXI.Texture.from(img)));
+}
 </code></pre>
         </article>
     </section>
@@ -385,13 +468,13 @@ function loadDieTexture() {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#pathToAnimation">pathToAnimation</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#animationCount">animationCount</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#attackSound">attackSound</a></li><li><a href="global.html#bottomCollisionBox">bottomCollisionBox</a></li><li><a href="global.html#connectLivereload">connectLivereload</a></li><li><a href="global.html#direction">direction</a></li><li><a href="global.html#dirUrl">dirUrl</a></li><li><a href="global.html#express">express</a></li><li><a href="global.html#floorColliders">floorColliders</a></li><li><a href="global.html#floorCollidersList">floorCollidersList</a></li><li><a href="global.html#isAboutToCollide">isAboutToCollide</a></li><li><a href="global.html#isJumping">isJumping</a></li><li><a href="global.html#leftCollisionBox">leftCollisionBox</a></li><li><a href="global.html#livereload">livereload</a></li><li><a href="global.html#liveReloadServer">liveReloadServer</a></li><li><a href="global.html#loaders">loaders</a></li><li><a href="global.html#onFloor">onFloor</a></li><li><a href="global.html#opn">opn</a></li><li><a href="global.html#pathToAnimation">pathToAnimation</a></li><li><a href="global.html#pathToImgFolder">pathToImgFolder</a></li><li><a href="global.html#port">port</a></li><li><a href="global.html#rightCollisionBox">rightCollisionBox</a></li><li><a href="global.html#url">url</a></li><li><a href="global.html#vx">vx</a></li><li><a href="global.html#vy">vy</a></li><li><a href="global.html#walkingSound">walkingSound</a></li><li><a href="global.html#wallColliders">wallColliders</a></li><li><a href="global.html#wallCollidersList">wallCollidersList</a></li><li><a href="global.html#warriorNarrowBox">warriorNarrowBox</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Wed Oct 28 2020 21:57:35 GMT+0100 (Central European Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Oct 30 2020 18:48:51 GMT+0100 (Central European Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

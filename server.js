@@ -1,17 +1,44 @@
 /**
  * js file responsible to serve web pages to application
  */
+
+/**
+ * @type {Object}
+ */
 const livereload = require('livereload');
+/**
+ * @type {Object}
+ */
 const connectLivereload = require('connect-livereload');
+/**
+ * @typeof {e}
+ */
 var express = require('express');
+/**
+ * @type {Express}
+ */
 var app = express();
+/**
+ * @type {number}
+ */
 const port = 3000;
+/**
+ * @type {string}
+ */
 var url = 'http://localhost:' + port;
+/**
+ * @type {Object}
+ */
 const opn = require('opn');
 
 console.log('Connecting to local server : http://localhost:3000...');
-
+/**
+ * @type {string}
+ */
 const dirUrl = __dirname + '/public';
+/**
+ * @type {any}
+ */
 const liveReloadServer = livereload.createServer();
 liveReloadServer.watch(__dirname);
 liveReloadServer.server.once('connection', () => {
