@@ -68,5 +68,20 @@ const floorColliders = {
 		height: 25,
 	},
 };
+/**
+ * @type {Object}
+ */
+const objectColliders = {
+	treasureChest: {
+		imgPath:
+			pathToImgFolder +
+			'objects/treasure_chest/opening/treasure_chest_opening_00.png',
+		anchor: 0.0,
+		x: 260,
+		y: 258,
+		width: 32,
+		height: 32,
+	}
+};
 
-export default {wallColliders, floorColliders};
+export default {wallColliders, floorColliders, objectColliders};

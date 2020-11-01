@@ -171,5 +171,23 @@ const loaders = {
 			pathToAnimation + 'Warrior/Animations/Attack 2/Attack2__021.png',
 		],
 	},
+	treasureChestLoader: {
+		treasureChestOpeningAnim: [
+			pathToAnimation +
+				'objects/treasure_chest/opening/treasure_chest_opening_00.png',
+			pathToAnimation +
+				'objects/treasure_chest/opening/treasure_chest_opening_01.png',
+			pathToAnimation +
+				'objects/treasure_chest/opening/treasure_chest_opening_02.png',
+		],
+		treasureChestOpenedAnim: [
+			pathToAnimation +
+				'objects/treasure_chest/opened/treasure_chest_opened_00.png',
+			pathToAnimation +
+				'objects/treasure_chest/opened/treasure_chest_opened_01.png',
+			pathToAnimation +
+				'objects/treasure_chest/opened/treasure_chest_opened_02.png',
+		],
+	},
 };
 export default loaders;

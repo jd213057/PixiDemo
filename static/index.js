@@ -11,9 +11,19 @@ const attackSound = new Audio(
  */
 const walkingSound = new Audio('static/assets/audio/sounds/step_lth4.mp3');
 /**
+ * @type {HTMLAudioElement}
+ */
+const openingTreasureChest = new Audio(
+	'static/assets/audio/sounds/treasure-chest-opening.mp3'
+);
+/**
  * @type {number}
  */
-let animationCount = 0;
+let adventurerAnimationCount = 0;
+/**
+ * @type {number}
+ */
+let treasureChestAnimationCount = 0;
 /**
  * @type {number}
  */
@@ -31,6 +41,10 @@ let onFloor = false;
  */
 let isAboutToCollide = false;
 /**
+ * @type {boolean}
+ */
+let treasureChestOpened = false;
+/**
  * @type {Array}
  */
 let wallCollidersList = [];
@@ -38,6 +52,18 @@ let wallCollidersList = [];
  * @type {Array}
  */
 let floorCollidersList = [];
+/**
+ * @type {Array}
+ */
+let objectCollidersList = [];
+/**
+ * @type {object}
+ */
+let treasureChest;
+/**
+ * @type {Array}
+ */
+let treasureChestTextureArray = [];
 /**
  * @type {PIXI.Rectangle}
  */
@@ -86,14 +112,13 @@ backgroundSprite.height = 642;
 backgroundSprite.width = 3073;
 app.stage.addChild(backgroundSprite);
 
-setColliders(colliders);
+buildMap();
 
 // path starting point from server.js where script js is served
 /**
  * @type {string}
  */
 const pathToAnimation = '/static/assets/images/';
-
 let textureArray = [];
 let texture = PIXI.Texture.from(
 	pathToAnimation + 'Adventurer/Idle/adventurer-idle-00.png'
@@ -125,14 +150,43 @@ app.ticker.add((delta) => {
 		makeJump();
 	}
 	const animationSpeed = delta / 4;
-	animationCount =
-		Math.round(animationCount + animationSpeed) % textureArray.length;
-	warrior.texture = textureArray[animationCount];
+	adventurerAnimationCount =
+		Math.round(adventurerAnimationCount + animationSpeed) %
+		textureArray.length;
+	warrior.texture = textureArray[adventurerAnimationCount];
+	treasureChestAnimationCount =
+		Math.round(treasureChestAnimationCount + animationSpeed) %
+		treasureChestTextureArray.length;
+	treasureChest.texture =
+		treasureChestTextureArray[treasureChestAnimationCount];
 });
 
 var playingSound = false;
 
 // Build Map functions
+
+function buildMap() {
+	setColliders(colliders);
+	setDecors(loaders);
+	setObjects();
+}
+
+function setDecors(loaders) {}
+
+function setObjects() {
+	let treasureChestTexture = PIXI.Texture.from(
+		colliders.objectColliders.treasureChest.imgPath
+	);
+	treasureChestTextureArray.push(treasureChestTexture);
+	treasureChest = new PIXI.Sprite(treasureChestTexture);
+	treasureChest.anchor.set(colliders.objectColliders.treasureChest.anchor);
+	treasureChest.x = colliders.objectColliders.treasureChest.x;
+	treasureChest.y = colliders.objectColliders.treasureChest.y;
+	treasureChest.width = colliders.objectColliders.treasureChest.width;
+	treasureChest.height = colliders.objectColliders.treasureChest.height;
+	app.stage.addChild(treasureChest);
+	objectCollidersList.push(treasureChest);
+}
 
 function setColliders(collidersConf) {
 	let floorCollidersObject = collidersConf.floorColliders;
@@ -223,8 +277,15 @@ function setKeyboardControls() {
 				case 'z':
 					bigAttack();
 					break;
+				case 'e':
+					detectObjectCollision(warriorNarrowBox)
+						? !treasureChestOpened
+							? openTreasureChest()
+							: closeTreasureChest()
+						: doNothing();
+					treasureChestOpened = !treasureChestOpened;
 				default:
-					return; 
+					return;
 			}
 			e.preventDefault();
 		},
@@ -306,16 +367,42 @@ function takePotion() {
 	loadTakePotionTexture();
 }
 
+// Interactive functions:
+
+function openTreasureChest() {
+	if (openingTreasureChest.currentTime !== 0) {
+		openingTreasureChest.currentTime = 0;
+	}
+	openingTreasureChest.play();
+	loadOpeningTreasureChestTexture();
+	setTimeout(loadOpenedTreasureChestTexture(), 400);
+}
+
+function closeTreasureChest() {
+	if (openingTreasureChest.currentTime !== 0) {
+		openingTreasureChest.currentTime = 0;
+	}
+	openingTreasureChest.play();
+	loadClosingTreasureChestTexture();
+	setTimeout(loadClosedTreasureChestTexture(), 400);
+}
+
+function doNothing() {}
+
 // Physics functions:
+
+function isColliding(playerBox, collider) {
+	return (
+		playerBox.x + playerBox.width > collider.x &&
+		playerBox.x < collider.x + collider.width &&
+		playerBox.y + playerBox.height > collider.y &&
+		playerBox.y < collider.y + collider.height
+	);
+}
 
 function detectWallCollision(playerBox) {
 	for (const collider of wallCollidersList) {
-		if (
-			playerBox.x + playerBox.width > collider.x &&
-			playerBox.x < collider.x + collider.width &&
-			playerBox.y + playerBox.height > collider.y &&
-			playerBox.y < collider.y + collider.height
-		) {
+		if (isColliding(playerBox, collider)) {
 			return true;
 		}
 	}
@@ -324,14 +411,18 @@ function detectWallCollision(playerBox) {
 
 function detectFloorCollision(playerBox) {
 	for (const collider of floorCollidersList) {
-		if (
-			playerBox.x + playerBox.width > collider.x &&
-			playerBox.x < collider.x + collider.width &&
-			playerBox.y + playerBox.height > collider.y &&
-			playerBox.y < collider.y + collider.height
-		) {
+		if (isColliding(playerBox, collider)) {
 			isJumping = false;
 			onFloor = true;
+			return true;
+		}
+	}
+	return false;
+}
+
+function detectObjectCollision(playerBox) {
+	for (const collider of objectCollidersList) {
+		if (isColliding(playerBox, collider)) {
 			return true;
 		}
 	}
@@ -429,4 +520,35 @@ function loadTakePotionTexture() {
 	textureArray = [];
 	let loaderArray = loaders.adventurerLoader.adventurerTakingPotionAnim;
 	loaderArray.forEach((img) => textureArray.push(new PIXI.Texture.from(img)));
+}
+
+function loadOpeningTreasureChestTexture() {
+	treasureChestTextureArray = [];
+	let loaderArray = loaders.treasureChestLoader.treasureChestOpeningAnim;
+	loaderArray.forEach((img) =>
+		treasureChestTextureArray.push(new PIXI.Texture.from(img))
+	);
+}
+
+function loadOpenedTreasureChestTexture() {
+	treasureChestTextureArray = [];
+	let loaderArray = loaders.treasureChestLoader.treasureChestOpenedAnim;
+	loaderArray.forEach((img) =>
+		treasureChestTextureArray.push(new PIXI.Texture.from(img))
+	);
+}
+
+function loadClosingTreasureChestTexture() {
+	treasureChestTextureArray = [];
+	let loaderArray = loaders.treasureChestLoader.treasureChestOpeningAnim;
+	loaderArray.reverse();
+	loaderArray.forEach((img) =>
+		treasureChestTextureArray.push(new PIXI.Texture.from(img))
+	);
+}
+
+function loadClosedTreasureChestTexture() {
+	treasureChestTextureArray = [];
+	const loaderArray = loaders.treasureChestLoader.treasureChestOpeningAnim;
+	treasureChestTextureArray.push(new PIXI.Texture.from(loaderArray[0]));
 }
