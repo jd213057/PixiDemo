@@ -188,6 +188,9 @@ const loaders = {
 			pathToAnimation +
 				'objects/treasure_chest/opened/treasure_chest_opened_02.png',
 		],
+		treasureChestClosed:
+			pathToAnimation +
+			'objects/treasure_chest/opening/treasure_chest_opening_00.png',
 	},
 };
 export default loaders;

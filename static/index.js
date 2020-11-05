@@ -1,5 +1,7 @@
 import loaders from './loaders.js';
 import colliders from './colliders.js';
+import textConfig from './text.js';
+
 /**
  * @type {HTMLAudioElement}
  */
@@ -89,6 +91,8 @@ let vx = 0;
  */
 let vy = 5;
 
+let textBox = new PIXI.Container();
+
 setControls();
 setKeyboardControls();
 setBackgroundVolume();
@@ -101,18 +105,8 @@ const app = new PIXI.Application({
 });
 
 document.getElementById('screen').appendChild(app.view);
-
-const pathToImgFolder = '/static/assets/images/';
-let backgroundImage = PIXI.Texture.from(
-	pathToImgFolder + 'Levels/firstmaplevel_background.png'
-);
-let backgroundSprite = new PIXI.Sprite(backgroundImage);
-backgroundSprite.anchor.set(0.0);
-backgroundSprite.height = 642;
-backgroundSprite.width = 3073;
-app.stage.addChild(backgroundSprite);
-
 buildMap();
+displayInitialMsg();
 
 // path starting point from server.js where script js is served
 /**
@@ -166,9 +160,22 @@ var playingSound = false;
 // Build Map functions
 
 function buildMap() {
+	setBackgroungImg();
 	setColliders(colliders);
 	setDecors(loaders);
 	setObjects();
+}
+
+function setBackgroungImg() {
+	const pathToImgFolder = '/static/assets/images/';
+	let backgroundImage = PIXI.Texture.from(
+		pathToImgFolder + 'Levels/firstmaplevel_background.png'
+	);
+	let backgroundSprite = new PIXI.Sprite(backgroundImage);
+	backgroundSprite.anchor.set(0.0);
+	backgroundSprite.height = 642;
+	backgroundSprite.width = 3073;
+	app.stage.addChild(backgroundSprite);
 }
 
 function setDecors(loaders) {}
@@ -549,6 +556,51 @@ function loadClosingTreasureChestTexture() {
 
 function loadClosedTreasureChestTexture() {
 	treasureChestTextureArray = [];
-	const loaderArray = loaders.treasureChestLoader.treasureChestOpeningAnim;
-	treasureChestTextureArray.push(new PIXI.Texture.from(loaderArray[0]));
+	const treasureChestClosedLoader =
+		loaders.treasureChestLoader.treasureChestClosed;
+	treasureChestTextureArray.push(
+		new PIXI.Texture.from(treasureChestClosedLoader)
+	);
+}
+
+// Text related functions :
+
+function buildText(textConfig) {
+	const textBackGroundTexture = new PIXI.Sprite(PIXI.Texture.WHITE);
+	textBackGroundTexture.x =
+		textConfig.narrationText.narrationText1.overlayConfig.textBox.x;
+	textBackGroundTexture.y =
+		textConfig.narrationText.narrationText1.overlayConfig.textBox.y;
+	textBackGroundTexture.width =
+		textConfig.narrationText.narrationText1.overlayConfig.textBox.width;
+	textBackGroundTexture.height =
+		textConfig.narrationText.narrationText1.overlayConfig.textBox.height;
+	textBackGroundTexture.anchor.set(
+		textConfig.narrationText.narrationText1.overlayConfig.textBox.anchor
+	);
+	textBackGroundTexture.tint =
+		textConfig.narrationText.narrationText1.overlayConfig.textBox.tint;
+	let text = new PIXI.Text(
+		textConfig.narrationText.narrationText1.pixiRequirements.text,
+		textConfig.narrationText.narrationText1.pixiRequirements.style
+	);
+	text.x = textConfig.narrationText.narrationText1.overlayConfig.text.x;
+	text.y = textConfig.narrationText.narrationText1.overlayConfig.text.y;
+	text.anchor.set(
+		textConfig.narrationText.narrationText1.overlayConfig.text.anchor
+	);
+	textBox.addChild(textBackGroundTexture, text);
+	app.stage.addChild(textBox);
+}
+
+function displayInitialMsg() {
+	buildText(textConfig);
+//	setTimeout(removeTextBox(), 10000);
+}
+
+function removeTextBox() {
+	// find new method
+	textBox.parent.removeChild(textBox);
+	textBox.destroy({children: true, texture: true, baseTexture: true});
+	//	app.stage.removeChild(textBox);
 }
