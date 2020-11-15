@@ -41,6 +41,8 @@ let onFloor = false;
 /**
  * @type {boolean}
  */
+
+let isAboutToTouchGround = false;
 let isAboutToCollide = false;
 /**
  * @type {boolean}
@@ -89,7 +91,7 @@ let vx = 0;
 /**
  * @type {number}
  */
-let vy = 5;
+let vy = 0;
 
 let textBox = new PIXI.Container();
 
@@ -139,6 +141,12 @@ app.ticker.add((delta) => {
 	isAboutToCollide = detectFloorCollision(bottomCollisionBox);
 	if (!isAboutToCollide) {
 		applyingGravity();
+	} else if (isAboutToCollide) {
+		vy = 0;
+	}
+	if (!isAboutToTouchGround && isAboutToCollide) {
+		loadIdleTexture();
+		isAboutToTouchGround = true;
 	}
 	if (isJumping) {
 		makeJump();
@@ -261,6 +269,9 @@ function setKeyboardControls() {
 					jump();
 					break;
 				case 'ArrowLeft':
+					if (vx < 5) {
+						vx += 1;
+					}
 					warrior.scale.x = -2;
 					direction = -1;
 					if (!detectWallCollision(leftCollisionBox)) {
@@ -268,9 +279,11 @@ function setKeyboardControls() {
 					}
 					break;
 				case 'ArrowRight':
+					if (vx < 5) {
+						vx += 1;
+					}
 					warrior.scale.x = 2;
 					direction = 1;
-					warrior.y -= 5;
 					if (!detectWallCollision(rightCollisionBox)) {
 						move();
 					}
@@ -327,9 +340,8 @@ function move() {
 	if (!isJumping && onFloor) {
 		playSound(walkingSound);
 		loadRunTexture();
-		vx = 5;
-		warrior.x += vx * direction;
 	}
+	warrior.x += vx * direction;
 }
 
 function jump() {
@@ -338,8 +350,10 @@ function jump() {
 		isJumping = true;
 		onFloor = false;
 		makeJump();
-		setTimeout(() => {
+		const timer = setTimeout(() => {
 			isJumping = false;
+			loadIdleTexture();
+			clearTimeout(timer);
 		}, 750);
 	}
 }
@@ -349,10 +363,16 @@ function stop() {
 		loadIdleTexture();
 	}
 	playingSound = false;
-	setTimeout(() => {
-		vx = 0;
-	}, 250);
-	vx = 0;
+	const timer = setInterval(() => {
+		if (vx > 0) {
+			vx -= 1;
+			warrior.x += vx * direction;
+		}
+		if (vx === 0) {
+			clearInterval(timer);
+		}
+	}, 100);
+
 	stopSound();
 }
 
@@ -437,13 +457,16 @@ function detectObjectCollision(playerBox) {
 }
 
 function applyingGravity() {
+	if (vy < 5) {
+		vy += 1;
+	}
 	warrior.y += vy;
 }
 
 function makeJump() {
-	vx -= 0.1 * direction;
-	warrior.x += vx;
-	warrior.y -= vy + 5;
+	warrior.y -= 15 - vy;
+	warrior.x += vx * direction;
+	isAboutToTouchGround = true;
 }
 
 //Audio functions:
@@ -595,12 +618,14 @@ function buildText(textConfig) {
 
 function displayInitialMsg() {
 	buildText(textConfig);
-//	setTimeout(removeTextBox(), 10000);
+	removeTextBox();
 }
 
 function removeTextBox() {
-	// find new method
-	textBox.parent.removeChild(textBox);
-	textBox.destroy({children: true, texture: true, baseTexture: true});
+	// find better method
+	setTimeout(()=>{
+		textBox.parent.removeChild(textBox);
+		textBox.destroy({children: true, texture: true, baseTexture: true});
+	}, 10000)
 	//	app.stage.removeChild(textBox);
 }
