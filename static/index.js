@@ -41,13 +41,30 @@ let onFloor = false;
 /**
  * @type {boolean}
  */
-
+/**
+ * @type {boolean}
+ */
 let isAboutToTouchGround = false;
+/**
+ * @type {boolean}
+ */
 let isAboutToCollide = false;
 /**
  * @type {boolean}
  */
 let treasureChestOpened = false;
+/**
+ * @type {boolean}
+ */
+let isWarriorCentered = false;
+/**
+ * @type {boolean}
+ */
+let leftEdgeStageReached = false;
+/**
+ * @type {boolean}
+ */
+let rightEdgeStageReached = false;
 /**
  * @type {Array}
  */
@@ -100,10 +117,12 @@ setKeyboardControls();
 setBackgroundVolume();
 setAudioEvents();
 
-const app = new PIXI.Application({
+var app = new PIXI.Application({
 	height: 550,
 	width: 900,
 	transparent: true,
+	x: 0,
+	y: 0,
 });
 
 document.getElementById('screen').appendChild(app.view);
@@ -138,6 +157,7 @@ app.stage.addChild(warrior);
 app.ticker.add((delta) => {
 	warriorNarrowBox = warrior.getBounds();
 	calculateWideBoxes();
+	moveCamera(app);
 	isAboutToCollide = detectFloorCollision(bottomCollisionBox);
 	if (!isAboutToCollide) {
 		applyingGravity();
@@ -341,7 +361,9 @@ function move() {
 		playSound(walkingSound);
 		loadRunTexture();
 	}
-	warrior.x += vx * direction;
+	if (!isWarriorCentered) {
+		warrior.x += vx * direction;
+	}
 }
 
 function jump() {
@@ -623,9 +645,24 @@ function displayInitialMsg() {
 
 function removeTextBox() {
 	// find better method
-	setTimeout(()=>{
+	setTimeout(() => {
 		textBox.parent.removeChild(textBox);
 		textBox.destroy({children: true, texture: true, baseTexture: true});
-	}, 10000)
+	}, 5000);
 	//	app.stage.removeChild(textBox);
+}
+
+// Camera functions :
+
+function moveCamera(app) {
+	console.log(warrior.x);
+	isWarriorCentered =
+		(app.screen.width + vx * direction) / 2 - 5 <= warrior.x &&
+		warrior.x <= (app.screen.width + vx * direction) / 2 + 5;
+	if (isWarriorCentered && !leftEdgeStageReached && !rightEdgeStageReached) {
+		app.stage.x -= vx * direction;
+	}
+	leftEdgeStageReached = app.stage.x === 0 && isWarriorCentered;
+	rightEdgeStageReached =
+		app.stage.x === -app.stage.width && isWarriorCentered;
 }
