@@ -109,8 +109,14 @@ let vx = 0;
  * @type {number}
  */
 let vy = 0;
-
+/**
+ * @type {PIXI.Container}
+ */
 let textBox = new PIXI.Container();
+/**
+ * @type {PIXI.Container}
+ */
+let foreground = new PIXI.Container();
 
 setControls();
 setKeyboardControls();
@@ -192,6 +198,7 @@ function buildMap() {
 	setColliders(colliders);
 	setDecors(loaders);
 	setObjects();
+	setForeground();
 }
 
 function setBackgroungImg() {
@@ -204,6 +211,9 @@ function setBackgroungImg() {
 	backgroundSprite.height = 642;
 	backgroundSprite.width = 3073;
 	app.stage.addChild(backgroundSprite);
+}
+function setForeground() {
+app.stage.addChild(foreground);
 }
 
 function setDecors(loaders) {}
@@ -219,7 +229,7 @@ function setObjects() {
 	treasureChest.y = colliders.objectColliders.treasureChest.y;
 	treasureChest.width = colliders.objectColliders.treasureChest.width;
 	treasureChest.height = colliders.objectColliders.treasureChest.height;
-	app.stage.addChild(treasureChest);
+	foreground.addChild(treasureChest);
 	objectCollidersList.push(treasureChest);
 }
 
@@ -229,12 +239,12 @@ function setColliders(collidersConf) {
 	let collider;
 	for (const floorConf in floorCollidersObject) {
 		collider = createBasicCollider(floorCollidersObject[floorConf]);
-		app.stage.addChild(collider);
+		foreground.addChild(collider);
 		floorCollidersList.push(collider.getBounds());
 	}
 	for (const wallConf in wallCollidersObject) {
 		collider = createBasicCollider(wallCollidersObject[wallConf]);
-		app.stage.addChild(collider);
+		foreground.addChild(collider);
 		wallCollidersList.push(collider);
 	}
 }
@@ -655,14 +665,17 @@ function removeTextBox() {
 // Camera functions :
 
 function moveCamera(app) {
-	console.log(warrior.x);
 	isWarriorCentered =
-		(app.screen.width + vx * direction) / 2 - 5 <= warrior.x &&
-		warrior.x <= (app.screen.width + vx * direction) / 2 + 5;
+		(app.screen.width - foreground.x) / 2 - 5 <= warrior.x &&
+		warrior.x <= (app.screen.width - foreground.x) / 2 + 5;
 	if (isWarriorCentered && !leftEdgeStageReached && !rightEdgeStageReached) {
-		app.stage.x -= vx * direction;
+		foreground.x -= vx * direction;
 	}
-	leftEdgeStageReached = app.stage.x === 0 && isWarriorCentered;
+	leftEdgeStageReached = foreground.x === 0 && isWarriorCentered;
 	rightEdgeStageReached =
-		app.stage.x === -app.stage.width && isWarriorCentered;
-}
+		foreground.x === -app.stage.width && isWarriorCentered;
+	}
+
+
+
+	console.log(foreground);
