@@ -1,6 +1,7 @@
 import loaders from './loaders.js';
 import colliders from './colliders.js';
 import textConfig from './text.js';
+import PIXI from './pixi-legacy.js';
 
 /**
  * @type {HTMLAudioElement}
@@ -117,6 +118,14 @@ let textBox = new PIXI.Container();
  * @type {PIXI.Container}
  */
 let foreground = new PIXI.Container();
+/**
+ * @type {PIXI.Container}
+ */
+let middleground = new PIXI.Container();
+/**
+ * @type {PIXI.Container}
+ */
+let background = new PIXI.Container();
 
 setControls();
 setKeyboardControls();
@@ -195,6 +204,7 @@ var playingSound = false;
 
 function buildMap() {
 	setBackgroungImg();
+	setBackground();
 	setColliders(colliders);
 	setDecors(loaders);
 	setObjects();
@@ -210,10 +220,14 @@ function setBackgroungImg() {
 	backgroundSprite.anchor.set(0.0);
 	backgroundSprite.height = 642;
 	backgroundSprite.width = 3073;
-	app.stage.addChild(backgroundSprite);
+	background.addChild(backgroundSprite);
+}
+
+function setBackground() {
+	app.stage.addChild(background);
 }
 function setForeground() {
-app.stage.addChild(foreground);
+	app.stage.addChild(foreground);
 }
 
 function setDecors(loaders) {}
@@ -666,16 +680,52 @@ function removeTextBox() {
 
 function moveCamera(app) {
 	isWarriorCentered =
-		(app.screen.width - foreground.x) / 2 - 5 <= warrior.x &&
-		warrior.x <= (app.screen.width - foreground.x) / 2 + 5;
+		app.screen.width / 2 - 5 <= warrior.x &&
+		warrior.x <= app.screen.width / 2 + 5;
 	if (isWarriorCentered && !leftEdgeStageReached && !rightEdgeStageReached) {
-		foreground.x -= vx * direction;
+		moveBackground();
+		moveForeground();
+		updateForegroundCollidersPosition();
 	}
 	leftEdgeStageReached = foreground.x === 0 && isWarriorCentered;
 	rightEdgeStageReached =
 		foreground.x === -app.stage.width && isWarriorCentered;
+}
+
+function moveBackground() {
+	background.x -= vx * direction * 0.25;
+}
+
+function moveForeground() {
+	foreground.x -= vx * direction;
+}
+
+
+function updateForegroundCollidersPosition() {
+	const floorColliderListLength = floorCollidersList.length;
+	const wallCollidersListLength = wallCollidersList.length;
+	const objectCollidersListLength = objectCollidersList.length;
+	floorCollidersList = [];
+	wallCollidersList = [];
+	objectCollidersList = [];
+	for (let i = 0; i < floorColliderListLength; i++) {
+		floorCollidersList.push(foreground.children[i].getBounds());
 	}
-
-
-
-	console.log(foreground);
+	for (
+		let i = floorColliderListLength;
+		i < floorColliderListLength + wallCollidersListLength;
+		i++
+	) {
+		wallCollidersList.push(foreground.children[i].getBounds());
+	}
+	for (
+		let i = floorColliderListLength + wallCollidersListLength;
+		i <
+		floorColliderListLength +
+			wallCollidersListLength +
+			objectCollidersListLength;
+		i++
+	) {
+		objectCollidersList.push(foreground.children[i].getBounds());
+	}
+}
