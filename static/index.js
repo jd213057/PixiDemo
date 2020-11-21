@@ -12,11 +12,17 @@ const attackSound = new Audio(
 /**
  * @type {HTMLAudioElement}
  */
-const walkingSound = new Audio('static/assets/audio/sounds/step_lth4.mp3');
+const walkSound = new Audio('static/assets/audio/sounds/step_lth4.mp3');
 /**
  * @type {HTMLAudioElement}
  */
-const openingTreasureChest = new Audio(
+const warriorJumpSound = new Audio(
+	'static/assets/audio/sounds/warriorJumpSound.mp3'
+);
+/**
+ * @type {HTMLAudioElement}
+ */
+const openingTreasureChestSound = new Audio(
 	'static/assets/audio/sounds/treasure-chest-opening.mp3'
 );
 /**
@@ -38,17 +44,6 @@ let isJumping = false;
 /**
  * @type {boolean}
  */
-let onFloor = false;
-/**
- * @type {boolean}
- */
-/**
- * @type {boolean}
- */
-let isAboutToTouchGround = false;
-/**
- * @type {boolean}
- */
 let isAboutToCollide = false;
 /**
  * @type {boolean}
@@ -57,7 +52,11 @@ let treasureChestOpened = false;
 /**
  * @type {boolean}
  */
-let isWarriorCentered = false;
+let isWarriorRightCentered = false;
+/**
+ * @type {boolean}
+ */
+let isWarriorLeftCentered = false;
 /**
  * @type {boolean}
  */
@@ -175,27 +174,16 @@ app.ticker.add((delta) => {
 	moveCamera(app);
 	isAboutToCollide = detectFloorCollision(bottomCollisionBox);
 	if (!isAboutToCollide) {
+		makeJump();
 		applyingGravity();
 	} else if (isAboutToCollide) {
 		vy = 0;
 	}
-	if (!isAboutToTouchGround && isAboutToCollide) {
+	if (!isJumping && isAboutToCollide) {
 		loadIdleTexture();
-		isAboutToTouchGround = true;
+		isJumping = true;
 	}
-	if (isJumping) {
-		makeJump();
-	}
-	const animationSpeed = delta / 4;
-	adventurerAnimationCount =
-		Math.round(adventurerAnimationCount + animationSpeed) %
-		textureArray.length;
-	warrior.texture = textureArray[adventurerAnimationCount];
-	treasureChestAnimationCount =
-		Math.round(treasureChestAnimationCount + animationSpeed) %
-		treasureChestTextureArray.length;
-	treasureChest.texture =
-		treasureChestTextureArray[treasureChestAnimationCount];
+	animateElements(delta);
 });
 
 var playingSound = false;
@@ -302,9 +290,8 @@ function setKeyboardControls() {
 		'keydown',
 		(e) => {
 			if (e.defaultPrevented) {
-				return; // Ne devrait rien faire si l'événement de la touche était déjà consommé.
+				//	return; // Ne devrait rien faire si l'événement de la touche était déjà consommé.
 			}
-
 			switch (e.key) {
 				case 'ArrowDown':
 					crouch();
@@ -314,7 +301,7 @@ function setKeyboardControls() {
 					break;
 				case 'ArrowLeft':
 					if (vx < 5) {
-						vx += 1;
+						vx++;
 					}
 					warrior.scale.x = -2;
 					direction = -1;
@@ -381,33 +368,33 @@ function calculateWideBoxes() {
 }
 
 function move() {
-	if (!isJumping && onFloor) {
-		playSound(walkingSound);
+	if (detectFloorCollision(bottomCollisionBox)) {
+		playSound(walkSound);
 		loadRunTexture();
 	}
-	if (!isWarriorCentered) {
-		warrior.x += vx * direction;
+	if (
+		(isWarriorRightCentered && direction === 1) ||
+		(isWarriorLeftCentered &&
+			direction === -1) &&
+			detectFloorCollision(bottomCollisionBox)
+	) {
+		return;
 	}
+	warrior.x += vx * direction;
 }
 
 function jump() {
-	loadJumpTexture();
-	if (!isJumping && onFloor) {
-		isJumping = true;
-		onFloor = false;
+	if (!detectFloorCollision(bottomCollisionBox)) {
+		return;
+	} else {
+		playSound(warriorJumpSound);
+		loadJumpTexture();
+		vy = -12;
 		makeJump();
-		const timer = setTimeout(() => {
-			isJumping = false;
-			loadIdleTexture();
-			clearTimeout(timer);
-		}, 750);
 	}
 }
 
 function stop() {
-	if (!isJumping && onFloor) {
-		loadIdleTexture();
-	}
 	playingSound = false;
 	const timer = setInterval(() => {
 		if (vx > 0) {
@@ -415,10 +402,10 @@ function stop() {
 			warrior.x += vx * direction;
 		}
 		if (vx === 0) {
+			loadIdleTexture();
 			clearInterval(timer);
 		}
 	}, 100);
-
 	stopSound();
 }
 
@@ -443,19 +430,19 @@ function takePotion() {
 // Interactive functions:
 
 function openTreasureChest() {
-	if (openingTreasureChest.currentTime !== 0) {
-		openingTreasureChest.currentTime = 0;
+	if (openingTreasureChestSound.currentTime !== 0) {
+		openingTreasureChestSound.currentTime = 0;
 	}
-	openingTreasureChest.play();
+	openingTreasureChestSound.play();
 	loadOpeningTreasureChestTexture();
 	setTimeout(loadOpenedTreasureChestTexture(), 400);
 }
 
 function closeTreasureChest() {
-	if (openingTreasureChest.currentTime !== 0) {
-		openingTreasureChest.currentTime = 0;
+	if (openingTreasureChestSound.currentTime !== 0) {
+		openingTreasureChestSound.currentTime = 0;
 	}
-	openingTreasureChest.play();
+	openingTreasureChestSound.play();
 	loadClosingTreasureChestTexture();
 	setTimeout(loadClosedTreasureChestTexture(), 400);
 }
@@ -485,8 +472,6 @@ function detectWallCollision(playerBox) {
 function detectFloorCollision(playerBox) {
 	for (const collider of floorCollidersList) {
 		if (isColliding(playerBox, collider)) {
-			isJumping = false;
-			onFloor = true;
 			return true;
 		}
 	}
@@ -504,22 +489,22 @@ function detectObjectCollision(playerBox) {
 
 function applyingGravity() {
 	if (vy < 5) {
-		vy += 1;
+		vy++;
 	}
 	warrior.y += vy;
 }
 
 function makeJump() {
-	warrior.y -= 15 - vy;
+	warrior.y += vy;
 	warrior.x += vx * direction;
-	isAboutToTouchGround = true;
+	isJumping = true;
 }
 
 //Audio functions:
 
 function setBackgroundVolume() {
 	const backgroundAudio = document.getElementById('audio');
-	backgroundAudio.volume = 0.3;
+	backgroundAudio.volume = 0.5;
 }
 
 function playSound(sound) {
@@ -533,7 +518,7 @@ function playSound(sound) {
 
 function stopSound() {
 	attackSound.pause();
-	walkingSound.pause();
+	walkSound.pause();
 }
 
 function setAudioEvents() {
@@ -543,12 +528,45 @@ function setAudioEvents() {
 	attackSound.addEventListener('ended', () => {
 		playingSound = false;
 	});
-	walkingSound.addEventListener('ended', () => {
+	walkSound.addEventListener('ended', () => {
 		playingSound = false;
 	});
 }
 
 // TextureLoader functions :
+
+function animateElements(delta) {
+	animateWarrior(delta);
+	animateTreasureChest(delta);
+}
+
+function animateWarrior(delta) {
+	adventurerAnimationCount =
+		Math.round(
+			adventurerAnimationCount + getAnimationSpeed('player', delta)
+		) % textureArray.length;
+	warrior.texture = textureArray[adventurerAnimationCount];
+}
+
+function animateTreasureChest(delta) {
+	treasureChestAnimationCount =
+		Math.round(
+			treasureChestAnimationCount + getAnimationSpeed('object', delta)
+		) % treasureChestTextureArray.length;
+	treasureChest.texture =
+		treasureChestTextureArray[treasureChestAnimationCount];
+}
+
+function getAnimationSpeed(animatedSpriteType, delta) {
+	switch (animatedSpriteType) {
+		case 'object':
+			return delta / 6;
+		case 'player':
+			return delta / 5;
+		default:
+			return 0;
+	}
+}
 
 function loadSmallAttackTexture() {
 	textureArray = [];
@@ -679,27 +697,33 @@ function removeTextBox() {
 // Camera functions :
 
 function moveCamera(app) {
-	isWarriorCentered =
-		app.screen.width / 2 - 5 <= warrior.x &&
-		warrior.x <= app.screen.width / 2 + 5;
-	if (isWarriorCentered && !leftEdgeStageReached && !rightEdgeStageReached) {
+	isWarriorLeftCentered =
+		app.screen.x + 300 <= warrior.x && warrior.x <= app.screen.x + 350;
+	isWarriorRightCentered =
+		app.screen.width - 300 >= warrior.x &&
+		warrior.x >= app.screen.width - 350;
+	leftEdgeStageReached = foreground.x >= app.stage.x;
+	rightEdgeStageReached = foreground.x === -app.stage.width;
+	if (
+		(isWarriorRightCentered && direction === 1) ||
+		(isWarriorLeftCentered &&
+			direction === -1 &&
+			!leftEdgeStageReached &&
+			!rightEdgeStageReached)
+	) {
 		moveBackground();
 		moveForeground();
 		updateForegroundCollidersPosition();
 	}
-	leftEdgeStageReached = foreground.x === 0 && isWarriorCentered;
-	rightEdgeStageReached =
-		foreground.x === -app.stage.width && isWarriorCentered;
 }
 
 function moveBackground() {
-	background.x -= vx * direction * 0.25;
+	background.x -= vx * direction * 0.5;
 }
 
 function moveForeground() {
 	foreground.x -= vx * direction;
 }
-
 
 function updateForegroundCollidersPosition() {
 	const floorColliderListLength = floorCollidersList.length;

@@ -56,7 +56,7 @@ const floorColliders = {
 		anchor: 0.0,
 		x: 250,
 		y: 458,
-		width: 625,
+		width: 5500,
 		height: 25,
 	},
 	floorCollider4: {
