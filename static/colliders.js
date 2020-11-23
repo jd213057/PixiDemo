@@ -67,6 +67,30 @@ const floorColliders = {
 		width: 200,
 		height: 25,
 	},
+	floorCollider5: {
+		imgPath: pathToImgFolder + 'Levels/simple_ground.png',
+		anchor: 0.0,
+		x: 850,
+		y: 175,
+		width: 50,
+		height: 25,
+	},
+	floorCollider6: {
+		imgPath: pathToImgFolder + 'Levels/simple_ground.png',
+		anchor: 0.0,
+		x: 1000,
+		y: 175,
+		width: 50,
+		height: 25,
+	},
+	floorCollider7: {
+		imgPath: pathToImgFolder + 'Levels/simple_ground.png',
+		anchor: 0.0,
+		x: 1150,
+		y: 175,
+		width: 50,
+		height: 25,
+	},
 };
 /**
  * @type {Object}

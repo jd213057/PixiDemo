@@ -174,7 +174,6 @@ app.ticker.add((delta) => {
 	moveCamera(app);
 	isAboutToCollide = detectFloorCollision(bottomCollisionBox);
 	if (!isAboutToCollide) {
-		makeJump();
 		applyingGravity();
 	} else if (isAboutToCollide) {
 		vy = 0;
@@ -290,7 +289,7 @@ function setKeyboardControls() {
 		'keydown',
 		(e) => {
 			if (e.defaultPrevented) {
-				//	return; // Ne devrait rien faire si l'événement de la touche était déjà consommé.
+				return; // Ne devrait rien faire si l'événement de la touche était déjà consommé.
 			}
 			switch (e.key) {
 				case 'ArrowDown':
@@ -300,9 +299,7 @@ function setKeyboardControls() {
 					jump();
 					break;
 				case 'ArrowLeft':
-					if (vx < 5) {
-						vx++;
-					}
+					vx = 5;
 					warrior.scale.x = -2;
 					direction = -1;
 					if (!detectWallCollision(leftCollisionBox)) {
@@ -310,9 +307,7 @@ function setKeyboardControls() {
 					}
 					break;
 				case 'ArrowRight':
-					if (vx < 5) {
-						vx += 1;
-					}
+					vx = 5;
 					warrior.scale.x = 2;
 					direction = 1;
 					if (!detectWallCollision(rightCollisionBox)) {
@@ -344,7 +339,15 @@ function setKeyboardControls() {
 	);
 
 	window.addEventListener('keyup', (e) => {
-		stop();
+		if (e.defaultPrevented) {
+			return; // Ne devrait rien faire si l'événement de la touche était déjà consommé.
+		}
+		switch (e.key) {
+			case 'ArrowUp':
+				return;
+			default:
+				stop();
+		}
 	});
 }
 
@@ -375,8 +378,8 @@ function move() {
 	if (
 		(isWarriorRightCentered && direction === 1) ||
 		(isWarriorLeftCentered &&
-			direction === -1) &&
-			detectFloorCollision(bottomCollisionBox)
+			direction === -1 &&
+			detectFloorCollision(bottomCollisionBox))
 	) {
 		return;
 	}
@@ -389,16 +392,18 @@ function jump() {
 	} else {
 		playSound(warriorJumpSound);
 		loadJumpTexture();
-		vy = -12;
-		makeJump();
+		vy = -18;
+		warrior.y += vy;
+		warrior.x += vx * direction;
+		isJumping = true;
 	}
 }
 
 function stop() {
 	playingSound = false;
 	const timer = setInterval(() => {
-		if (vx > 0) {
-			vx -= 1;
+		if (vx > 0 /* && !detectFloorCollision(bottomCollisionBox) */) {
+			vx--;
 			warrior.x += vx * direction;
 		}
 		if (vx === 0) {
@@ -488,16 +493,11 @@ function detectObjectCollision(playerBox) {
 }
 
 function applyingGravity() {
-	if (vy < 5) {
+	if (vy < 10) {
 		vy++;
 	}
 	warrior.y += vy;
-}
-
-function makeJump() {
-	warrior.y += vy;
 	warrior.x += vx * direction;
-	isJumping = true;
 }
 
 //Audio functions:
@@ -697,11 +697,8 @@ function removeTextBox() {
 // Camera functions :
 
 function moveCamera(app) {
-	isWarriorLeftCentered =
-		app.screen.x + 300 <= warrior.x && warrior.x <= app.screen.x + 350;
-	isWarriorRightCentered =
-		app.screen.width - 300 >= warrior.x &&
-		warrior.x >= app.screen.width - 350;
+	isWarriorLeftCentered = warrior.x <= app.screen.x + 350;
+	isWarriorRightCentered = warrior.x >= app.screen.width - 350;
 	leftEdgeStageReached = foreground.x >= app.stage.x;
 	rightEdgeStageReached = foreground.x === -app.stage.width;
 	if (
