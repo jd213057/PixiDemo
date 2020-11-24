@@ -2,7 +2,11 @@
 	"source": {
 		"include": ["./"],
 		"includePattern": ".js$",
-		"exclude": ["node_modules"],
+		"exclude": [
+			"node_modules",
+			"./static/pixi-legacy.js",
+			"./static/pixi.js"
+		],
 		"excludePattern": "(node_module/|docs)"
 	},
 	"plugins": ["plugins/markdown"],

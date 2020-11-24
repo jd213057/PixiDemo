@@ -28,6 +28,9 @@
         <article>
             <pre class="prettyprint source linenums"><code>import loaders from './loaders.js';
 import colliders from './colliders.js';
+import textConfig from './text.js';
+import PIXI from './pixi-legacy.js';
+
 /**
  * @type {HTMLAudioElement}
  */
@@ -37,11 +40,27 @@ const attackSound = new Audio(
 /**
  * @type {HTMLAudioElement}
  */
-const walkingSound = new Audio('static/assets/audio/sounds/step_lth4.mp3');
+const walkSound = new Audio('static/assets/audio/sounds/step_lth4.mp3');
+/**
+ * @type {HTMLAudioElement}
+ */
+const warriorJumpSound = new Audio(
+	'static/assets/audio/sounds/warriorJumpSound.mp3'
+);
+/**
+ * @type {HTMLAudioElement}
+ */
+const openingTreasureChestSound = new Audio(
+	'static/assets/audio/sounds/treasure-chest-opening.mp3'
+);
 /**
  * @type {number}
  */
-let animationCount = 0;
+let adventurerAnimationCount = 0;
+/**
+ * @type {number}
+ */
+let treasureChestAnimationCount = 0;
 /**
  * @type {number}
  */
@@ -53,11 +72,27 @@ let isJumping = false;
 /**
  * @type {boolean}
  */
-let onFloor = false;
+let isAboutToCollide = false;
 /**
  * @type {boolean}
  */
-let isAboutToCollide = false;
+let treasureChestOpened = false;
+/**
+ * @type {boolean}
+ */
+let isWarriorRightCentered = false;
+/**
+ * @type {boolean}
+ */
+let isWarriorLeftCentered = false;
+/**
+ * @type {boolean}
+ */
+let leftEdgeStageReached = false;
+/**
+ * @type {boolean}
+ */
+let rightEdgeStageReached = false;
 /**
  * @type {Array}
  */
@@ -66,6 +101,18 @@ let wallCollidersList = [];
  * @type {Array}
  */
 let floorCollidersList = [];
+/**
+ * @type {Array}
+ */
+let objectCollidersList = [];
+/**
+ * @type {object}
+ */
+let treasureChest;
+/**
+ * @type {Array}
+ */
+let treasureChestTextureArray = [];
 /**
  * @type {PIXI.Rectangle}
  */
@@ -89,39 +136,46 @@ let vx = 0;
 /**
  * @type {number}
  */
-let vy = 5;
+let vy = 0;
+/**
+ * @type {PIXI.Container}
+ */
+let textBox = new PIXI.Container();
+/**
+ * @type {PIXI.Container}
+ */
+let foreground = new PIXI.Container();
+/**
+ * @type {PIXI.Container}
+ */
+let middleground = new PIXI.Container();
+/**
+ * @type {PIXI.Container}
+ */
+let background = new PIXI.Container();
 
 setControls();
 setKeyboardControls();
 setBackgroundVolume();
 setAudioEvents();
 
-const app = new PIXI.Application({
+var app = new PIXI.Application({
 	height: 550,
 	width: 900,
 	transparent: true,
+	x: 0,
+	y: 0,
 });
 
 document.getElementById('screen').appendChild(app.view);
-
-const pathToImgFolder = '/static/assets/images/';
-let backgroundImage = PIXI.Texture.from(
-	pathToImgFolder + 'Levels/firstmaplevel_background.png'
-);
-let backgroundSprite = new PIXI.Sprite(backgroundImage);
-backgroundSprite.anchor.set(0.0);
-backgroundSprite.height = 642;
-backgroundSprite.width = 3073;
-app.stage.addChild(backgroundSprite);
-
-setColliders(colliders);
+buildMap();
+displayInitialMsg();
 
 // path starting point from server.js where script js is served
 /**
  * @type {string}
  */
 const pathToAnimation = '/static/assets/images/';
-
 let textureArray = [];
 let texture = PIXI.Texture.from(
 	pathToAnimation + 'Adventurer/Idle/adventurer-idle-00.png'
@@ -145,22 +199,68 @@ app.stage.addChild(warrior);
 app.ticker.add((delta) => {
 	warriorNarrowBox = warrior.getBounds();
 	calculateWideBoxes();
+	moveCamera(app);
 	isAboutToCollide = detectFloorCollision(bottomCollisionBox);
 	if (!isAboutToCollide) {
 		applyingGravity();
+	} else if (isAboutToCollide) {
+		vy = 0;
 	}
-	if (isJumping) {
-		makeJump();
+	if (!isJumping &amp;&amp; isAboutToCollide) {
+		loadIdleTexture();
+		isJumping = true;
 	}
-	const animationSpeed = delta / 4;
-	animationCount =
-		Math.round(animationCount + animationSpeed) % textureArray.length;
-	warrior.texture = textureArray[animationCount];
+	animateElements(delta);
 });
 
 var playingSound = false;
 
 // Build Map functions
+
+function buildMap() {
+	setBackgroungImg();
+	setBackground();
+	setColliders(colliders);
+	setDecors(loaders);
+	setObjects();
+	setForeground();
+}
+
+function setBackgroungImg() {
+	const pathToImgFolder = '/static/assets/images/';
+	let backgroundImage = PIXI.Texture.from(
+		pathToImgFolder + 'Levels/firstmaplevel_background.png'
+	);
+	let backgroundSprite = new PIXI.Sprite(backgroundImage);
+	backgroundSprite.anchor.set(0.0);
+	backgroundSprite.height = 642;
+	backgroundSprite.width = 3073;
+	background.addChild(backgroundSprite);
+}
+
+function setBackground() {
+	app.stage.addChild(background);
+}
+function setForeground() {
+	app.stage.addChild(foreground);
+}
+
+function setDecors(loaders) {}
+
+function setObjects() {
+	let treasureChestTexture = PIXI.Texture.from(
+		colliders.objectColliders.treasureChest.imgPath
+	);
+	treasureChestTextureArray.push(treasureChestTexture);
+	treasureChest = new PIXI.Sprite(treasureChestTexture);
+	treasureChest.anchor.set(colliders.objectColliders.treasureChest.anchor);
+	treasureChest.x = colliders.objectColliders.treasureChest.x;
+	treasureChest.y = colliders.objectColliders.treasureChest.y;
+	treasureChest.width = colliders.objectColliders.treasureChest.width;
+	treasureChest.height = colliders.objectColliders.treasureChest.height;
+	foreground.addChild(treasureChest);
+	objectCollidersList.push(treasureChest);
+}
 
 function setColliders(collidersConf) {
 	let floorCollidersObject = collidersConf.floorColliders;
@@ -168,12 +268,12 @@ function setColliders(collidersConf) {
 	let collider;
 	for (const floorConf in floorCollidersObject) {
 		collider = createBasicCollider(floorCollidersObject[floorConf]);
-		app.stage.addChild(collider);
+		foreground.addChild(collider);
 		floorCollidersList.push(collider.getBounds());
 	}
 	for (const wallConf in wallCollidersObject) {
 		collider = createBasicCollider(wallCollidersObject[wallConf]);
-		app.stage.addChild(collider);
+		foreground.addChild(collider);
 		wallCollidersList.push(collider);
 	}
 }
@@ -219,7 +319,6 @@ function setKeyboardControls() {
 			if (e.defaultPrevented) {
 				return; // Ne devrait rien faire si l'événement de la touche était déjà consommé.
 			}
-
 			switch (e.key) {
 				case 'ArrowDown':
 					crouch();
@@ -228,6 +327,7 @@ function setKeyboardControls() {
 					jump();
 					break;
 				case 'ArrowLeft':
+					vx = 5;
 					warrior.scale.x = -2;
 					direction = -1;
 					if (!detectWallCollision(leftCollisionBox)) {
@@ -235,9 +335,9 @@ function setKeyboardControls() {
 					}
 					break;
 				case 'ArrowRight':
+					vx = 5;
 					warrior.scale.x = 2;
 					direction = 1;
-					warrior.y -= 5;
 					if (!detectWallCollision(rightCollisionBox)) {
 						move();
 					}
@@ -251,8 +351,15 @@ function setKeyboardControls() {
 				case 'z':
 					bigAttack();
 					break;
+				case 'e':
+					detectObjectCollision(warriorNarrowBox)
+						? !treasureChestOpened
+							? openTreasureChest()
+							: closeTreasureChest()
+						: doNothing();
+					treasureChestOpened = !treasureChestOpened;
 				default:
-					return; 
+					return;
 			}
 			e.preventDefault();
 		},
@@ -260,7 +367,15 @@ function setKeyboardControls() {
 	);
 
 	window.addEventListener('keyup', (e) => {
-		stop();
+		if (e.defaultPrevented) {
+			return; // Ne devrait rien faire si l'événement de la touche était déjà consommé.
+		}
+		switch (e.key) {
+			case 'ArrowUp':
+				return;
+			default:
+				stop();
+		}
 	});
 }
 
@@ -284,35 +399,46 @@ function calculateWideBoxes() {
 }
 
 function move() {
-	if (!isJumping &amp;&amp; onFloor) {
-		playSound(walkingSound);
+	if (detectFloorCollision(bottomCollisionBox)) {
+		playSound(walkSound);
 		loadRunTexture();
-		vx = 5;
-		warrior.x += vx * direction;
 	}
+	if (
+		(isWarriorRightCentered &amp;&amp; direction === 1) ||
+		(isWarriorLeftCentered &amp;&amp;
+			direction === -1 &amp;&amp;
+			detectFloorCollision(bottomCollisionBox))
+	) {
+		return;
+	}
+	warrior.x += vx * direction;
 }
 
 function jump() {
-	loadJumpTexture();
-	if (!isJumping &amp;&amp; onFloor) {
+	if (!detectFloorCollision(bottomCollisionBox)) {
+		return;
+	} else {
+		playSound(warriorJumpSound);
+		loadJumpTexture();
+		vy = -18;
+		warrior.y += vy;
+		warrior.x += vx * direction;
 		isJumping = true;
-		onFloor = false;
-		makeJump();
-		setTimeout(() => {
-			isJumping = false;
-		}, 750);
 	}
 }
 
 function stop() {
-	if (!isJumping &amp;&amp; onFloor) {
-		loadIdleTexture();
-	}
 	playingSound = false;
-	setTimeout(() => {
-		vx = 0;
-	}, 250);
-	vx = 0;
+	const timer = setInterval(() => {
+		if (vx > 0 /* &amp;&amp; !detectFloorCollision(bottomCollisionBox) */) {
+			vx--;
+			warrior.x += vx * direction;
+		}
+		if (vx === 0) {
+			loadIdleTexture();
+			clearInterval(timer);
+		}
+	}, 100);
 	stopSound();
 }
 
@@ -334,16 +460,42 @@ function takePotion() {
 	loadTakePotionTexture();
 }
 
+// Interactive functions:
+
+function openTreasureChest() {
+	if (openingTreasureChestSound.currentTime !== 0) {
+		openingTreasureChestSound.currentTime = 0;
+	}
+	openingTreasureChestSound.play();
+	loadOpeningTreasureChestTexture();
+	setTimeout(loadOpenedTreasureChestTexture(), 400);
+}
+
+function closeTreasureChest() {
+	if (openingTreasureChestSound.currentTime !== 0) {
+		openingTreasureChestSound.currentTime = 0;
+	}
+	openingTreasureChestSound.play();
+	loadClosingTreasureChestTexture();
+	setTimeout(loadClosedTreasureChestTexture(), 400);
+}
+
+function doNothing() {}
+
 // Physics functions:
+
+function isColliding(playerBox, collider) {
+	return (
+		playerBox.x + playerBox.width > collider.x &amp;&amp;
+		playerBox.x &lt; collider.x + collider.width &amp;&amp;
+		playerBox.y + playerBox.height > collider.y &amp;&amp;
+		playerBox.y &lt; collider.y + collider.height
+	);
+}
 
 function detectWallCollision(playerBox) {
 	for (const collider of wallCollidersList) {
-		if (
-			playerBox.x + playerBox.width > collider.x &amp;&amp;
-			playerBox.x &lt; collider.x + collider.width &amp;&amp;
-			playerBox.y + playerBox.height > collider.y &amp;&amp;
-			playerBox.y &lt; collider.y + collider.height
-		) {
+		if (isColliding(playerBox, collider)) {
 			return true;
 		}
 	}
@@ -352,14 +504,16 @@ function detectWallCollision(playerBox) {
 
 function detectFloorCollision(playerBox) {
 	for (const collider of floorCollidersList) {
-		if (
-			playerBox.x + playerBox.width > collider.x &amp;&amp;
-			playerBox.x &lt; collider.x + collider.width &amp;&amp;
-			playerBox.y + playerBox.height > collider.y &amp;&amp;
-			playerBox.y &lt; collider.y + collider.height
-		) {
-			isJumping = false;
-			onFloor = true;
+		if (isColliding(playerBox, collider)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function detectObjectCollision(playerBox) {
+	for (const collider of objectCollidersList) {
+		if (isColliding(playerBox, collider)) {
 			return true;
 		}
 	}
@@ -367,20 +521,18 @@ function detectFloorCollision(playerBox) {
 }
 
 function applyingGravity() {
+	if (vy &lt; 10) {
+		vy++;
+	}
 	warrior.y += vy;
-}
-
-function makeJump() {
-	vx -= 0.1 * direction;
-	warrior.x += vx;
-	warrior.y -= vy + 5;
+	warrior.x += vx * direction;
 }
 
 //Audio functions:
 
 function setBackgroundVolume() {
 	const backgroundAudio = document.getElementById('audio');
-	backgroundAudio.volume = 0.3;
+	backgroundAudio.volume = 0.5;
 }
 
 function playSound(sound) {
@@ -394,7 +546,7 @@ function playSound(sound) {
 
 function stopSound() {
 	attackSound.pause();
-	walkingSound.pause();
+	walkSound.pause();
 }
 
 function setAudioEvents() {
@@ -404,12 +556,45 @@ function setAudioEvents() {
 	attackSound.addEventListener('ended', () => {
 		playingSound = false;
 	});
-	walkingSound.addEventListener('ended', () => {
+	walkSound.addEventListener('ended', () => {
 		playingSound = false;
 	});
 }
 
 // TextureLoader functions :
+
+function animateElements(delta) {
+	animateWarrior(delta);
+	animateTreasureChest(delta);
+}
+
+function animateWarrior(delta) {
+	adventurerAnimationCount =
+		Math.round(
+			adventurerAnimationCount + getAnimationSpeed('player', delta)
+		) % textureArray.length;
+	warrior.texture = textureArray[adventurerAnimationCount];
+}
+
+function animateTreasureChest(delta) {
+	treasureChestAnimationCount =
+		Math.round(
+			treasureChestAnimationCount + getAnimationSpeed('object', delta)
+		) % treasureChestTextureArray.length;
+	treasureChest.texture =
+		treasureChestTextureArray[treasureChestAnimationCount];
+}
+
+function getAnimationSpeed(animatedSpriteType, delta) {
+	switch (animatedSpriteType) {
+		case 'object':
+			return delta / 6;
+		case 'player':
+			return delta / 5;
+		default:
+			return 0;
+	}
+}
 
 function loadSmallAttackTexture() {
 	textureArray = [];
@@ -458,6 +643,141 @@ function loadTakePotionTexture() {
 	let loaderArray = loaders.adventurerLoader.adventurerTakingPotionAnim;
 	loaderArray.forEach((img) => textureArray.push(new PIXI.Texture.from(img)));
 }
+
+function loadOpeningTreasureChestTexture() {
+	treasureChestTextureArray = [];
+	let loaderArray = loaders.treasureChestLoader.treasureChestOpeningAnim;
+	loaderArray.forEach((img) =>
+		treasureChestTextureArray.push(new PIXI.Texture.from(img))
+	);
+}
+
+function loadOpenedTreasureChestTexture() {
+	treasureChestTextureArray = [];
+	let loaderArray = loaders.treasureChestLoader.treasureChestOpenedAnim;
+	loaderArray.forEach((img) =>
+		treasureChestTextureArray.push(new PIXI.Texture.from(img))
+	);
+}
+
+function loadClosingTreasureChestTexture() {
+	treasureChestTextureArray = [];
+	let loaderArray = loaders.treasureChestLoader.treasureChestOpeningAnim;
+	loaderArray.reverse();
+	loaderArray.forEach((img) =>
+		treasureChestTextureArray.push(new PIXI.Texture.from(img))
+	);
+}
+
+function loadClosedTreasureChestTexture() {
+	treasureChestTextureArray = [];
+	const treasureChestClosedLoader =
+		loaders.treasureChestLoader.treasureChestClosed;
+	treasureChestTextureArray.push(
+		new PIXI.Texture.from(treasureChestClosedLoader)
+	);
+}
+
+// Text related functions :
+
+function buildText(textConfig) {
+	const textBackGroundTexture = new PIXI.Sprite(PIXI.Texture.WHITE);
+	textBackGroundTexture.x =
+		textConfig.narrationText.narrationText1.overlayConfig.textBox.x;
+	textBackGroundTexture.y =
+		textConfig.narrationText.narrationText1.overlayConfig.textBox.y;
+	textBackGroundTexture.width =
+		textConfig.narrationText.narrationText1.overlayConfig.textBox.width;
+	textBackGroundTexture.height =
+		textConfig.narrationText.narrationText1.overlayConfig.textBox.height;
+	textBackGroundTexture.anchor.set(
+		textConfig.narrationText.narrationText1.overlayConfig.textBox.anchor
+	);
+	textBackGroundTexture.tint =
+		textConfig.narrationText.narrationText1.overlayConfig.textBox.tint;
+	let text = new PIXI.Text(
+		textConfig.narrationText.narrationText1.pixiRequirements.text,
+		textConfig.narrationText.narrationText1.pixiRequirements.style
+	);
+	text.x = textConfig.narrationText.narrationText1.overlayConfig.text.x;
+	text.y = textConfig.narrationText.narrationText1.overlayConfig.text.y;
+	text.anchor.set(
+		textConfig.narrationText.narrationText1.overlayConfig.text.anchor
+	);
+	textBox.addChild(textBackGroundTexture, text);
+	app.stage.addChild(textBox);
+}
+
+function displayInitialMsg() {
+	buildText(textConfig);
+	removeTextBox();
+}
+
+function removeTextBox() {
+	// find better method
+	setTimeout(() => {
+		textBox.parent.removeChild(textBox);
+		textBox.destroy({children: true, texture: true, baseTexture: true});
+	}, 5000);
+	//	app.stage.removeChild(textBox);
+}
+
+// Camera functions :
+
+function moveCamera(app) {
+	isWarriorLeftCentered = warrior.x &lt;= app.screen.x + 350;
+	isWarriorRightCentered = warrior.x >= app.screen.width - 350;
+	leftEdgeStageReached = foreground.x >= app.stage.x;
+	rightEdgeStageReached = foreground.x === -app.stage.width;
+	if (
+		(isWarriorRightCentered &amp;&amp; direction === 1) ||
+		(isWarriorLeftCentered &amp;&amp;
+			direction === -1 &amp;&amp;
+			!leftEdgeStageReached &amp;&amp;
+			!rightEdgeStageReached)
+	) {
+		moveBackground();
+		moveForeground();
+		updateForegroundCollidersPosition();
+	}
+}
+
+function moveBackground() {
+	background.x -= vx * direction * 0.5;
+}
+
+function moveForeground() {
+	foreground.x -= vx * direction;
+}
+
+function updateForegroundCollidersPosition() {
+	const floorColliderListLength = floorCollidersList.length;
+	const wallCollidersListLength = wallCollidersList.length;
+	const objectCollidersListLength = objectCollidersList.length;
+	floorCollidersList = [];
+	wallCollidersList = [];
+	objectCollidersList = [];
+	for (let i = 0; i &lt; floorColliderListLength; i++) {
+		floorCollidersList.push(foreground.children[i].getBounds());
+	}
+	for (
+		let i = floorColliderListLength;
+		i &lt; floorColliderListLength + wallCollidersListLength;
+		i++
+	) {
+		wallCollidersList.push(foreground.children[i].getBounds());
+	}
+	for (
+		let i = floorColliderListLength + wallCollidersListLength;
+		i &lt;
+		floorColliderListLength +
+			wallCollidersListLength +
+			objectCollidersListLength;
+		i++
+	) {
+		objectCollidersList.push(foreground.children[i].getBounds());
+	}
+}
 </code></pre>
         </article>
     </section>
@@ -468,13 +788,13 @@ function loadTakePotionTexture() {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#animationCount">animationCount</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#attackSound">attackSound</a></li><li><a href="global.html#bottomCollisionBox">bottomCollisionBox</a></li><li><a href="global.html#connectLivereload">connectLivereload</a></li><li><a href="global.html#direction">direction</a></li><li><a href="global.html#dirUrl">dirUrl</a></li><li><a href="global.html#express">express</a></li><li><a href="global.html#floorColliders">floorColliders</a></li><li><a href="global.html#floorCollidersList">floorCollidersList</a></li><li><a href="global.html#isAboutToCollide">isAboutToCollide</a></li><li><a href="global.html#isJumping">isJumping</a></li><li><a href="global.html#leftCollisionBox">leftCollisionBox</a></li><li><a href="global.html#livereload">livereload</a></li><li><a href="global.html#liveReloadServer">liveReloadServer</a></li><li><a href="global.html#loaders">loaders</a></li><li><a href="global.html#onFloor">onFloor</a></li><li><a href="global.html#opn">opn</a></li><li><a href="global.html#pathToAnimation">pathToAnimation</a></li><li><a href="global.html#pathToImgFolder">pathToImgFolder</a></li><li><a href="global.html#port">port</a></li><li><a href="global.html#rightCollisionBox">rightCollisionBox</a></li><li><a href="global.html#url">url</a></li><li><a href="global.html#vx">vx</a></li><li><a href="global.html#vy">vy</a></li><li><a href="global.html#walkingSound">walkingSound</a></li><li><a href="global.html#wallColliders">wallColliders</a></li><li><a href="global.html#wallCollidersList">wallCollidersList</a></li><li><a href="global.html#warriorNarrowBox">warriorNarrowBox</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#adventurerAnimationCount">adventurerAnimationCount</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#attackSound">attackSound</a></li><li><a href="global.html#background">background</a></li><li><a href="global.html#bottomCollisionBox">bottomCollisionBox</a></li><li><a href="global.html#connectLivereload">connectLivereload</a></li><li><a href="global.html#direction">direction</a></li><li><a href="global.html#dirUrl">dirUrl</a></li><li><a href="global.html#express">express</a></li><li><a href="global.html#floorColliders">floorColliders</a></li><li><a href="global.html#floorCollidersList">floorCollidersList</a></li><li><a href="global.html#foreground">foreground</a></li><li><a href="global.html#isAboutToCollide">isAboutToCollide</a></li><li><a href="global.html#isJumping">isJumping</a></li><li><a href="global.html#isWarriorLeftCentered">isWarriorLeftCentered</a></li><li><a href="global.html#isWarriorRightCentered">isWarriorRightCentered</a></li><li><a href="global.html#leftCollisionBox">leftCollisionBox</a></li><li><a href="global.html#leftEdgeStageReached">leftEdgeStageReached</a></li><li><a href="global.html#livereload">livereload</a></li><li><a href="global.html#liveReloadServer">liveReloadServer</a></li><li><a href="global.html#loaders">loaders</a></li><li><a href="global.html#middleground">middleground</a></li><li><a href="global.html#objectColliders">objectColliders</a></li><li><a href="global.html#objectCollidersList">objectCollidersList</a></li><li><a href="global.html#openingTreasureChestSound">openingTreasureChestSound</a></li><li><a href="global.html#opn">opn</a></li><li><a href="global.html#pathToAnimation">pathToAnimation</a></li><li><a href="global.html#pathToImgFolder">pathToImgFolder</a></li><li><a href="global.html#port">port</a></li><li><a href="global.html#rightCollisionBox">rightCollisionBox</a></li><li><a href="global.html#rightEdgeStageReached">rightEdgeStageReached</a></li><li><a href="global.html#textBox">textBox</a></li><li><a href="global.html#treasureChest">treasureChest</a></li><li><a href="global.html#treasureChestAnimationCount">treasureChestAnimationCount</a></li><li><a href="global.html#treasureChestOpened">treasureChestOpened</a></li><li><a href="global.html#treasureChestTextureArray">treasureChestTextureArray</a></li><li><a href="global.html#url">url</a></li><li><a href="global.html#vx">vx</a></li><li><a href="global.html#vy">vy</a></li><li><a href="global.html#walkSound">walkSound</a></li><li><a href="global.html#wallColliders">wallColliders</a></li><li><a href="global.html#wallCollidersList">wallCollidersList</a></li><li><a href="global.html#warriorJumpSound">warriorJumpSound</a></li><li><a href="global.html#warriorNarrowBox">warriorNarrowBox</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Oct 30 2020 18:48:51 GMT+0100 (Central European Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Mon Nov 23 2020 22:34:03 GMT+0100 (Central European Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -125,6 +125,30 @@ let middleground = new PIXI.Container();
  * @type {PIXI.Container}
  */
 let background = new PIXI.Container();
+/**
+ * @type {NodeJS.Timeout}
+ */
+let vxTimer;
+/**
+ * @type {boolean}
+ */
+let playingSound = false;
+/**
+ * @type {Object}
+ */
+const animationStateEnum = {
+	ATTACKING_ONE: 'attackingOne',
+	ATTACKING_TWO: 'attackingTwo',
+	JUMPING: 'jumping',
+	IDLING: 'idling',
+	RUNNING: 'running',
+	CROUCHING: 'crouching',
+	TAKING_POTION: 'takingPotion',
+};
+/**
+ * @type {Object}
+ */
+let animationState = animationStateEnum.IDLING;
 
 setControls();
 setKeyboardControls();
@@ -177,15 +201,20 @@ app.ticker.add((delta) => {
 		applyingGravity();
 	} else if (isAboutToCollide) {
 		vy = 0;
+		isJumping = false;
 	}
-	if (!isJumping && isAboutToCollide) {
-		loadIdleTexture();
+	console.log(!isJumping && isAboutToCollide);
+	if (
+		!isJumping &&
+		isAboutToCollide &&
+		animationState === animationStateEnum.JUMPING
+	) {
+		animationState = animationStateEnum.IDLING;
 		isJumping = true;
 	}
+	loadWarriorAnimation();
 	animateElements(delta);
 });
-
-var playingSound = false;
 
 // Build Map functions
 
@@ -302,6 +331,7 @@ function setKeyboardControls() {
 					vx = 5;
 					warrior.scale.x = -2;
 					direction = -1;
+					clearInterval(vxTimer);
 					if (!detectWallCollision(leftCollisionBox)) {
 						move();
 					}
@@ -310,6 +340,7 @@ function setKeyboardControls() {
 					vx = 5;
 					warrior.scale.x = 2;
 					direction = 1;
+					clearInterval(vxTimer);
 					if (!detectWallCollision(rightCollisionBox)) {
 						move();
 					}
@@ -343,8 +374,14 @@ function setKeyboardControls() {
 			return; // Ne devrait rien faire si l'événement de la touche était déjà consommé.
 		}
 		switch (e.key) {
+			case 'a':
+			case 'z':
+				stopAttackingAnim();
+				break;
 			case 'ArrowUp':
 				return;
+			case 'ArrowRight':
+			case 'ArrowLeft':
 			default:
 				stop();
 		}
@@ -373,7 +410,7 @@ function calculateWideBoxes() {
 function move() {
 	if (detectFloorCollision(bottomCollisionBox)) {
 		playSound(walkSound);
-		loadRunTexture();
+		animationState = animationStateEnum.RUNNING;
 	}
 	if (
 		(isWarriorRightCentered && direction === 1) ||
@@ -390,8 +427,9 @@ function jump() {
 	if (!detectFloorCollision(bottomCollisionBox)) {
 		return;
 	} else {
+		playingSound = false;
 		playSound(warriorJumpSound);
-		loadJumpTexture();
+		animationState = animationStateEnum.JUMPING;
 		vy = -18;
 		warrior.y += vy;
 		warrior.x += vx * direction;
@@ -399,37 +437,43 @@ function jump() {
 	}
 }
 
-function stop() {
-	playingSound = false;
-	const timer = setInterval(() => {
-		if (vx > 0 /* && !detectFloorCollision(bottomCollisionBox) */) {
-			vx--;
-			warrior.x += vx * direction;
-		}
-		if (vx === 0) {
-			loadIdleTexture();
-			clearInterval(timer);
-		}
-	}, 100);
-	stopSound();
-}
-
 function smallAttack() {
 	playSound(attackSound);
-	loadSmallAttackTexture();
+	animationState = animationStateEnum.ATTACKING_ONE;
 }
 
 function bigAttack() {
 	playSound(attackSound);
-	loadBigAttackTexture();
+	animationState = animationStateEnum.ATTACKING_TWO;
 }
 
 function crouch() {
-	loadCrouchTexture();
+	animationState = animationStateEnum.CROUCHING;
 }
 
 function takePotion() {
 	loadTakePotionTexture();
+}
+
+function stop() {
+	playingSound = false;
+	vxTimer = setInterval(() => {
+		if (vx > 0 && detectFloorCollision(bottomCollisionBox)) {
+			vx--;
+			warrior.x += vx * direction;
+		}
+		if (vx === 0) {
+			animationState = animationStateEnum.IDLING;
+			clearInterval(vxTimer);
+		}
+	}, 100);
+	stopSound();
+}
+function stopAttackingAnim() {
+	const timer = setTimeout(() => {
+		animationState = animationStateEnum.IDLING;
+		clearTimeout(timer);
+	}, 500);
 }
 
 // Interactive functions:
@@ -512,13 +556,14 @@ function playSound(sound) {
 		sound.currentTime = 0;
 		sound.volume = 1;
 		sound.play();
+		playingSound = true;
 	}
-	playingSound = true;
 }
 
 function stopSound() {
 	attackSound.pause();
 	walkSound.pause();
+	warriorJumpSound.pause();
 }
 
 function setAudioEvents() {
@@ -531,9 +576,42 @@ function setAudioEvents() {
 	walkSound.addEventListener('ended', () => {
 		playingSound = false;
 	});
+	warriorJumpSound.addEventListener('play', () => {
+		warriorJumpSound.volume = 0.5;
+	});
+	warriorJumpSound.addEventListener('ended', () => {
+		playingSound = false;
+	});
 }
 
 // TextureLoader functions :
+
+function loadWarriorAnimation() {
+	switch (animationState) {
+		case animationStateEnum.JUMPING:
+			loadJumpTexture();
+			break;
+		case animationStateEnum.RUNNING:
+			loadRunTexture();
+			break;
+		case animationStateEnum.CROUCHING:
+			loadCrouchTexture();
+			break;
+		case animationStateEnum.ATTACKING_ONE:
+			loadSmallAttackTexture();
+			break;
+		case animationStateEnum.ATTACKING_TWO:
+			loadBigAttackTexture();
+			break;
+		case animationState.TAKING_POTION:
+			loadTakePotionTexture();
+			break;
+		case animationStateEnum.IDLING:
+		default:
+			loadIdleTexture();
+			break;
+	}
+}
 
 function animateElements(delta) {
 	animateWarrior(delta);
