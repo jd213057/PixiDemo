@@ -44,7 +44,15 @@ let isJumping = false;
 /**
  * @type {boolean}
  */
-let isAboutToCollide = false;
+let isAboutToCollideWithBottom = false;
+/**
+ * @type {boolean}
+ */
+let isAboutToCollideWithLeft = false;
+/**
+ * @type {boolean}
+ */
+let isAboutToCollideWithRight = false;
 /**
  * @type {boolean}
  */
@@ -110,6 +118,10 @@ let vx = 0;
  */
 let vy = 0;
 /**
+ * @type {number}
+ */
+let vc = 5;
+/**
  * @type {PIXI.Container}
  */
 let textBox = new PIXI.Container();
@@ -149,12 +161,13 @@ const animationStateEnum = {
  * @type {Object}
  */
 let animationState = animationStateEnum.IDLING;
-
-setControls();
-setKeyboardControls();
-setBackgroundVolume();
-setAudioEvents();
-
+/**
+ * @type {PIXI.AnimatedSprite}
+ */
+let warrior;
+/**
+ * @type {PIXI.Application}
+ */
 var app = new PIXI.Application({
 	height: 550,
 	width: 900,
@@ -162,69 +175,70 @@ var app = new PIXI.Application({
 	x: 0,
 	y: 0,
 });
-
-document.getElementById('screen').appendChild(app.view);
-buildMap();
-displayInitialMsg();
-
-// path starting point from server.js where script js is served
+/**
+ * @type {Array}
+ */
+let textureArray = [];
 /**
  * @type {string}
  */
 const pathToAnimation = '/static/assets/images/';
-let textureArray = [];
-let texture = PIXI.Texture.from(
-	pathToAnimation + 'Adventurer/Idle/adventurer-idle-00.png'
-);
-textureArray.push(texture);
-let warrior = new PIXI.AnimatedSprite(textureArray);
 
-loadIdleTexture();
-// center the sprite's anchor point
-warrior.anchor.set(0.5);
-
-// move the sprite to the center of the screen
-
-warrior.scale.x = 2;
-warrior.scale.y = 2;
-warrior.x = app.screen.width / 2 - 350;
-warrior.y = app.screen.height / 2 - 150;
-app.stage.addChild(warrior);
+initializeGame();
 
 // Listen for animate update
 app.ticker.add((delta) => {
 	warriorNarrowBox = warrior.getBounds();
 	calculateWideBoxes();
-	moveCamera(app);
-	isAboutToCollide = detectFloorCollision(bottomCollisionBox);
-	if (!isAboutToCollide) {
-		applyingGravity();
-	} else if (isAboutToCollide) {
+	updateCameraCheckers();
+	updateWarriorCollider();
+	if (!isAboutToCollideWithLeft && !isAboutToCollideWithRight) {
+		updatingVx();
+	}
+	if (!isAboutToCollideWithBottom) {
+		updatingVy();
+	} else if (isAboutToCollideWithBottom) {
 		vy = 0;
 		isJumping = false;
 	}
-	console.log(!isJumping && isAboutToCollide);
+	moveCamera();
 	if (
 		!isJumping &&
-		isAboutToCollide &&
+		isAboutToCollideWithBottom &&
 		animationState === animationStateEnum.JUMPING
 	) {
-		animationState = animationStateEnum.IDLING;
-		isJumping = true;
+		animationState =
+			vx > 0 ? animationStateEnum.RUNNING : animationStateEnum.IDLING;
 	}
 	loadWarriorAnimation();
 	animateElements(delta);
 });
 
-// Build Map functions
+// Initialization functions
+function initializeGame() {
+	setControls();
+	setKeyboardControls();
+	setBackgroundVolume();
+	setAudioEvents();
+	addStageToScreen();
+	buildStage();
+	displayInitialMsg();
+}
 
-function buildMap() {
+// Build Stage functions
+
+function addStageToScreen() {
+	document.getElementById('screen').appendChild(app.view);
+}
+
+function buildStage() {
 	setBackgroungImg();
 	setBackground();
 	setColliders(colliders);
 	setDecors(loaders);
 	setObjects();
 	setForeground();
+	addWarriorToStage();
 }
 
 function setBackgroungImg() {
@@ -261,6 +275,21 @@ function setObjects() {
 	treasureChest.height = colliders.objectColliders.treasureChest.height;
 	foreground.addChild(treasureChest);
 	objectCollidersList.push(treasureChest);
+}
+
+function addWarriorToStage() {
+	let texture = PIXI.Texture.from(
+		pathToAnimation + 'Adventurer/Idle/adventurer-idle-00.png'
+	);
+	textureArray.push(texture);
+	warrior = new PIXI.AnimatedSprite(textureArray);
+	loadIdleTexture();
+	warrior.anchor.set(0.5);
+	warrior.scale.x = 2;
+	warrior.scale.y = 2;
+	warrior.x = app.screen.width / 2 - 350;
+	warrior.y = app.screen.height / 2 - 150;
+	app.stage.addChild(warrior);
 }
 
 function setColliders(collidersConf) {
@@ -328,7 +357,6 @@ function setKeyboardControls() {
 					jump();
 					break;
 				case 'ArrowLeft':
-					vx = 5;
 					warrior.scale.x = -2;
 					direction = -1;
 					clearInterval(vxTimer);
@@ -337,7 +365,6 @@ function setKeyboardControls() {
 					}
 					break;
 				case 'ArrowRight':
-					vx = 5;
 					warrior.scale.x = 2;
 					direction = 1;
 					clearInterval(vxTimer);
@@ -390,23 +417,6 @@ function setKeyboardControls() {
 
 // Move functions :
 
-function calculateWideBoxes() {
-	bottomCollisionBox.x =
-		warriorNarrowBox.x + (1 / 3) * warriorNarrowBox.width;
-	bottomCollisionBox.width = (1 / 3) * warriorNarrowBox.width;
-	bottomCollisionBox.y =
-		warriorNarrowBox.y + (2 / 3) * warriorNarrowBox.height;
-	bottomCollisionBox.height = (1 / 3) * warriorNarrowBox.height + 1;
-	leftCollisionBox.x = warriorNarrowBox.x + 10;
-	leftCollisionBox.width = warriorNarrowBox.width / 2 - 15;
-	leftCollisionBox.y = warriorNarrowBox.y - 1;
-	leftCollisionBox.height = warriorNarrowBox.height + 1;
-	rightCollisionBox.x = warriorNarrowBox.x + warriorNarrowBox.width / 2;
-	rightCollisionBox.width = warriorNarrowBox.width / 2 - 15;
-	rightCollisionBox.y = warriorNarrowBox.y - 1;
-	rightCollisionBox.height = warriorNarrowBox.height + 1;
-}
-
 function move() {
 	if (detectFloorCollision(bottomCollisionBox)) {
 		playSound(walkSound);
@@ -420,7 +430,7 @@ function move() {
 	) {
 		return;
 	}
-	warrior.x += vx * direction;
+	vx = 5;
 }
 
 function jump() {
@@ -432,7 +442,6 @@ function jump() {
 		animationState = animationStateEnum.JUMPING;
 		vy = -18;
 		warrior.y += vy;
-		warrior.x += vx * direction;
 		isJumping = true;
 	}
 }
@@ -460,9 +469,10 @@ function stop() {
 	vxTimer = setInterval(() => {
 		if (vx > 0 && detectFloorCollision(bottomCollisionBox)) {
 			vx--;
-			warrior.x += vx * direction;
+			vc--;
 		}
 		if (vx === 0) {
+			vc = 0;
 			animationState = animationStateEnum.IDLING;
 			clearInterval(vxTimer);
 		}
@@ -500,6 +510,29 @@ function doNothing() {}
 
 // Physics functions:
 
+function calculateWideBoxes() {
+	bottomCollisionBox.x =
+		warriorNarrowBox.x + (1 / 3) * warriorNarrowBox.width;
+	bottomCollisionBox.width = (1 / 3) * warriorNarrowBox.width;
+	bottomCollisionBox.y =
+		warriorNarrowBox.y + (4 / 5) * warriorNarrowBox.height;
+	bottomCollisionBox.height = (1 / 5) * warriorNarrowBox.height + 1;
+	leftCollisionBox.x = warriorNarrowBox.x + 10;
+	leftCollisionBox.width = warriorNarrowBox.width / 3 - 10;
+	leftCollisionBox.y = warriorNarrowBox.y - 1;
+	leftCollisionBox.height = warriorNarrowBox.height + 1;
+	rightCollisionBox.x = warriorNarrowBox.x + (2 * warriorNarrowBox.width) / 3;
+	rightCollisionBox.width = warriorNarrowBox.width / 3 - 10;
+	rightCollisionBox.y = warriorNarrowBox.y - 1;
+	rightCollisionBox.height = warriorNarrowBox.height + 1;
+}
+
+function updateWarriorCollider() {
+	isAboutToCollideWithBottom = detectFloorCollision(bottomCollisionBox);
+	isAboutToCollideWithLeft = detectWallCollision(leftCollisionBox);
+	isAboutToCollideWithRight = detectWallCollision(rightCollisionBox);
+}
+
 function isColliding(playerBox, collider) {
 	return (
 		playerBox.x + playerBox.width > collider.x &&
@@ -536,12 +569,29 @@ function detectObjectCollision(playerBox) {
 	return false;
 }
 
+function updatingVx() {
+	if (
+		(isWarriorRightCentered && direction === 1) ||
+		(isWarriorLeftCentered &&
+			direction === -1 &&
+			!leftEdgeStageReached &&
+			!rightEdgeStageReached)
+	) {
+		vc = animationState === animationStateEnum.IDLING ? 0 : 5;
+		return;
+	}
+	warrior.x += vx * direction;
+}
+
+function updatingVy() {
+	applyingGravity();
+	warrior.y += vy;
+}
+
 function applyingGravity() {
 	if (vy < 10) {
 		vy++;
 	}
-	warrior.y += vy;
-	warrior.x += vx * direction;
 }
 
 //Audio functions:
@@ -774,11 +824,14 @@ function removeTextBox() {
 
 // Camera functions :
 
-function moveCamera(app) {
-	isWarriorLeftCentered = warrior.x <= app.screen.x + 350;
-	isWarriorRightCentered = warrior.x >= app.screen.width - 350;
+function updateCameraCheckers() {
+	isWarriorLeftCentered = warrior.x <= app.screen.x + 250;
+	isWarriorRightCentered = warrior.x >= app.screen.width - 250;
 	leftEdgeStageReached = foreground.x >= app.stage.x;
 	rightEdgeStageReached = foreground.x === -app.stage.width;
+}
+
+function moveCamera() {
 	if (
 		(isWarriorRightCentered && direction === 1) ||
 		(isWarriorLeftCentered &&
@@ -793,11 +846,11 @@ function moveCamera(app) {
 }
 
 function moveBackground() {
-	background.x -= vx * direction * 0.5;
+	background.x -= vc * direction * 0.5;
 }
 
 function moveForeground() {
-	foreground.x -= vx * direction;
+	foreground.x -= vc * direction;
 }
 
 function updateForegroundCollidersPosition() {
