@@ -1,3 +1,7 @@
+/**
+ * @type {Object}
+ * @description List of narrative texts
+ */
 const narrationText = {
 	narrationText1: {
 		overlayConfig: {
@@ -30,8 +34,20 @@ const narrationText = {
 		},
 	},
 };
+/**
+ * @type {Object}
+ * @description List of dialog texts
+ */
 const dialogText = {};
+/**
+ * @type {Object}
+ * @description List of mission texts
+ */
 const objectiveText = {};
+/**
+ * @type {Object}
+ * @description List of tutorial texts
+ */
 const helpText = {};
 
 export default {narrationText, dialogText, objectiveText, helpText};

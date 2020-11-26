@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: static/text.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,71 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: static/text.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @type {Object}
+ * @description List of narrative texts
+ */
+const narrationText = {
+	narrationText1: {
+		overlayConfig: {
+			text: {
+				anchor: 0.0,
+				x: 50,
+				y: 50,
+			},
+			textBox: {
+				anchor: 0.0,
+				x: 30,
+				width: 260,
+				y: 30,
+				height: 120,
+				tint: '#000000',
+			},
+		},
+		pixiRequirements: {
+			text:
+				'What a strange place! Where has gone everyone? Maybe I should go right and see...',
+			style: {
+				fontFamily: 'Wariorus',
+				fontSize: 14,
+				fill: ['#FF1010'],
+				align: 'left',
+				wordWrap: true,
+				wordWrapWidth: 230,
+				lineHeight: 18 
+			},
+		},
+	},
+};
+/**
+ * @type {Object}
+ * @description List of dialog texts
+ */
+const dialogText = {};
+/**
+ * @type {Object}
+ * @description List of mission texts
+ */
+const objectiveText = {};
+/**
+ * @type {Object}
+ * @description List of tutorial texts
+ */
+const helpText = {};
 
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+export default {narrationText, dialogText, objectiveText, helpText};
+</code></pre>
+        </article>
+    </section>
 
 
 

@@ -5,148 +5,183 @@ import PIXI from './pixi-legacy.js';
 
 /**
  * @type {HTMLAudioElement}
+ * @description Path of sound file played when attacking
  */
 const attackSound = new Audio(
 	'static/assets/audio/sounds/street-fighter-sound-hadouken.mp3'
 );
 /**
  * @type {HTMLAudioElement}
+ * @description Path of sound file played when walking
  */
 const walkSound = new Audio('static/assets/audio/sounds/step_lth4.mp3');
 /**
  * @type {HTMLAudioElement}
+ * @description Path of sound file when played jumping
  */
 const warriorJumpSound = new Audio(
 	'static/assets/audio/sounds/warriorJumpSound.mp3'
 );
 /**
  * @type {HTMLAudioElement}
+ * @description Path of sound file when opening treasure chest
  */
 const openingTreasureChestSound = new Audio(
 	'static/assets/audio/sounds/treasure-chest-opening.mp3'
 );
 /**
  * @type {number}
+ * @description Index of Adventurer's array texture synchronized with delta
  */
 let adventurerAnimationCount = 0;
 /**
  * @type {number}
+ * @description Index of Treasure Chest's array texture synchronized with delta
  */
 let treasureChestAnimationCount = 0;
 /**
  * @type {number}
+ * @description Determines whether player goes forward or backward
  */
 let direction = 1;
 /**
  * @type {boolean}
+ * @description Indicates whether player is jumping or not
  */
 let isJumping = false;
 /**
  * @type {boolean}
+ * @description Bottom part of player's sprite used for floor collisions
  */
 let isAboutToCollideWithBottom = false;
 /**
  * @type {boolean}
+ * @description Left part of player's sprite used for wall collisions
  */
 let isAboutToCollideWithLeft = false;
 /**
  * @type {boolean}
+ * @description Right part of player's sprite used for wall collisions
  */
 let isAboutToCollideWithRight = false;
 /**
  * @type {boolean}
+ * @description Indicates whether treasure chest is opened or not
  */
 let treasureChestOpened = false;
 /**
  * @type {boolean}
- */
-let isWarriorRightCentered = false;
-/**
- * @type {boolean}
+ * @description Indicates whether player is Left centered on the screen
  */
 let isWarriorLeftCentered = false;
 /**
  * @type {boolean}
+ * @description Indicates whether player is right centered on the screen
+ */
+let isWarriorRightCentered = false;
+/**
+ * @type {boolean}
+ * @description Indicates if left part of stage is reached or not
  */
 let leftEdgeStageReached = false;
 /**
  * @type {boolean}
+ * @description Indicates if right part of stage is reached or not
  */
 let rightEdgeStageReached = false;
 /**
  * @type {Array}
+ * @description ArrayList of wall colliders
  */
 let wallCollidersList = [];
 /**
  * @type {Array}
+ * @description ArrayList of floor colliders
  */
 let floorCollidersList = [];
 /**
  * @type {Array}
+ * @description ArrayList of object colliders
  */
 let objectCollidersList = [];
 /**
- * @type {object}
+ * @type {PIXI.Sprite}
+ * @description Treasure Chest sprite
  */
 let treasureChest;
 /**
  * @type {Array}
+ * @description ArrayList of Treasure Chest's textures used for cureent animation
  */
 let treasureChestTextureArray = [];
 /**
  * @type {PIXI.Rectangle}
+ * @description Player bounds
  */
-let warriorNarrowBox = new PIXI.Rectangle();
+let warriorBounds = new PIXI.Rectangle();
 /**
  * @type {PIXI.Rectangle}
+ * @description Player's bottom part bounds
  */
 let bottomCollisionBox = new PIXI.Rectangle();
 /**
  * @type {PIXI.Rectangle}
+ * @description Player's left part bounds
  */
 let leftCollisionBox = new PIXI.Rectangle();
 /**
  * @type {PIXI.Rectangle}
+ * @description Player's right part bounds
  */
 let rightCollisionBox = new PIXI.Rectangle();
 /**
  * @type {number}
+ * @description Player's speed for x abscissa
  */
 let vx = 0;
 /**
  * @type {number}
+ * @description Player's speed for y abscissa
  */
 let vy = 0;
 /**
  * @type {number}
+ * @description Camera's speed for x abscissa
  */
 let vc = 5;
 /**
  * @type {PIXI.Container}
+ * @description Container for text display
  */
 let textBox = new PIXI.Container();
 /**
  * @type {PIXI.Container}
+ * @description Container for all foreground stage elements
  */
 let foreground = new PIXI.Container();
 /**
  * @type {PIXI.Container}
+ * @description Container for all middleground stage elements
  */
 let middleground = new PIXI.Container();
 /**
  * @type {PIXI.Container}
+ * @description Container for all backgorund stage elements
  */
 let background = new PIXI.Container();
 /**
  * @type {NodeJS.Timeout}
+ * @description Timer for vx decreasing when player stops
  */
 let vxTimer;
 /**
  * @type {boolean}
+ * @description Indicates whether sound is playing or not
  */
 let playingSound = false;
 /**
  * @type {Object}
+ * @description Enumeration of all possible player's animation state
  */
 const animationStateEnum = {
 	ATTACKING_ONE: 'attackingOne',
@@ -159,14 +194,17 @@ const animationStateEnum = {
 };
 /**
  * @type {Object}
+ * @description Player's animation state
  */
 let animationState = animationStateEnum.IDLING;
 /**
  * @type {PIXI.AnimatedSprite}
+ * @description Player's sprite
  */
 let warrior;
 /**
  * @type {PIXI.Application}
+ * @description Pixi application embedded in index.html's screen
  */
 var app = new PIXI.Application({
 	height: 550,
@@ -177,18 +215,19 @@ var app = new PIXI.Application({
 });
 /**
  * @type {Array}
+ * @description ArrayList of player's textures used for cureent animation
  */
-let textureArray = [];
+let warriorTextureArray = [];
 /**
  * @type {string}
+ * @description Path to images repository
  */
 const pathToAnimation = '/static/assets/images/';
 
 initializeGame();
 
-// Listen for animate update
 app.ticker.add((delta) => {
-	warriorNarrowBox = warrior.getBounds();
+	warriorBounds = warrior.getBounds();
 	calculateWideBoxes();
 	updateCameraCheckers();
 	updateWarriorCollider();
@@ -202,14 +241,7 @@ app.ticker.add((delta) => {
 		isJumping = false;
 	}
 	moveCamera();
-	if (
-		!isJumping &&
-		isAboutToCollideWithBottom &&
-		animationState === animationStateEnum.JUMPING
-	) {
-		animationState =
-			vx > 0 ? animationStateEnum.RUNNING : animationStateEnum.IDLING;
-	}
+	updateAnimationState();
 	loadWarriorAnimation();
 	animateElements(delta);
 });
@@ -242,9 +274,8 @@ function buildStage() {
 }
 
 function setBackgroungImg() {
-	const pathToImgFolder = '/static/assets/images/';
 	let backgroundImage = PIXI.Texture.from(
-		pathToImgFolder + 'Levels/firstmaplevel_background.png'
+		pathToAnimation + 'Levels/firstmaplevel_background.png'
 	);
 	let backgroundSprite = new PIXI.Sprite(backgroundImage);
 	backgroundSprite.anchor.set(0.0);
@@ -281,8 +312,8 @@ function addWarriorToStage() {
 	let texture = PIXI.Texture.from(
 		pathToAnimation + 'Adventurer/Idle/adventurer-idle-00.png'
 	);
-	textureArray.push(texture);
-	warrior = new PIXI.AnimatedSprite(textureArray);
+	warriorTextureArray.push(texture);
+	warrior = new PIXI.AnimatedSprite(warriorTextureArray);
 	loadIdleTexture();
 	warrior.anchor.set(0.5);
 	warrior.scale.x = 2;
@@ -382,7 +413,7 @@ function setKeyboardControls() {
 					bigAttack();
 					break;
 				case 'e':
-					detectObjectCollision(warriorNarrowBox)
+					detectObjectCollision(warriorBounds)
 						? !treasureChestOpened
 							? openTreasureChest()
 							: closeTreasureChest()
@@ -511,20 +542,18 @@ function doNothing() {}
 // Physics functions:
 
 function calculateWideBoxes() {
-	bottomCollisionBox.x =
-		warriorNarrowBox.x + (1 / 3) * warriorNarrowBox.width;
-	bottomCollisionBox.width = (1 / 3) * warriorNarrowBox.width;
-	bottomCollisionBox.y =
-		warriorNarrowBox.y + (4 / 5) * warriorNarrowBox.height;
-	bottomCollisionBox.height = (1 / 5) * warriorNarrowBox.height + 1;
-	leftCollisionBox.x = warriorNarrowBox.x + 10;
-	leftCollisionBox.width = warriorNarrowBox.width / 3 - 10;
-	leftCollisionBox.y = warriorNarrowBox.y - 1;
-	leftCollisionBox.height = warriorNarrowBox.height + 1;
-	rightCollisionBox.x = warriorNarrowBox.x + (2 * warriorNarrowBox.width) / 3;
-	rightCollisionBox.width = warriorNarrowBox.width / 3 - 10;
-	rightCollisionBox.y = warriorNarrowBox.y - 1;
-	rightCollisionBox.height = warriorNarrowBox.height + 1;
+	bottomCollisionBox.x = warriorBounds.x + (1 / 3) * warriorBounds.width;
+	bottomCollisionBox.width = (1 / 3) * warriorBounds.width;
+	bottomCollisionBox.y = warriorBounds.y + (4 / 5) * warriorBounds.height;
+	bottomCollisionBox.height = (1 / 5) * warriorBounds.height + 1;
+	leftCollisionBox.x = warriorBounds.x + 10;
+	leftCollisionBox.width = warriorBounds.width / 3 - 10;
+	leftCollisionBox.y = warriorBounds.y - 1;
+	leftCollisionBox.height = warriorBounds.height + 1;
+	rightCollisionBox.x = warriorBounds.x + (2 * warriorBounds.width) / 3;
+	rightCollisionBox.width = warriorBounds.width / 3 - 10;
+	rightCollisionBox.y = warriorBounds.y - 1;
+	rightCollisionBox.height = warriorBounds.height + 1;
 }
 
 function updateWarriorCollider() {
@@ -636,6 +665,17 @@ function setAudioEvents() {
 
 // TextureLoader functions :
 
+function updateAnimationState() {
+	if (
+		!isJumping &&
+		isAboutToCollideWithBottom &&
+		animationState === animationStateEnum.JUMPING
+	) {
+		animationState =
+			vx > 0 ? animationStateEnum.RUNNING : animationStateEnum.IDLING;
+	}
+}
+
 function loadWarriorAnimation() {
 	switch (animationState) {
 		case animationStateEnum.JUMPING:
@@ -672,8 +712,8 @@ function animateWarrior(delta) {
 	adventurerAnimationCount =
 		Math.round(
 			adventurerAnimationCount + getAnimationSpeed('player', delta)
-		) % textureArray.length;
-	warrior.texture = textureArray[adventurerAnimationCount];
+		) % warriorTextureArray.length;
+	warrior.texture = warriorTextureArray[adventurerAnimationCount];
 }
 
 function animateTreasureChest(delta) {
@@ -697,51 +737,67 @@ function getAnimationSpeed(animatedSpriteType, delta) {
 }
 
 function loadSmallAttackTexture() {
-	textureArray = [];
+	warriorTextureArray = [];
 	let loaderArray = loaders.adventurerLoader.adventurerAttacking1Anim;
-	loaderArray.forEach((img) => textureArray.push(new PIXI.Texture.from(img)));
+	loaderArray.forEach((img) =>
+		warriorTextureArray.push(new PIXI.Texture.from(img))
+	);
 }
 
 function loadBigAttackTexture() {
-	textureArray = [];
+	warriorTextureArray = [];
 	let loaderArray = loaders.adventurerLoader.adventurerAttacking2Anim;
-	loaderArray.forEach((img) => textureArray.push(new PIXI.Texture.from(img)));
+	loaderArray.forEach((img) =>
+		warriorTextureArray.push(new PIXI.Texture.from(img))
+	);
 }
 
 function loadIdleTexture() {
-	textureArray = [];
+	warriorTextureArray = [];
 	let loaderArray = loaders.adventurerLoader.adventurerIdlingAnim;
-	loaderArray.forEach((img) => textureArray.push(new PIXI.Texture.from(img)));
+	loaderArray.forEach((img) =>
+		warriorTextureArray.push(new PIXI.Texture.from(img))
+	);
 }
 
 function loadJumpTexture() {
-	textureArray = [];
+	warriorTextureArray = [];
 	let loaderArray = loaders.adventurerLoader.adventurerJumpingAnim;
-	loaderArray.forEach((img) => textureArray.push(new PIXI.Texture.from(img)));
+	loaderArray.forEach((img) =>
+		warriorTextureArray.push(new PIXI.Texture.from(img))
+	);
 }
 
 function loadRunTexture() {
-	textureArray = [];
+	warriorTextureArray = [];
 	let loaderArray = loaders.adventurerLoader.adventurerRunningAnim;
-	loaderArray.forEach((img) => textureArray.push(new PIXI.Texture.from(img)));
+	loaderArray.forEach((img) =>
+		warriorTextureArray.push(new PIXI.Texture.from(img))
+	);
 }
 
 function loadDieTexture() {
-	textureArray = [];
+	warriorTextureArray = [];
 	let loaderArray = loaders.adventurerLoader.adventurerDyingAnim;
-	loaderArray.forEach((img) => textureArray.push(new PIXI.Texture.from(img)));
+	loaderArray.forEach((img) =>
+		warriorTextureArray.push(new PIXI.Texture.from(img))
+	);
 }
 
 function loadCrouchTexture() {
-	textureArray = [];
+	warriorTextureArray = [];
 	let loaderArray = loaders.adventurerLoader.adventurerCrouchingAnim;
-	loaderArray.forEach((img) => textureArray.push(new PIXI.Texture.from(img)));
+	loaderArray.forEach((img) =>
+		warriorTextureArray.push(new PIXI.Texture.from(img))
+	);
 }
 
 function loadTakePotionTexture() {
-	textureArray = [];
+	warriorTextureArray = [];
 	let loaderArray = loaders.adventurerLoader.adventurerTakingPotionAnim;
-	loaderArray.forEach((img) => textureArray.push(new PIXI.Texture.from(img)));
+	loaderArray.forEach((img) =>
+		warriorTextureArray.push(new PIXI.Texture.from(img))
+	);
 }
 
 function loadOpeningTreasureChestTexture() {

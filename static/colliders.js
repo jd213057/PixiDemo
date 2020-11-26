@@ -4,6 +4,7 @@
 const pathToImgFolder = '/static/assets/images/';
 /**
  * @type {Object}
+ * @description List of wall colliders
  */
 const wallColliders = {
 	wallCollider1: {
@@ -33,6 +34,7 @@ const wallColliders = {
 };
 /**
  * @type {Object}
+ * @description List of floor colliders
  */
 const floorColliders = {
 	floorCollider1: {
@@ -94,6 +96,7 @@ const floorColliders = {
 };
 /**
  * @type {Object}
+ * @description List of object colliders
  */
 const objectColliders = {
 	treasureChest: {
@@ -105,7 +108,7 @@ const objectColliders = {
 		y: 258,
 		width: 32,
 		height: 32,
-	}
+	},
 };
 
 export default {wallColliders, floorColliders, objectColliders};

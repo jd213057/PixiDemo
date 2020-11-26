@@ -1,9 +1,11 @@
 /**
  * @type {string}
+ * @description Path to images repository
  */
 const pathToAnimation = '/static/assets/images/';
 /**
  * @type {Object}
+ * @description List of texture loaders for animated elements
  */
 const loaders = {
 	adventurerLoader: {
