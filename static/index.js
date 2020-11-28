@@ -254,7 +254,6 @@ function initializeGame() {
 	setAudioEvents();
 	addStageToScreen();
 	buildStage();
-	displayInitialMsg();
 }
 
 // Build Stage functions
@@ -270,6 +269,7 @@ function buildStage() {
 	setDecors(loaders);
 	setObjects();
 	setForeground();
+	displayInitialMsg();
 	addWarriorToStage();
 }
 
@@ -318,7 +318,7 @@ function addWarriorToStage() {
 	warrior.anchor.set(0.5);
 	warrior.scale.x = 2;
 	warrior.scale.y = 2;
-	warrior.x = app.screen.width / 2 - 350;
+	warrior.x = app.screen.width / 2 - 200;
 	warrior.y = app.screen.height / 2 - 150;
 	app.stage.addChild(warrior);
 }
@@ -385,6 +385,7 @@ function setKeyboardControls() {
 					crouch();
 					break;
 				case 'ArrowUp':
+					clearInterval(vxTimer);
 					jump();
 					break;
 				case 'ArrowLeft':
@@ -599,6 +600,7 @@ function detectObjectCollision(playerBox) {
 }
 
 function updatingVx() {
+	vc = animationState === animationStateEnum.IDLING ? 0 : 5;
 	if (
 		(isWarriorRightCentered && direction === 1) ||
 		(isWarriorLeftCentered &&
@@ -606,7 +608,6 @@ function updatingVx() {
 			!leftEdgeStageReached &&
 			!rightEdgeStageReached)
 	) {
-		vc = animationState === animationStateEnum.IDLING ? 0 : 5;
 		return;
 	}
 	warrior.x += vx * direction;
