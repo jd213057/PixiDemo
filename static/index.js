@@ -56,6 +56,11 @@ let isJumping = false;
 let isAboutToCollideWithBottom = false;
 /**
  * @type {boolean}
+ * @description Top part of player's sprite used for floor collisions
+ */
+let isAboutToCollideWithTop = false;
+/**
+ * @type {boolean}
  * @description Left part of player's sprite used for wall collisions
  */
 let isAboutToCollideWithLeft = false;
@@ -105,6 +110,16 @@ let floorCollidersList = [];
  */
 let objectCollidersList = [];
 /**
+ * @type {Array}
+ * @description ArrayList of scenery colliders
+ */
+let decorsCollidersList = [];
+/**
+ * @type {Array}
+ * @description ArrayList of mobile colliders
+ */
+let mobileCollidersList = [];
+/**
  * @type {PIXI.Sprite}
  * @description Treasure Chest sprite
  */
@@ -124,6 +139,11 @@ let warriorBounds = new PIXI.Rectangle();
  * @description Player's bottom part bounds
  */
 let bottomCollisionBox = new PIXI.Rectangle();
+/**
+ * @type {PIXI.Rectangle}
+ * @description Player's top part bounds
+ */
+let topCollisionBox = new PIXI.Rectangle();
 /**
  * @type {PIXI.Rectangle}
  * @description Player's left part bounds
@@ -170,10 +190,25 @@ let middleground = new PIXI.Container();
  */
 let background = new PIXI.Container();
 /**
+ * @type {PIXI.Container}
+ * @description Child container of Foreground, contains all moving colliders
+ */
+let mobileForegroundSubContainer = new PIXI.Container();
+/**
  * @type {NodeJS.Timeout}
  * @description Timer for vx decreasing when player stops
  */
 let vxTimer;
+/**
+ * @type {number}
+ * @description Counter for mobile platforms
+ */
+let movementCount = 0;
+/**
+ * @type {number}
+ * @description Speed for mobile platforms
+ */
+let movementSpeed = -5;
 /**
  * @type {boolean}
  * @description Indicates whether sound is playing or not
@@ -227,18 +262,26 @@ const pathToAnimation = '/static/assets/images/';
 initializeGame();
 
 app.ticker.add((delta) => {
+	reloadIfFalling();
 	warriorBounds = warrior.getBounds();
 	calculateWideBoxes();
 	updateCameraCheckers();
 	updateWarriorCollider();
-	if (!isAboutToCollideWithLeft && !isAboutToCollideWithRight) {
+	if (
+		(!isAboutToCollideWithLeft && direction !== -1) ||
+		(!isAboutToCollideWithRight && direction !== 1)
+	) {
 		updatingVx();
+	}
+	if (isAboutToCollideWithBottom) {
+		vy = 0;
+		isJumping = false;
+	}
+	if (isAboutToCollideWithTop) {
+		vy *= -1;
 	}
 	if (!isAboutToCollideWithBottom) {
 		updatingVy();
-	} else if (isAboutToCollideWithBottom) {
-		vy = 0;
-		isJumping = false;
 	}
 	moveCamera();
 	updateAnimationState();
@@ -265,9 +308,10 @@ function addStageToScreen() {
 function buildStage() {
 	setBackgroungImg();
 	setBackground();
-	setColliders(colliders);
-	setDecors(loaders);
+	setDecors();
+	setStaticColliders();
 	setObjects();
+	setMobileColliders();
 	setForeground();
 	displayInitialMsg();
 	addWarriorToStage();
@@ -291,7 +335,15 @@ function setForeground() {
 	app.stage.addChild(foreground);
 }
 
-function setDecors(loaders) {}
+function setDecors() {
+	let decorsCollidersObject = colliders.decorsColliders;
+	let collider;
+	for (const decorsConf in decorsCollidersObject) {
+		collider = createBasicCollider(decorsCollidersObject[decorsConf]);
+		foreground.addChild(collider);
+		decorsCollidersList.push(collider.getBounds());
+	}
+}
 
 function setObjects() {
 	let treasureChestTexture = PIXI.Texture.from(
@@ -323,9 +375,9 @@ function addWarriorToStage() {
 	app.stage.addChild(warrior);
 }
 
-function setColliders(collidersConf) {
-	let floorCollidersObject = collidersConf.floorColliders;
-	let wallCollidersObject = collidersConf.wallColliders;
+function setStaticColliders() {
+	let floorCollidersObject = colliders.floorColliders;
+	let wallCollidersObject = colliders.wallColliders;
 	let collider;
 	for (const floorConf in floorCollidersObject) {
 		collider = createBasicCollider(floorCollidersObject[floorConf]);
@@ -339,6 +391,18 @@ function setColliders(collidersConf) {
 	}
 }
 
+function setMobileColliders() {
+	let collider;
+	let mobileCollidersObject = colliders.mobileColliders;
+	for (const mobileCollider in mobileCollidersObject) {
+		collider = createBasicCollider(mobileCollidersObject[mobileCollider]);
+		mobileForegroundSubContainer.addChild(collider);
+		mobileCollidersList.push(collider);
+	}
+	foreground.addChild(mobileForegroundSubContainer);
+	setUpMovementCycle();
+}
+
 function createBasicCollider(colliderConf) {
 	let newTexture = PIXI.Texture.from(colliderConf.imgPath);
 	let newCollider = new PIXI.Sprite(newTexture);
@@ -348,6 +412,16 @@ function createBasicCollider(colliderConf) {
 	newCollider.width = colliderConf.width;
 	newCollider.height = colliderConf.height;
 	return newCollider;
+}
+
+function setUpMovementCycle() {
+	setInterval(() => {
+		if (movementCount % 50 === 0) {
+			movementSpeed *= -1;
+		}
+		movementCount++;
+		mobileForegroundSubContainer.x += movementSpeed;
+	}, 100);
 }
 
 // Controls functions :
@@ -392,7 +466,7 @@ function setKeyboardControls() {
 					warrior.scale.x = -2;
 					direction = -1;
 					clearInterval(vxTimer);
-					if (!detectWallCollision(leftCollisionBox)) {
+					if (!detectFloorCollision(leftCollisionBox)) {
 						move();
 					}
 					break;
@@ -400,7 +474,7 @@ function setKeyboardControls() {
 					warrior.scale.x = 2;
 					direction = 1;
 					clearInterval(vxTimer);
-					if (!detectWallCollision(rightCollisionBox)) {
+					if (!detectFloorCollision(rightCollisionBox)) {
 						move();
 					}
 					break;
@@ -542,25 +616,36 @@ function doNothing() {}
 
 // Physics functions:
 
+function reloadIfFalling() {
+	if (warrior.y > app.screen.height) {
+		window.location.reload();
+	}
+}
+
 function calculateWideBoxes() {
 	bottomCollisionBox.x = warriorBounds.x + (1 / 3) * warriorBounds.width;
 	bottomCollisionBox.width = (1 / 3) * warriorBounds.width;
 	bottomCollisionBox.y = warriorBounds.y + (4 / 5) * warriorBounds.height;
 	bottomCollisionBox.height = (1 / 5) * warriorBounds.height + 1;
+	topCollisionBox.x = warriorBounds.x + (1 / 3) * warriorBounds.width;
+	topCollisionBox.width = (1 / 3) * warriorBounds.width;
+	topCollisionBox.y = warriorBounds.y;
+	topCollisionBox.height = (1 / 5) * warriorBounds.height + 1;
 	leftCollisionBox.x = warriorBounds.x + 10;
 	leftCollisionBox.width = warriorBounds.width / 3 - 10;
 	leftCollisionBox.y = warriorBounds.y - 1;
-	leftCollisionBox.height = warriorBounds.height + 1;
+	leftCollisionBox.height = (4 / 5) * warriorBounds.height;
 	rightCollisionBox.x = warriorBounds.x + (2 * warriorBounds.width) / 3;
 	rightCollisionBox.width = warriorBounds.width / 3 - 10;
 	rightCollisionBox.y = warriorBounds.y - 1;
-	rightCollisionBox.height = warriorBounds.height + 1;
+	rightCollisionBox.height = (4 / 5) * warriorBounds.height;
 }
 
 function updateWarriorCollider() {
 	isAboutToCollideWithBottom = detectFloorCollision(bottomCollisionBox);
-	isAboutToCollideWithLeft = detectWallCollision(leftCollisionBox);
-	isAboutToCollideWithRight = detectWallCollision(rightCollisionBox);
+	isAboutToCollideWithTop = detectFloorCollision(topCollisionBox);
+	isAboutToCollideWithLeft = detectFloorCollision(leftCollisionBox);
+	isAboutToCollideWithRight = detectFloorCollision(rightCollisionBox);
 }
 
 function isColliding(playerBox, collider) {
@@ -583,6 +668,11 @@ function detectWallCollision(playerBox) {
 
 function detectFloorCollision(playerBox) {
 	for (const collider of floorCollidersList) {
+		if (isColliding(playerBox, collider)) {
+			return true;
+		}
+	}
+	for (const collider of mobileCollidersList) {
 		if (isColliding(playerBox, collider)) {
 			return true;
 		}
@@ -911,30 +1001,53 @@ function moveForeground() {
 }
 
 function updateForegroundCollidersPosition() {
+	const decorsColliderListLength = decorsCollidersList.length;
 	const floorColliderListLength = floorCollidersList.length;
 	const wallCollidersListLength = wallCollidersList.length;
 	const objectCollidersListLength = objectCollidersList.length;
+	const mobileCollidersListLength = mobileCollidersList.length;
+	decorsCollidersList = [];
 	floorCollidersList = [];
 	wallCollidersList = [];
 	objectCollidersList = [];
-	for (let i = 0; i < floorColliderListLength; i++) {
+	mobileCollidersList = [];
+	for (let i = 0; i < decorsColliderListLength; i++) {
+		decorsCollidersList.push(foreground.children[i].getBounds());
+	}
+	for (
+		let i = decorsColliderListLength;
+		i < decorsColliderListLength + floorColliderListLength;
+		i++
+	) {
 		floorCollidersList.push(foreground.children[i].getBounds());
 	}
 	for (
-		let i = floorColliderListLength;
-		i < floorColliderListLength + wallCollidersListLength;
+		let i = decorsColliderListLength + floorColliderListLength;
+		i <
+		decorsColliderListLength +
+			floorColliderListLength +
+			wallCollidersListLength;
 		i++
 	) {
 		wallCollidersList.push(foreground.children[i].getBounds());
 	}
 	for (
-		let i = floorColliderListLength + wallCollidersListLength;
+		let i =
+			decorsColliderListLength +
+			floorColliderListLength +
+			wallCollidersListLength;
 		i <
-		floorColliderListLength +
+		decorsColliderListLength +
+			floorColliderListLength +
 			wallCollidersListLength +
 			objectCollidersListLength;
 		i++
 	) {
 		objectCollidersList.push(foreground.children[i].getBounds());
+	}
+	for (const subElementContainer of foreground.children[
+		foreground.children.length - 1
+	].children) {
+		mobileCollidersList.push(subElementContainer.getBounds());
 	}
 }
