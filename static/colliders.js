@@ -108,7 +108,7 @@ const floorColliders = {
 		width: 32,
 		height: 32,
 	},
-	floorCollider2: {
+	groundCollider1: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 0,
@@ -116,7 +116,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider3: {
+	groundCollider2: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 64,
@@ -124,7 +124,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider4: {
+	groundCollider3: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 64,
@@ -132,7 +132,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider5: {
+	groundCollider4: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 128,
@@ -140,7 +140,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider6: {
+	groundCollider5: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 192,
@@ -148,7 +148,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider7: {
+	groundCollider6: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 256,
@@ -156,7 +156,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider8: {
+	groundCollider7: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 320,
@@ -164,7 +164,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider9: {
+	groundCollider8: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 0,
@@ -172,7 +172,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider10: {
+	groundCollider9: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 64,
@@ -180,7 +180,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider11: {
+	groundCollider10: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 64,
@@ -188,7 +188,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider12: {
+	groundCollider11: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 128,
@@ -196,7 +196,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider13: {
+	groundCollider12: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 192,
@@ -204,7 +204,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider14: {
+	groundCollider13: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 256,
@@ -212,7 +212,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider15: {
+	groundCollider14: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 320,
@@ -220,7 +220,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider16: {
+	groundCollider15: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 0,
@@ -228,7 +228,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider17: {
+	groundCollider16: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 64,
@@ -236,7 +236,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider18: {
+	groundCollider17: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 64,
@@ -244,7 +244,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider19: {
+	groundCollider18: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 128,
@@ -252,7 +252,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider20: {
+	groundCollider19: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 192,
@@ -260,7 +260,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider21: {
+	groundCollider20: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 256,
@@ -268,7 +268,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider22: {
+	groundCollider21: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 320,
@@ -276,7 +276,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider23: {
+	groundCollider22: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 0,
@@ -284,7 +284,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider24: {
+	groundCollider23: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 64,
@@ -292,7 +292,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider25: {
+	groundCollider24: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 64,
@@ -300,7 +300,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider26: {
+	groundCollider25: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 128,
@@ -308,7 +308,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider27: {
+	groundCollider26: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 192,
@@ -316,7 +316,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider28: {
+	groundCollider27: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 256,
@@ -324,7 +324,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider29: {
+	groundCollider28: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 320,
@@ -332,7 +332,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider30: {
+	boxCollider1: {
 		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
 		anchor: 0.0,
 		x: 490,
@@ -340,7 +340,7 @@ const floorColliders = {
 		width: 32,
 		height: 32,
 	},
-	floorCollider31: {
+	boxCollider2: {
 		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
 		anchor: 0.0,
 		x: 522,
@@ -348,7 +348,7 @@ const floorColliders = {
 		width: 32,
 		height: 32,
 	},
-	floorCollider32: {
+	boxCollider3: {
 		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
 		anchor: 0.0,
 		x: 620,
@@ -356,7 +356,7 @@ const floorColliders = {
 		width: 32,
 		height: 32,
 	},
-	floorCollider33: {
+	boxCollider4: {
 		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
 		anchor: 0.0,
 		x: 652,
@@ -364,7 +364,7 @@ const floorColliders = {
 		width: 32,
 		height: 32,
 	},
-	floorCollider34: {
+	boxCollider5: {
 		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
 		anchor: 0.0,
 		x: 750,
@@ -372,7 +372,7 @@ const floorColliders = {
 		width: 32,
 		height: 32,
 	},
-	floorCollider35: {
+	boxCollider6: {
 		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
 		anchor: 0.0,
 		x: 782,
@@ -476,7 +476,7 @@ const floorColliders = {
 		width: 32,
 		height: 32,
 	},
-	floorCollider36: {
+	groundCollider29: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 880,
@@ -484,7 +484,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider37: {
+	groundCollider30: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 944,
@@ -492,7 +492,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider38: {
+	groundCollider31: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 1008,
@@ -500,7 +500,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider39: {
+	groundCollider32: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 1072,
@@ -508,7 +508,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider40: {
+	groundCollider33: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 1136,
@@ -516,7 +516,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider41: {
+	groundCollider34: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 1200,
@@ -524,7 +524,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider43: {
+	boxCollider7: {
 		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
 		anchor: 0.0,
 		x: 1168,
@@ -532,7 +532,7 @@ const floorColliders = {
 		width: 32,
 		height: 32,
 	},
-	floorCollider44: {
+	boxCollider8: {
 		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
 		anchor: 0.0,
 		x: 1136,
@@ -540,7 +540,7 @@ const floorColliders = {
 		width: 32,
 		height: 32,
 	},
-	floorCollider47: {
+	boxCollider9: {
 		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
 		anchor: 0.0,
 		x: 1168,
@@ -548,7 +548,7 @@ const floorColliders = {
 		width: 32,
 		height: 32,
 	},
-	floorCollider48: {
+	boxCollider10: {
 		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
 		anchor: 0.0,
 		x: 1200,
@@ -556,7 +556,7 @@ const floorColliders = {
 		width: 32,
 		height: 32,
 	},
-	floorCollider49: {
+	boxCollider11: {
 		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
 		anchor: 0.0,
 		x: 1232,
@@ -612,7 +612,7 @@ const floorColliders = {
 		width: 32,
 		height: 32,
 	},
-	floorCollider50: {
+	groundCollider35: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 2200,
@@ -620,7 +620,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider51: {
+	groundCollider36: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 2264,
@@ -628,7 +628,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider52: {
+	groundCollider37: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 2328,
@@ -652,7 +652,7 @@ const floorColliders = {
 		width: 32,
 		height: 32,
 	},
-	floorCollider53: {
+	groundCollider38: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 2392,
@@ -660,7 +660,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider54: {
+	groundCollider39: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 2392,
@@ -668,7 +668,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider55: {
+	groundCollider40: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 2392,
@@ -692,7 +692,7 @@ const floorColliders = {
 		width: 32,
 		height: 32,
 	},
-	floorCollider56: {
+	groundCollider41: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 2456,
@@ -700,7 +700,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider57: {
+	groundCollider42: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 2456,
@@ -708,7 +708,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider58: {
+	groundCollider43: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 2456,
@@ -716,7 +716,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider59: {
+	groundCollider44: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 2456,
@@ -724,7 +724,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider60: {
+	groundCollider45: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 2456,
@@ -740,6 +740,14 @@ const floorColliders = {
 		width: 32,
 		height: 32,
 	},
+	boxCollider12: {
+		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
+		anchor: 0.0,
+		x: 2520,
+		y: 110,
+		width: 32,
+		height: 32,
+	},
 	grassCollider36: {
 		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
 		anchor: 0.0,
@@ -748,7 +756,7 @@ const floorColliders = {
 		width: 32,
 		height: 32,
 	},
-	floorCollider61: {
+	groundCollider46: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 2520,
@@ -756,7 +764,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider62: {
+	groundCollider47: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 2520,
@@ -764,7 +772,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider63: {
+	groundCollider48: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 2520,
@@ -789,7 +797,7 @@ const floorColliders = {
 		width: 32,
 		height: 32,
 	},
-	floorCollider64: {
+	groundCollider49: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 2584,
@@ -797,7 +805,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider65: {
+	groundCollider50: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 2584,
@@ -805,7 +813,7 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider66: {
+	groundCollider51: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 2584,
@@ -829,7 +837,15 @@ const floorColliders = {
 		width: 32,
 		height: 32,
 	},
-	floorCollider67: {
+	boxCollider13: {
+		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
+		anchor: 0.0,
+		x: 2680,
+		y: 110,
+		width: 32,
+		height: 32,
+	},
+	groundCollider52: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 2648,
@@ -837,19 +853,11 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider68: {
+	groundCollider53: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 2648,
 		y: 508,
-		width: 64,
-		height: 64,
-	},
-	floorCollider69: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
-		anchor: 0.0,
-		x: 2648,
-		y: 444,
 		width: 64,
 		height: 64,
 	},
@@ -869,7 +877,7 @@ const floorColliders = {
 		width: 32,
 		height: 32,
 	},
-	floorCollider70: {
+	groundCollider54: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 2712,
@@ -877,10 +885,450 @@ const floorColliders = {
 		width: 64,
 		height: 64,
 	},
-	floorCollider71: {
+	groundCollider55: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
 		x: 2712,
+		y: 508,
+		width: 64,
+		height: 64,
+	},
+	grassCollider44: {
+		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		anchor: 0.0,
+		x: 2776,
+		y: 236,
+		width: 32,
+		height: 32,
+	},
+	grassCollider45: {
+		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		anchor: 0.0,
+		x: 2808,
+		y: 236,
+		width: 32,
+		height: 32,
+	},
+	groundCollider56: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 2776,
+		y: 252,
+		width: 64,
+		height: 64,
+	},
+	groundCollider57: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 2776,
+		y: 316,
+		width: 64,
+		height: 64,
+	},
+	groundCollider58: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 2776,
+		y: 348,
+		width: 64,
+		height: 64,
+	},
+	groundCollider59: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 2776,
+		y: 508,
+		width: 64,
+		height: 64,
+	},
+	grassCollider46: {
+		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		anchor: 0.0,
+		x: 2840,
+		y: 300,
+		width: 32,
+		height: 32,
+	},
+	grassCollider47: {
+		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		anchor: 0.0,
+		x: 2872,
+		y: 300,
+		width: 32,
+		height: 32,
+	},
+	groundCollider60: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 2840,
+		y: 316,
+		width: 64,
+		height: 64,
+	},
+	groundCollider61: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 2840,
+		y: 348,
+		width: 64,
+		height: 64,
+	},
+	boxCollider14: {
+		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
+		anchor: 0.0,
+		x: 2824,
+		y: 110,
+		width: 32,
+		height: 32,
+	},
+	boxCollider15: {
+		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
+		anchor: 0.0,
+		x: 2904,
+		y: 380,
+		width: 32,
+		height: 32,
+	},
+	boxCollider16: {
+		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
+		anchor: 0.0,
+		x: 2968,
+		y: 110,
+		width: 32,
+		height: 32,
+	},
+	groundCollider62: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 2840,
+		y: 508,
+		width: 64,
+		height: 64,
+	},
+	groundCollider63: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 2904,
+		y: 508,
+		width: 64,
+		height: 64,
+	},
+	groundCollider64: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 2968,
+		y: 508,
+		width: 64,
+		height: 64,
+	},
+	groundCollider65: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3032,
+		y: 508,
+		width: 64,
+		height: 64,
+	},
+	groundCollider66: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3096,
+		y: 508,
+		width: 64,
+		height: 64,
+	},
+	grassCollider48: {
+		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		anchor: 0.0,
+		x: 3160,
+		y: 108,
+		width: 32,
+		height: 32,
+	},
+	grassCollider49: {
+		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		anchor: 0.0,
+		x: 3192,
+		y: 108,
+		width: 32,
+		height: 32,
+	},
+	groundCollider67: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3160,
+		y: 124,
+		width: 64,
+		height: 64,
+	},
+	groundCollider68: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3160,
+		y: 188,
+		width: 64,
+		height: 64,
+	},
+	groundCollider69: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3160,
+		y: 252,
+		width: 64,
+		height: 64,
+	},
+	groundCollider70: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3160,
+		y: 316,
+		width: 64,
+		height: 64,
+	},
+	groundCollider71: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3160,
+		y: 380,
+		width: 64,
+		height: 64,
+	},
+	groundCollider72: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3160,
+		y: 444,
+		width: 64,
+		height: 64,
+	},
+	groundCollider73: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3160,
+		y: 508,
+		width: 64,
+		height: 64,
+	},
+	grassCollider50: {
+		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		anchor: 0.0,
+		x: 3224,
+		y: 108,
+		width: 32,
+		height: 32,
+	},
+	grassCollider51: {
+		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		anchor: 0.0,
+		x: 3256,
+		y: 108,
+		width: 32,
+		height: 32,
+	},
+	groundCollider74: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3224,
+		y: 124,
+		width: 64,
+		height: 64,
+	},
+	groundCollider75: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3224,
+		y: 188,
+		width: 64,
+		height: 64,
+	},
+	groundCollider76: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3224,
+		y: 252,
+		width: 64,
+		height: 64,
+	},
+	groundCollider77: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3224,
+		y: 316,
+		width: 64,
+		height: 64,
+	},
+	groundCollider78: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3224,
+		y: 380,
+		width: 64,
+		height: 64,
+	},
+	groundCollider79: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3224,
+		y: 444,
+		width: 64,
+		height: 64,
+	},
+	groundCollider80: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3224,
+		y: 508,
+		width: 64,
+		height: 64,
+	},
+	grassCollider52: {
+		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		anchor: 0.0,
+		x: 3288,
+		y: 108,
+		width: 32,
+		height: 32,
+	},
+	grassCollider53: {
+		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		anchor: 0.0,
+		x: 3320,
+		y: 108,
+		width: 32,
+		height: 32,
+	},
+	groundCollider81: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3288,
+		y: 124,
+		width: 64,
+		height: 64,
+	},
+	groundCollider82: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3288,
+		y: 188,
+		width: 64,
+		height: 64,
+	},
+	groundCollider83: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3288,
+		y: 252,
+		width: 64,
+		height: 64,
+	},
+	groundCollider84: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3288,
+		y: 316,
+		width: 64,
+		height: 64,
+	},
+	groundCollider85: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3288,
+		y: 380,
+		width: 64,
+		height: 64,
+	},
+	groundCollider86: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3288,
+		y: 444,
+		width: 64,
+		height: 64,
+	},
+	groundCollider87: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3288,
+		y: 508,
+		width: 64,
+		height: 64,
+	},
+	boxCollider17: {
+		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
+		anchor: 0.0,
+		x: 3496,
+		y: 110,
+		width: 32,
+		height: 32,
+	},
+	grassCollider54: {
+		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		anchor: 0.0,
+		x: 3672,
+		y: 108,
+		width: 32,
+		height: 32,
+	},
+	grassCollider55: {
+		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		anchor: 0.0,
+		x: 3704,
+		y: 108,
+		width: 32,
+		height: 32,
+	},
+	groundCollider88: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3672,
+		y: 124,
+		width: 64,
+		height: 64,
+	},
+	groundCollider89: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3672,
+		y: 188,
+		width: 64,
+		height: 64,
+	},
+	groundCollider90: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3672,
+		y: 252,
+		width: 64,
+		height: 64,
+	},
+	groundCollider91: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3672,
+		y: 316,
+		width: 64,
+		height: 64,
+	},
+	groundCollider92: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3672,
+		y: 380,
+		width: 64,
+		height: 64,
+	},
+	groundCollider93: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3672,
+		y: 444,
+		width: 64,
+		height: 64,
+	},
+	groundCollider94: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 3672,
 		y: 508,
 		width: 64,
 		height: 64,
@@ -1119,6 +1567,118 @@ const decorsColliders = {
 		width: 64,
 		height: 64,
 	},
+	mineCollider1: {
+		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		anchor: 0.0,
+		x: 2520,
+		y: 380,
+		width: 64,
+		height: 64,
+	},
+	mineCollider2: {
+		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		anchor: 0.0,
+		x: 2520,
+		y: 316,
+		width: 64,
+		height: 64,
+	},
+	mineCollider3: {
+		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		anchor: 0.0,
+		x: 2584,
+		y: 380,
+		width: 64,
+		height: 64,
+	},
+	mineCollider4: {
+		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		anchor: 0.0,
+		x: 2584,
+		y: 316,
+		width: 64,
+		height: 64,
+	},
+	mineCollider5: {
+		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		anchor: 0.0,
+		x: 2648,
+		y: 380,
+		width: 64,
+		height: 64,
+	},
+	mineCollider6: {
+		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		anchor: 0.0,
+		x: 2648,
+		y: 316,
+		width: 64,
+		height: 64,
+	},
+	mineCollider7: {
+		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		anchor: 0.0,
+		x: 2648,
+		y: 444,
+		width: 64,
+		height: 64,
+	},
+	mineCollider8: {
+		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		anchor: 0.0,
+		x: 2712,
+		y: 380,
+		width: 64,
+		height: 64,
+	},
+	mineCollider9: {
+		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		anchor: 0.0,
+		x: 2712,
+		y: 316,
+		width: 64,
+		height: 64,
+	},
+	mineCollider10: {
+		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		anchor: 0.0,
+		x: 2712,
+		y: 444,
+		width: 64,
+		height: 64,
+	},
+	mineCollider11: {
+		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		anchor: 0.0,
+		x: 2776,
+		y: 444,
+		width: 64,
+		height: 64,
+	},
+	mineCollider12: {
+		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		anchor: 0.0,
+		x: 2776,
+		y: 380,
+		width: 64,
+		height: 64,
+	},
+	mineCollider13: {
+		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		anchor: 0.0,
+		x: 2840,
+		y: 444,
+		width: 64,
+		height: 64,
+	},
+	mineCollider14: {
+		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		anchor: 0.0,
+		x: 2840,
+		y: 380,
+		width: 64,
+		height: 64,
+	},
 };
 
 const mobileColliders = {
@@ -1129,7 +1689,7 @@ const mobileColliders = {
 		y: 320,
 		width: 32,
 		height: 32,
-		movement: 1,
+		movement: '-1X',
 	},
 	mobileCollider2: {
 		imgPath: pathToImgFolder + 'Levels/level_01_box_02_32.png',
@@ -1138,7 +1698,7 @@ const mobileColliders = {
 		y: 320,
 		width: 32,
 		height: 32,
-		movement: 1,
+		movement: '-1X',
 	},
 	mobileCollider3: {
 		imgPath: pathToImgFolder + 'Levels/level_01_box_02_32.png',
@@ -1147,7 +1707,7 @@ const mobileColliders = {
 		y: 320,
 		width: 32,
 		height: 32,
-		movement: 1,
+		movement: '-1X',
 	},
 	mobileCollider4: {
 		imgPath: pathToImgFolder + 'Levels/level_01_box_02_32.png',
@@ -1156,7 +1716,7 @@ const mobileColliders = {
 		y: 320,
 		width: 32,
 		height: 32,
-		movement: -1,
+		movement: '-1X',
 	},
 	mobileCollider5: {
 		imgPath: pathToImgFolder + 'Levels/level_01_box_02_32.png',
@@ -1165,7 +1725,7 @@ const mobileColliders = {
 		y: 320,
 		width: 32,
 		height: 32,
-		movement: -1,
+		movement: '-1X',
 	},
 	mobileCollider6: {
 		imgPath: pathToImgFolder + 'Levels/level_01_box_02_32.png',
@@ -1174,7 +1734,61 @@ const mobileColliders = {
 		y: 320,
 		width: 32,
 		height: 32,
-		movement: -1,
+		movement: '-1X',
+	},
+	mobileCollider7: {
+		imgPath: pathToImgFolder + 'Levels/level_01_box_02_32.png',
+		anchor: 0.0,
+		x: 3832,
+		y: 444,
+		width: 32,
+		height: 32,
+		movement: '-1X',
+	},
+	mobileCollider8: {
+		imgPath: pathToImgFolder + 'Levels/level_01_box_02_32.png',
+		anchor: 0.0,
+		x: 3864,
+		y: 444,
+		width: 32,
+		height: 32,
+		movement: '-1X',
+	},
+	mobileCollider9: {
+		imgPath: pathToImgFolder + 'Levels/level_01_box_02_32.png',
+		anchor: 0.0,
+		x: 3896,
+		y: 444,
+		width: 32,
+		height: 32,
+		movement: '-1X',
+	},
+	mobileCollider10: {
+		imgPath: pathToImgFolder + 'Levels/level_01_box_02_32.png',
+		anchor: 0.0,
+		x: 4184,
+		y: 110,
+		width: 32,
+		height: 32,
+		movement: '-1Y',
+	},
+	mobileCollider11: {
+		imgPath: pathToImgFolder + 'Levels/level_01_box_02_32.png',
+		anchor: 0.0,
+		x: 4216,
+		y: 110,
+		width: 32,
+		height: 32,
+		movement: '-1Y',
+	},
+	mobileCollider12: {
+		imgPath: pathToImgFolder + 'Levels/level_01_box_02_32.png',
+		anchor: 0.0,
+		x: 4248,
+		y: 110,
+		width: 32,
+		height: 32,
+		movement: '-1Y',
 	},
 };
 

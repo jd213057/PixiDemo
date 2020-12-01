@@ -6,8 +6,8 @@
 	"editor.formatOnSave": true,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"workbench.editor.highlightModifiedTabs": true,
-	"files.autoSave": "afterDelay",
-	"files.autoSaveDelay": 1000,
+	"files.autoSave": "onFocusChange",
+	/* 	"files.autoSaveDelay": 1000, */
 	"files.trimFinalNewlines": true,
 	"explorer.sortOrder": "type",
 	"editor.cursorStyle": "line-thin",

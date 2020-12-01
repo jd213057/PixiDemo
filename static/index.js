@@ -125,6 +125,16 @@ let leftToRightCollidersList = [];
  */
 let rightToLeftCollidersList = [];
 /**
+ * @type {Array}
+ * @description ArrayList of mobile colliders moving from bottom to top
+ */
+let bottomToTopCollidersList = [];
+/**
+ * @type {Array}
+ * @description ArrayList of mobile colliders moving from top to bottom
+ */
+let topToBottomCollidersList = [];
+/**
  * @type {PIXI.Sprite}
  * @description Treasure Chest sprite
  */
@@ -206,14 +216,34 @@ let middleground = new PIXI.Container();
 let background = new PIXI.Container();
 /**
  * @type {PIXI.Container}
- * @description Child container of Foreground, contains all moving colliders from left to right
+ * @description Child container of Foreground, contains all moving colliders
+ */
+let foregroundStaticCollidersSubContainer = new PIXI.Container();
+/**
+ * @type {PIXI.Container}
+ * @description Child container of Foreground, contains all moving colliders
+ */
+let foregroundMobileCollidersSubContainer = new PIXI.Container();
+/**
+ * @type {PIXI.Container}
+ * @description Child container of foregroundMobileCollidersSubContainer, contains all moving colliders from left to right
  */
 let leftToRightForegroundSubContainer = new PIXI.Container();
 /**
  * @type {PIXI.Container}
- * @description Child container of Foreground, contains all moving colliders from right to left
+ * @description Child container of foregroundMobileCollidersSubContainer, contains all moving colliders from right to left
  */
 let rightToLeftForegroundSubContainer = new PIXI.Container();
+/**
+ * @type {PIXI.Container}
+ * @description Child container of foregroundMobileCollidersSubContainer, contains all moving colliders from top to bottom
+ */
+let topToBottomForegroundSubContainer = new PIXI.Container();
+/**
+ * @type {PIXI.Container}
+ * @description Child container of foregroundMobileCollidersSubContainer, contains all moving colliders from bottom to top
+ */
+let bottomToTopForegroundSubContainer = new PIXI.Container();
 /**
  * @type {NodeJS.Timeout}
  * @description Timer for vx decreasing when player stops
@@ -428,14 +458,28 @@ function setMobileColliders() {
 	let mobileCollidersObject = colliders.mobileColliders;
 	for (const mobileCollider in mobileCollidersObject) {
 		collider = createBasicCollider(mobileCollidersObject[mobileCollider]);
-		mobileCollider.movement === 1
-			? setLeftToRightMobileSubContainer(collider)
-			: setRightToLeftMobileSubContainer(collider);
+		switch (mobileCollidersObject[mobileCollider].movement) {
+			case '+1X':
+				setLeftToRightMobileSubContainer(collider);
+				break;
+			case '-1X':
+				setRightToLeftMobileSubContainer(collider);
+				break;
+			case '+1Y':
+				setTopToBottomMobileContainer(collider);
+				break;
+			case '-1Y':
+				setBottomToTopMobileSubContainer(collider);
+				break;
+		}
 	}
-	foreground.addChild(
+	foregroundMobileCollidersSubContainer.addChild(
 		leftToRightForegroundSubContainer,
-		rightToLeftForegroundSubContainer
+		rightToLeftForegroundSubContainer,
+		topToBottomForegroundSubContainer,
+		bottomToTopForegroundSubContainer
 	);
+	foreground.addChild(foregroundMobileCollidersSubContainer);
 }
 
 function setLeftToRightMobileSubContainer(collider) {
@@ -446,6 +490,16 @@ function setLeftToRightMobileSubContainer(collider) {
 function setRightToLeftMobileSubContainer(collider) {
 	rightToLeftForegroundSubContainer.addChild(collider);
 	rightToLeftCollidersList.push(collider);
+}
+
+function setTopToBottomMobileContainer(collider) {
+	topToBottomForegroundSubContainer.addChild(collider);
+	topToBottomCollidersList.push(collider);
+}
+
+function setBottomToTopMobileSubContainer(collider) {
+	bottomToTopForegroundSubContainer.addChild(collider);
+	bottomToTopCollidersList.push(collider);
 }
 
 function createBasicCollider(colliderConf) {
@@ -466,30 +520,53 @@ function updateMovementCycle() {
 	}
 	leftToRightForegroundSubContainer.x += movementSpeed;
 	rightToLeftForegroundSubContainer.x -= movementSpeed;
+	topToBottomForegroundSubContainer.y += movementSpeed;
+	bottomToTopForegroundSubContainer.y -= movementSpeed;
 }
 
 function updateMobileColliders() {
-	const leftToRightCollidersListLength = leftToRightCollidersList.length;
-	const rightToLeftCollidersListLength = rightToLeftCollidersList.length;
+	const mobileCollidersContainersList = Array.from(
+		foreground.children[foreground.children.length - 1].children
+	);
 	leftToRightCollidersList = [];
 	rightToLeftCollidersList = [];
-	for (let i = 0; i < leftToRightCollidersListLength; i++) {
-		leftToRightCollidersList.push(
-			foreground.children[foreground.children.length - 1].children[
-				i
-			].getBounds()
-		);
-	}
-	for (
-		let i = leftToRightCollidersListLength;
-		i < leftToRightCollidersListLength + rightToLeftCollidersListLength;
-		i++
+	topToBottomCollidersList = [];
+	bottomToTopCollidersList = [];
+	if (
+		mobileCollidersContainersList[0] !== undefined ||
+		mobileCollidersContainersList !== null
 	) {
-		rightToLeftCollidersList.push(
-			foreground.children[foreground.children.length - 1].children[
-				i
-			].getBounds()
-		);
+		for (const mobileCollider of mobileCollidersContainersList[0]
+			.children) {
+			leftToRightCollidersList.push(mobileCollider.getBounds());
+		}
+	}
+	if (
+		mobileCollidersContainersList[1] !== undefined ||
+		mobileCollidersContainersList !== null
+	) {
+		for (const mobileCollider of mobileCollidersContainersList[1]
+			.children) {
+			rightToLeftCollidersList.push(mobileCollider.getBounds());
+		}
+	}
+	if (
+		mobileCollidersContainersList[2] !== undefined ||
+		mobileCollidersContainersList !== null
+	) {
+		for (const mobileCollider of mobileCollidersContainersList[2]
+			.children) {
+			topToBottomCollidersList.push(mobileCollider.getBounds());
+		}
+	}
+	if (
+		mobileCollidersContainersList[3] !== undefined ||
+		mobileCollidersContainersList !== null
+	) {
+		for (const mobileCollider of mobileCollidersContainersList[3]
+			.children) {
+			bottomToTopCollidersList.push(mobileCollider.getBounds());
+		}
 	}
 }
 
@@ -727,29 +804,19 @@ function isColliding(playerBox, collider) {
 	);
 }
 
-function detectWallCollision(playerBox) {
-	for (const collider of wallCollidersList) {
-		if (isColliding(playerBox, collider)) {
-			return true;
-		}
-	}
-	return false;
-}
-
 function detectFloorCollision(playerBox) {
-	for (const collider of floorCollidersList) {
-		if (isColliding(playerBox, collider)) {
-			return true;
-		}
-	}
-	for (const collider of leftToRightCollidersList) {
-		if (isColliding(playerBox, collider)) {
-			return true;
-		}
-	}
-	for (const collider of rightToLeftCollidersList) {
-		if (isColliding(playerBox, collider)) {
-			return true;
+	const collidersCheckList = [
+		floorCollidersList,
+		leftToRightCollidersList,
+		rightToLeftCollidersList,
+		topToBottomCollidersList,
+		bottomToTopCollidersList,
+	];
+	for (const collidersSubCheckList of collidersCheckList) {
+		for (const collider of collidersSubCheckList) {
+			if (isColliding(playerBox, collider)) {
+				return true;
+			}
 		}
 	}
 	return false;
@@ -1082,8 +1149,6 @@ function updateForegroundCollidersPosition() {
 	const floorColliderListLength = floorCollidersList.length;
 	const wallCollidersListLength = wallCollidersList.length;
 	const objectCollidersListLength = objectCollidersList.length;
-	const leftToRightCollidersListLength = leftToRightCollidersList.length;
-	const rightToLeftCollidersListLength = rightToLeftCollidersList.length;
 	decorsCollidersList = [];
 	floorCollidersList = [];
 	wallCollidersList = [];
@@ -1124,22 +1189,5 @@ function updateForegroundCollidersPosition() {
 	) {
 		objectCollidersList.push(foreground.children[i].getBounds());
 	}
-	for (let i = 0; i < leftToRightCollidersListLength; i++) {
-		leftToRightCollidersList.push(
-			foreground.children[foreground.children.length - 1].children[
-				i
-			].getBounds()
-		);
-	}
-	for (
-		let i = leftToRightCollidersListLength;
-		i < leftToRightCollidersListLength + rightToLeftCollidersListLength;
-		i++
-	) {
-		rightToLeftCollidersList.push(
-			foreground.children[foreground.children.length - 1].children[
-				i
-			].getBounds()
-		);
-	}
+	updateMobileColliders();
 }
