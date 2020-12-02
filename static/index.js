@@ -156,7 +156,7 @@ let topToBottomCollidersList = [];
 let treasureChest1;
 /**
  * @type {Array}
- * @description ArrayList of Treasure Chest's textures used for curent animation
+ * @description ArrayList of Treasure Chest's textures used for current animation
  */
 let treasureChest1TextureArray = [];
 /**
@@ -166,9 +166,19 @@ let treasureChest1TextureArray = [];
 let treasureChest2;
 /**
  * @type {Array}
- * @description ArrayList of Treasure Chest's textures used for curent animation
+ * @description ArrayList of Treasure Chest's textures used for current animation
  */
 let treasureChest2TextureArray = [];
+/**
+ * @type {PIXI.Sprite}
+ * @description Treasure Chest sprite
+ */
+let treasureChest3;
+/**
+ * @type {Array}
+ * @description ArrayList of Treasure Chest's textures used for current animation
+ */
+let treasureChest3TextureArray = [];
 /**
  * @type {PIXI.Rectangle}
  * @description Player bounds
@@ -340,12 +350,9 @@ app.ticker.add((delta) => {
 	updateAllCollidersList();
 	updateWarriorCollider();
 	updatingVx();
-	if (isAboutToCollideWithBottom) {
-		vy = 0;
-		isJumping = false;
-	}
-	if (isAboutToCollideWithTop) {
-		vy *= -1;
+	if (isAboutToCollideWithBottom || isAboutToCollideWithTop) {
+		vy = isAboutToCollideWithBottom ? 0 : -0.5 * vy;
+		isJumping = isAboutToCollideWithBottom ? false : true;
 	}
 	if (!isAboutToCollideWithBottom) {
 		updatingVy();
@@ -433,6 +440,16 @@ function setObjects() {
 	treasureChest2.height = colliders.objectColliders.treasureChest2.height;
 	foreground.addChild(treasureChest2);
 	objectCollidersList.push(treasureChest2);
+	//Treasure chest 3
+	treasureChest3TextureArray.push(treasureChestTexture);
+	treasureChest3 = new PIXI.Sprite(treasureChestTexture);
+	treasureChest3.anchor.set(colliders.objectColliders.treasureChest3.anchor);
+	treasureChest3.x = colliders.objectColliders.treasureChest3.x;
+	treasureChest3.y = colliders.objectColliders.treasureChest3.y;
+	treasureChest3.width = colliders.objectColliders.treasureChest3.width;
+	treasureChest3.height = colliders.objectColliders.treasureChest3.height;
+	foreground.addChild(treasureChest3);
+	objectCollidersList.push(treasureChest3);
 }
 
 function addWarriorToStage() {
@@ -708,9 +725,9 @@ function setKeyboardControls() {
 	);
 
 	window.addEventListener('keyup', (e) => {
-		if (e.defaultPrevented) {
+		/* 		if (e.defaultPrevented) {
 			return; // Ne devrait rien faire si l'événement de la touche était déjà consommé.
-		}
+		} */
 		switch (e.key) {
 			case 'a':
 			case 'z':
@@ -1026,6 +1043,8 @@ function animateTreasureChest(delta) {
 		treasureChest1TextureArray[treasureChestAnimationCount];
 	treasureChest2.texture =
 		treasureChest2TextureArray[treasureChestAnimationCount];
+	treasureChest3.texture =
+		treasureChest3TextureArray[treasureChestAnimationCount];
 }
 
 function getAnimationSpeed(animatedSpriteType, delta) {
