@@ -106,7 +106,12 @@ let leftEdgeStageReached = false;
 let rightEdgeStageReached = false;
 /**
  * @type {Array}
- * @description ArrayList of wall colliders
+ * @description ArrayList of all colliders
+ */
+let collidersCheckList = [];
+/**
+ * @type {Array}
+ * @description ArrayList of all colliders
  */
 let wallCollidersList = [];
 /**
@@ -332,6 +337,7 @@ app.ticker.add((delta) => {
 	updateCameraCheckers();
 	updateMovementCycle();
 	updateMobileColliders();
+	updateAllCollidersList();
 	updateWarriorCollider();
 	updatingVx();
 	if (isAboutToCollideWithBottom) {
@@ -530,6 +536,12 @@ function createBasicCollider(colliderConf) {
 }
 
 function updateMovementCycle() {
+	const mobileCollidersCheckList = [
+		leftToRightCollidersList,
+		rightToLeftCollidersList,
+		topToBottomCollidersList,
+		bottomToTopCollidersList,
+	];
 	movementCount++;
 	if (movementCount % 100 === 0) {
 		movementSpeed *= -1;
@@ -538,6 +550,30 @@ function updateMovementCycle() {
 	rightToLeftForegroundSubContainer.x -= movementSpeed;
 	topToBottomForegroundSubContainer.y += movementSpeed;
 	bottomToTopForegroundSubContainer.y -= movementSpeed;
+	if (detectSpriteCollision(bottomCollisionBox, mobileCollidersCheckList)) {
+		updateWarriorPositionOnMobileCollider(mobileCollidersCheckList);
+	}
+}
+
+function updateWarriorPositionOnMobileCollider(mobileCollidersCheckList) {
+	const idMobileCollidersSubList = getMobileColliderUnderWarrior(
+		bottomCollisionBox,
+		mobileCollidersCheckList
+	);
+	switch (idMobileCollidersSubList) {
+		case 0:
+			warrior.x += movementSpeed;
+			break;
+		case 1:
+			warrior.x -= movementSpeed;
+			break;
+		case 2:
+			warrior.y += movementSpeed;
+			break;
+		case 3:
+			warrior.y -= movementSpeed;
+			break;
+	}
 }
 
 function updateMobileColliders() {
@@ -585,6 +621,16 @@ function updateMobileColliders() {
 			bottomToTopCollidersList.push(mobileCollider.getBounds());
 		}
 	}
+}
+
+function updateAllCollidersList() {
+	collidersCheckList = [
+		floorCollidersList,
+		leftToRightCollidersList,
+		rightToLeftCollidersList,
+		topToBottomCollidersList,
+		bottomToTopCollidersList,
+	];
 }
 
 // Controls functions :
@@ -683,7 +729,7 @@ function setKeyboardControls() {
 // Move functions :
 
 function move() {
-	if (detectSpriteCollision(bottomCollisionBox)) {
+	if (detectSpriteCollision(bottomCollisionBox, collidersCheckList)) {
 		playSound(walkSound);
 		animationState = animationStateEnum.RUNNING;
 	}
@@ -691,7 +737,7 @@ function move() {
 }
 
 function jump() {
-	if (!detectSpriteCollision(bottomCollisionBox)) {
+	if (!detectSpriteCollision(bottomCollisionBox, collidersCheckList)) {
 		return;
 	} else {
 		playingSound = false;
@@ -724,7 +770,10 @@ function takePotion() {
 function stop() {
 	playingSound = false;
 	vxTimer = setInterval(() => {
-		if (vx > 0 && detectSpriteCollision(bottomCollisionBox)) {
+		if (
+			vx > 0 &&
+			detectSpriteCollision(bottomCollisionBox, collidersCheckList)
+		) {
 			vx--;
 		}
 		if (vx === 0) {
@@ -792,13 +841,25 @@ function calculateWideBoxes() {
 }
 
 function updateWarriorCollider() {
-	leftEdgeScreenReached = warrior.x <= app.screen.x;
+	leftEdgeScreenReached = warrior.x <= updatedLeftEdgeScreen;
 	rightEdgeScreenReached =
 		warrior.x + warrior.width >= updatedRightEdgeScreen;
-	isAboutToCollideWithBottom = detectSpriteCollision(bottomCollisionBox);
-	isAboutToCollideWithTop = detectSpriteCollision(topCollisionBox);
-	isAboutToCollideWithLeft = detectSpriteCollision(leftCollisionBox);
-	isAboutToCollideWithRight = detectSpriteCollision(rightCollisionBox);
+	isAboutToCollideWithBottom = detectSpriteCollision(
+		bottomCollisionBox,
+		collidersCheckList
+	);
+	isAboutToCollideWithTop = detectSpriteCollision(
+		topCollisionBox,
+		collidersCheckList
+	);
+	isAboutToCollideWithLeft = detectSpriteCollision(
+		leftCollisionBox,
+		collidersCheckList
+	);
+	isAboutToCollideWithRight = detectSpriteCollision(
+		rightCollisionBox,
+		collidersCheckList
+	);
 }
 
 function isColliding(playerBox, collider) {
@@ -810,14 +871,7 @@ function isColliding(playerBox, collider) {
 	);
 }
 
-function detectSpriteCollision(playerBox) {
-	const collidersCheckList = [
-		floorCollidersList,
-		leftToRightCollidersList,
-		rightToLeftCollidersList,
-		topToBottomCollidersList,
-		bottomToTopCollidersList,
-	];
+function detectSpriteCollision(playerBox, collidersCheckList) {
 	for (const collidersSubCheckList of collidersCheckList) {
 		for (const collider of collidersSubCheckList) {
 			if (isColliding(playerBox, collider)) {
@@ -835,6 +889,16 @@ function detectObjectCollision(playerBox) {
 		}
 	}
 	return false;
+}
+
+function getMobileColliderUnderWarrior(playerBox, mobileCollidersCheckList) {
+	for (let i = 0; i < mobileCollidersCheckList.length; i++) {
+		for (const subMobileColliderList of mobileCollidersCheckList[i]) {
+			if (isColliding(playerBox, subMobileColliderList)) {
+				return i;
+			}
+		}
+	}
 }
 
 function updatingVx() {
