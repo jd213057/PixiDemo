@@ -71,9 +71,19 @@ let isAboutToCollideWithLeft = false;
 let isAboutToCollideWithRight = false;
 /**
  * @type {boolean}
- * @description Indicates whether treasure chest is opened or not
+ * @description Indicates whether first treasure chest is opened or not
  */
-let treasureChestOpened = false;
+let treasureChestOpened1 = false;
+/**
+ * @type {boolean}
+ * @description Indicates whether second treasure chest is opened or not
+ */
+let treasureChestOpened2 = false;
+/**
+ * @type {boolean}
+ * @description Indicates whether third treasure chest is opened or not
+ */
+let treasureChestOpened3 = false;
 /**
  * @type {boolean}
  * @description Indicates whether player is left centered on the screen
@@ -153,7 +163,7 @@ let topToBottomCollidersList = [];
  * @type {PIXI.Sprite}
  * @description Treasure Chest sprite
  */
-let treasureChest1;
+let treasureChest1 = false;
 /**
  * @type {Array}
  * @description ArrayList of Treasure Chest's textures used for current animation
@@ -163,7 +173,7 @@ let treasureChest1TextureArray = [];
  * @type {PIXI.Sprite}
  * @description Treasure Chest sprite
  */
-let treasureChest2;
+let treasureChest2 = false;
 /**
  * @type {Array}
  * @description ArrayList of Treasure Chest's textures used for current animation
@@ -173,7 +183,7 @@ let treasureChest2TextureArray = [];
  * @type {PIXI.Sprite}
  * @description Treasure Chest sprite
  */
-let treasureChest3;
+let treasureChest3 = false;
 /**
  * @type {Array}
  * @description ArrayList of Treasure Chest's textures used for current animation
@@ -710,12 +720,8 @@ function setKeyboardControls() {
 					bigAttack();
 					break;
 				case 'e':
-					detectObjectCollision(warriorBounds)
-						? !treasureChestOpened
-							? openTreasureChest()
-							: closeTreasureChest()
-						: doNothing();
-					treasureChestOpened = !treasureChestOpened;
+					activateObjectAround();
+					break;
 				default:
 					return;
 			}
@@ -809,25 +815,56 @@ function stopAttackingAnim() {
 
 // Interactive functions:
 
-function openTreasureChest() {
+function activateObjectAround() {
+	const objectIndex = getObjectAround(warriorBounds);
+	switch (objectIndex) {
+		case 0:
+			if (!treasureChestOpened1) {
+				openTreasureChest(objectIndex);
+			} else {
+				closeTreasureChest(objectIndex);
+			}
+			treasureChestOpened1 = !treasureChestOpened1;
+			break;
+		case 1:
+			if (!treasureChestOpened2) {
+				openTreasureChest(objectIndex);
+			} else {
+				closeTreasureChest(objectIndex);
+			}
+			treasureChestOpened2 = !treasureChestOpened2;
+			break;
+		case 2:
+			if (!treasureChestOpened3) {
+				openTreasureChest(objectIndex);
+			} else {
+				closeTreasureChest(objectIndex);
+			}
+			treasureChestOpened3 = !treasureChestOpened3;
+			break;
+
+		default:
+			return;
+	}
+}
+
+function openTreasureChest(i) {
 	if (openingTreasureChestSound.currentTime !== 0) {
 		openingTreasureChestSound.currentTime = 0;
 	}
 	openingTreasureChestSound.play();
-	loadOpeningTreasureChestTexture();
-	setTimeout(loadOpenedTreasureChestTexture(), 400);
+	loadOpeningTreasureChestTexture(i);
+	setTimeout(loadOpenedTreasureChestTexture(i), 400);
 }
 
-function closeTreasureChest() {
+function closeTreasureChest(i) {
 	if (openingTreasureChestSound.currentTime !== 0) {
 		openingTreasureChestSound.currentTime = 0;
 	}
 	openingTreasureChestSound.play();
-	loadClosingTreasureChestTexture();
-	setTimeout(loadClosedTreasureChestTexture(), 400);
+	loadClosingTreasureChestTexture(i);
+	setTimeout(loadClosedTreasureChestTexture(i), 400);
 }
-
-function doNothing() {}
 
 // Physics functions:
 
@@ -899,13 +936,13 @@ function detectSpriteCollision(playerBox, collidersCheckList) {
 	return false;
 }
 
-function detectObjectCollision(playerBox) {
-	for (const collider of objectCollidersList) {
-		if (isColliding(playerBox, collider)) {
-			return true;
+function getObjectAround(playerBox) {
+	for (let i = 0; i < objectCollidersList.length; i++) {
+		if (isColliding(playerBox, objectCollidersList[i])) {
+			return i;
 		}
 	}
-	return false;
+	return null;
 }
 
 function getMobileColliderUnderWarrior(playerBox, mobileCollidersCheckList) {
@@ -1122,38 +1159,108 @@ function loadTakePotionTexture() {
 	);
 }
 
-function loadOpeningTreasureChestTexture() {
-	treasureChest1TextureArray = [];
+function loadOpeningTreasureChestTexture(i) {
 	let loaderArray = loaders.treasureChestLoader.treasureChestOpeningAnim;
-	loaderArray.forEach((img) =>
-		treasureChest1TextureArray.push(new PIXI.Texture.from(img))
-	);
+	switch (i) {
+		case 0:
+			treasureChest1TextureArray = [];
+			loaderArray.forEach((img) =>
+				treasureChest1TextureArray.push(new PIXI.Texture.from(img))
+			);
+			break;
+		case 1:
+			treasureChest2TextureArray = [];
+			loaderArray.forEach((img) =>
+				treasureChest2TextureArray.push(new PIXI.Texture.from(img))
+			);
+			break;
+		case 2:
+			treasureChest3TextureArray = [];
+			loaderArray.forEach((img) =>
+				treasureChest3TextureArray.push(new PIXI.Texture.from(img))
+			);
+			break;
+		default:
+			return;
+	}
 }
 
-function loadOpenedTreasureChestTexture() {
-	treasureChest1TextureArray = [];
+function loadOpenedTreasureChestTexture(i) {
 	let loaderArray = loaders.treasureChestLoader.treasureChestOpenedAnim;
-	loaderArray.forEach((img) =>
-		treasureChest1TextureArray.push(new PIXI.Texture.from(img))
-	);
+	switch (i) {
+		case 0:
+			treasureChest1TextureArray = [];
+			loaderArray.forEach((img) =>
+				treasureChest1TextureArray.push(new PIXI.Texture.from(img))
+			);
+			break;
+		case 1:
+			treasureChest2TextureArray = [];
+			loaderArray.forEach((img) =>
+				treasureChest2TextureArray.push(new PIXI.Texture.from(img))
+			);
+			break;
+		case 2:
+			treasureChest3TextureArray = [];
+			loaderArray.forEach((img) =>
+				treasureChest3TextureArray.push(new PIXI.Texture.from(img))
+			);
+			break;
+		default:
+			return;
+	}
 }
 
-function loadClosingTreasureChestTexture() {
-	treasureChest1TextureArray = [];
+function loadClosingTreasureChestTexture(i) {
 	let loaderArray = loaders.treasureChestLoader.treasureChestOpeningAnim;
 	loaderArray.reverse();
-	loaderArray.forEach((img) =>
-		treasureChest1TextureArray.push(new PIXI.Texture.from(img))
-	);
+	switch (i) {
+		case 0:
+			treasureChest1TextureArray = [];
+			loaderArray.forEach((img) =>
+				treasureChest1TextureArray.push(new PIXI.Texture.from(img))
+			);
+			break;
+		case 1:
+			treasureChest2TextureArray = [];
+			loaderArray.forEach((img) =>
+				treasureChest2TextureArray.push(new PIXI.Texture.from(img))
+			);
+			break;
+		case 2:
+			treasureChest3TextureArray = [];
+			loaderArray.forEach((img) =>
+				treasureChest3TextureArray.push(new PIXI.Texture.from(img))
+			);
+			break;
+	}
 }
 
-function loadClosedTreasureChestTexture() {
-	treasureChest1TextureArray = [];
+function loadClosedTreasureChestTexture(i) {
 	const treasureChestClosedLoader =
 		loaders.treasureChestLoader.treasureChestClosed;
-	treasureChest1TextureArray.push(
-		new PIXI.Texture.from(treasureChestClosedLoader)
-	);
+	switch (i) {
+		case 0:
+			treasureChest1TextureArray = [];
+			treasureChest1TextureArray.push(
+				new PIXI.Texture.from(treasureChestClosedLoader)
+			);
+			break;
+		case 1:
+			treasureChest2TextureArray = [];
+			treasureChest2TextureArray.push(
+				new PIXI.Texture.from(treasureChestClosedLoader)
+			);
+			break;
+		case 2:
+			treasureChest3TextureArray = [];
+			treasureChest3TextureArray.push(
+				new PIXI.Texture.from(treasureChestClosedLoader)
+			);
+			break;
+		default:
+			return;
+	}
 }
 
 // Text related functions :

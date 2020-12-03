@@ -1497,7 +1497,16 @@ const floorColliders = {
 	groundCollider112: {
 		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
 		anchor: 0.0,
-		x: 4640,
+		x: 4440,
+		y: 508,
+		width: 64,
+		height: 64,
+	},
+
+	groundCollider113: {
+		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		anchor: 0.0,
+		x: 4504,
 		y: 508,
 		width: 64,
 		height: 64,
