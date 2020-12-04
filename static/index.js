@@ -361,7 +361,7 @@ app.ticker.add((delta) => {
 	updateWarriorCollider();
 	updatingVx();
 	if (isAboutToCollideWithBottom || isAboutToCollideWithTop) {
-		vy = isAboutToCollideWithBottom ? 0 : -0.5 * vy;
+		vy = isAboutToCollideWithBottom ? 0 : vy <= 0 ? -0.5 * vy : vy;
 		isJumping = isAboutToCollideWithBottom ? false : true;
 	}
 	if (!isAboutToCollideWithBottom) {
@@ -687,9 +687,9 @@ function setKeyboardControls() {
 	window.addEventListener(
 		'keydown',
 		(e) => {
-			if (e.defaultPrevented) {
+			/* 			if (e.defaultPrevented) {
 				return; // Ne devrait rien faire si l'événement de la touche était déjà consommé.
-			}
+			} */
 			switch (e.key) {
 				case 'ArrowDown':
 					crouch();
@@ -725,7 +725,7 @@ function setKeyboardControls() {
 				default:
 					return;
 			}
-			e.preventDefault();
+			/* 			e.preventDefault(); */
 		},
 		true
 	);
