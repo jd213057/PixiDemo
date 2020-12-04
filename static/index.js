@@ -402,11 +402,20 @@ function setBackgroungImg() {
 	let backgroundImage = PIXI.Texture.from(
 		pathToAnimation + 'Levels/firstmaplevel_background.png'
 	);
-	let backgroundSprite = new PIXI.Sprite(backgroundImage);
-	backgroundSprite.anchor.set(0.0);
-	backgroundSprite.height = 642;
-	backgroundSprite.width = 3073;
-	background.addChild(backgroundSprite);
+	let backgroundSprite1 = new PIXI.Sprite(backgroundImage);
+	backgroundSprite1.anchor.set(0.0);
+	backgroundSprite1.x = 0;
+	backgroundSprite1.y = 0;
+	backgroundSprite1.height = 642;
+	backgroundSprite1.width = 3073;
+	background.addChild(backgroundSprite1);
+	let backgroundSprite2 = new PIXI.Sprite(backgroundImage);
+	backgroundSprite2.anchor.set(0.0);
+	backgroundSprite2.x = 3072;
+	backgroundSprite2.y = 0;
+	backgroundSprite2.height = 642;
+	backgroundSprite2.width = 3073;
+	background.addChild(backgroundSprite2);
 }
 
 function setBackground() {
@@ -684,51 +693,47 @@ function setControls() {
 }
 
 function setKeyboardControls() {
-	window.addEventListener(
-		'keydown',
-		(e) => {
-			/* 			if (e.defaultPrevented) {
+	window.addEventListener('keydown', (e) => {
+		/* 			if (e.defaultPrevented) {
 				return; // Ne devrait rien faire si l'événement de la touche était déjà consommé.
 			} */
-			switch (e.key) {
-				case 'ArrowDown':
-					crouch();
-					break;
-				case 'ArrowUp':
-					clearInterval(vxTimer);
-					jump();
-					break;
-				case 'ArrowLeft':
-					warrior.scale.x = -2;
-					direction = -1;
-					clearInterval(vxTimer);
-					move();
-					break;
-				case 'ArrowRight':
-					warrior.scale.x = 2;
-					direction = 1;
-					clearInterval(vxTimer);
-					move();
-					break;
-				case 'é':
-					takePotion();
-					break;
-				case 'a':
-					smallAttack();
-					break;
-				case 'z':
-					bigAttack();
-					break;
-				case 'e':
-					activateObjectAround();
-					break;
-				default:
-					return;
-			}
-			/* 			e.preventDefault(); */
-		},
-		true
-	);
+		switch (e.key) {
+			case 'ArrowDown':
+				crouch();
+				break;
+			case 'ArrowUp':
+				clearInterval(vxTimer);
+				jump();
+				break;
+			case 'ArrowLeft':
+				warrior.scale.x = -2;
+				direction = -1;
+				clearInterval(vxTimer);
+				move();
+				break;
+			case 'ArrowRight':
+				warrior.scale.x = 2;
+				direction = 1;
+				clearInterval(vxTimer);
+				move();
+				break;
+			case 'é':
+				takePotion();
+				break;
+			case 'a':
+				smallAttack();
+				break;
+			case 'z':
+				bigAttack();
+				break;
+			case 'e':
+				activateObjectAround();
+				break;
+			default:
+				return;
+		}
+		/* 			e.preventDefault(); */
+	});
 
 	window.addEventListener('keyup', (e) => {
 		/* 		if (e.defaultPrevented) {
