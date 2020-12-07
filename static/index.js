@@ -1403,26 +1403,26 @@ function updateTextList(xCoordinate) {
 }
 
 function hasBeenDisplayedInTextZone() {
-	if (
-		(hasBeenDisplayedZone1 &&
-			hasBeenDisplayedZone2 === undefined &&
-			hasBeenDisplayedZone3 === undefined) ||
-		(hasBeenDisplayedZone1 &&
-			hasBeenDisplayedZone2 &&
-			hasBeenDisplayedZone3 === undefined) ||
-		(hasBeenDisplayedZone1 &&
-			hasBeenDisplayedZone2 &&
-			hasBeenDisplayedZone3)
-	) {
-		return true;
-	} else {
-		return false;
+	switch (textDisplayZone) {
+		case textDisplayZoneEnum.ZONE_ONE:
+			if (hasBeenDisplayedZone1) return true;
+			break;
+		case textDisplayZoneEnum.ZONE_TWO:
+			if (hasBeenDisplayedZone2) return true;
+			break;
+		case textDisplayZoneEnum.ZONE_THREE:
+			if (hasBeenDisplayedZone3) return true;
+			break;
+		case textDisplayZoneEnum.NO_ZONE:
+		default:
+			return false;
 	}
 }
 
 function displayTextInTextList() {
 	if (
-		!!textListToShow.length &&
+		indexOfTextList !== textListToShow.length - 1 &&
+		textListToShow.length !== 0 &&
 		!displayingText &&
 		!hasBeenDisplayedInTextZone() &&
 		!isJumping
@@ -1470,14 +1470,25 @@ function updateTextDisplayZoneValue() {
 }
 
 function buildTextBox(textConfig) {
-	buildTextBackgroundTexture(textConfig);
-	buildText(textConfig);
-	buildNextTextButtonImg(textConfig);
-	textBox.addChild(textBackGroundTexture, text, nextTextButtonImg);
-	app.stage.addChild(textBox);
+	if (textConfig) {
+		textBox = new PIXI.Container();
+		buildTextBackgroundTexture(textConfig);
+		buildText(textConfig);
+		buildNextTextButtonImg(textConfig);
+		textBox.addChild(textBackGroundTexture, text, nextTextButtonImg);
+		app.stage.addChild(textBox);
+	}
 }
 
 function buildTextBackgroundTexture(textConfig) {
+	if (textBackGroundTexture._destroyed !== true) {
+		textBackGroundTexture.destroy({
+			children: true,
+			texture: true,
+			baseTexture: true,
+		});
+	}
+	textBackGroundTexture = new PIXI.Sprite(PIXI.Texture.WHITE);
 	textBackGroundTexture.x = textConfig.overlayConfig.textBox.x;
 	textBackGroundTexture.y = textConfig.overlayConfig.textBox.y;
 	textBackGroundTexture.width = textConfig.overlayConfig.textBox.width;
@@ -1497,6 +1508,13 @@ function buildText(textConfig) {
 }
 
 function buildNextTextButtonImg(textConfig) {
+	if (nextTextButtonImg._destroyed !== true) {
+		nextTextButtonImg.destroy({
+			children: true,
+			texture: true,
+			baseTexture: true,
+		});
+	}
 	nextTextButtonImg = new PIXI.Sprite(
 		PIXI.Texture.from(textConfig.overlayConfig.nextButtonImg.imgPath)
 	);
@@ -1508,14 +1526,14 @@ function buildNextTextButtonImg(textConfig) {
 }
 
 function removeTextContent() {
+	if (text._destroyed !== true) {
+		text.destroy({children: true, texture: true, baseTexture: true});
+	}
 	text = new PIXI.Text();
 }
 
 function removeTextBox() {
-	const timer = setTimeout(() => {
-		textBox.destroy({children: true, texture: true, baseTexture: true});
-		clearTimeout(timer);
-	}, 50);
+	textBox.destroy({children: true, texture: true, baseTexture: true});
 }
 
 // Camera functions :
