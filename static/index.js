@@ -41,9 +41,34 @@ let adventurerAnimationCount = 0;
 let treasureChestAnimationCount = 0;
 /**
  * @type {number}
+ * @description Index of textList array
+ */
+let indexOfTextList = 0;
+/**
+ * @type {number}
  * @description Determines whether player goes forward or backward
  */
 let direction = 1;
+/**
+ * @type {boolean}
+ * @description Indicates whether text content is been displayed or not
+ */
+let displayingText = false;
+/**
+ * @type {boolean}
+ * @description Indicates whether text content for first area of level has been displayed
+ */
+let hasBeenDisplayedZone1;
+/**
+ * @type {boolean}
+ * @description Indicates whether text content for second area of level has been displayed
+ */
+let hasBeenDisplayedZone2;
+/**
+ * @type {boolean}
+ * @description Indicates whether text content for third area of level has been displayed
+ */
+let hasBeenDisplayedZone3;
 /**
  * @type {boolean}
  * @description Indicates whether player is jumping or not
@@ -190,6 +215,11 @@ let treasureChest3 = false;
  */
 let treasureChest3TextureArray = [];
 /**
+ * @type {Array}
+ * @description ArrayList of text content used for the game
+ */
+let textListToShow = [];
+/**
  * @type {PIXI.Rectangle}
  * @description Player bounds
  */
@@ -234,6 +264,21 @@ let vx = 0;
  * @description Player's speed for y abscissa
  */
 let vy = 0;
+/**
+ * @type {PIXI.Texture}
+ * @description Background texture for textBox
+ */
+let textBackGroundTexture = new PIXI.Sprite(PIXI.Texture.WHITE);
+/**
+ * @type {PIXI.Text}
+ * @description Container for text display
+ */
+let text = new PIXI.Text();
+/**
+ * @type {PIXI.Text}
+ * @description Next text button icon for textBox
+ */
+let nextTextButtonImg = new PIXI.Sprite();
 /**
  * @type {PIXI.Container}
  * @description Container for text display
@@ -306,6 +351,21 @@ let movementSpeed = -2.5;
 let playingSound = false;
 /**
  * @type {Object}
+ * @description Enumeration of all text display zone
+ */
+const textDisplayZoneEnum = {
+	ZONE_ONE: 'zoneOne',
+	ZONE_TWO: 'zoneTwo',
+	ZONE_THREE: 'zoneThree',
+	NO_ZONE: 'noZone',
+};
+/**
+ * @type {Object}
+ * @description Indicates whether warrior is in a text display zone or not
+ */
+let textDisplayZone = textDisplayZoneEnum.NO_ZONE;
+/**
+ * @type {Object}
  * @description Enumeration of all possible player's animation state
  */
 const animationStateEnum = {
@@ -335,6 +395,7 @@ var app = new PIXI.Application({
 	height: 550,
 	width: 900,
 	transparent: true,
+	antialias: true,
 	x: 0,
 	y: 0,
 });
@@ -364,13 +425,12 @@ app.ticker.add((delta) => {
 		vy = isAboutToCollideWithBottom ? 0 : vy <= 0 ? -0.5 * vy : vy;
 		isJumping = isAboutToCollideWithBottom ? false : true;
 	}
-	if (!isAboutToCollideWithBottom) {
-		updatingVy();
-	}
+	updatingVy();
 	moveCamera();
 	updateAnimationState();
 	loadWarriorAnimation();
 	animateElements(delta);
+	manageTextContent(warrior.x);
 });
 
 // Initialization functions
@@ -389,12 +449,13 @@ function initializeGame() {
 function buildStage() {
 	setBackgroungImg();
 	setBackground();
+	setMiddleGroundImg();
+	setMiddleground();
 	setDecors();
 	setStaticColliders();
 	setObjects();
 	setMobileColliders();
 	setForeground();
-	displayInitialMsg();
 	addWarriorToStage();
 }
 
@@ -421,6 +482,31 @@ function setBackgroungImg() {
 function setBackground() {
 	app.stage.addChild(background);
 }
+
+function setMiddleGroundImg() {
+	let middlegroundImage = PIXI.Texture.from(
+		pathToAnimation + 'Levels/middleground_level_01.png'
+	);
+	let middlegroundSprite1 = new PIXI.Sprite(middlegroundImage);
+	middlegroundSprite1.anchor.set(0.0);
+	middlegroundSprite1.x = 0;
+	middlegroundSprite1.y = 0;
+	middlegroundSprite1.height = 642;
+	middlegroundSprite1.width = 3073;
+	middleground.addChild(middlegroundSprite1);
+	let middlegroundSprite2 = new PIXI.Sprite(middlegroundImage);
+	middlegroundSprite2.anchor.set(0.0);
+	middlegroundSprite2.x = 3072;
+	middlegroundSprite2.y = 0;
+	middlegroundSprite2.height = 642;
+	middlegroundSprite2.width = 3073;
+	middleground.addChild(middlegroundSprite2);
+}
+
+function setMiddleground() {
+	app.stage.addChild(middleground);
+}
+
 function setForeground() {
 	app.stage.addChild(foreground);
 }
@@ -729,6 +815,11 @@ function setKeyboardControls() {
 			case 'e':
 				activateObjectAround();
 				break;
+			case 'x':
+				if (displayingText) {
+					nextContent();
+				}
+				break;
 			default:
 				return;
 		}
@@ -965,7 +1056,8 @@ function updatingVx() {
 		((isAboutToCollideWithRight || rightEdgeScreenReached) &&
 			direction === 1) ||
 		((isAboutToCollideWithLeft || leftEdgeScreenReached) &&
-			direction === -1)
+			direction === -1) ||
+		displayingText
 	) {
 		return;
 	}
@@ -973,12 +1065,14 @@ function updatingVx() {
 }
 
 function updatingVy() {
-	applyingGravity();
-	warrior.y += vy;
+	if (!isAboutToCollideWithBottom) {
+		applyingGravity();
+		warrior.y += vy;
+	}
 }
 
 function applyingGravity() {
-	if (vy < 10) {
+	if (vy < 15) {
 		vy++;
 	}
 }
@@ -1270,53 +1364,165 @@ function loadClosedTreasureChestTexture(i) {
 
 // Text related functions :
 
-function buildText(textConfig) {
-	const textBackGroundTexture = new PIXI.Sprite(PIXI.Texture.WHITE);
-	textBackGroundTexture.x =
-		textConfig.narrationText.narrationText1.overlayConfig.textBox.x;
-	textBackGroundTexture.y =
-		textConfig.narrationText.narrationText1.overlayConfig.textBox.y;
-	textBackGroundTexture.width =
-		textConfig.narrationText.narrationText1.overlayConfig.textBox.width;
-	textBackGroundTexture.height =
-		textConfig.narrationText.narrationText1.overlayConfig.textBox.height;
-	textBackGroundTexture.anchor.set(
-		textConfig.narrationText.narrationText1.overlayConfig.textBox.anchor
-	);
-	textBackGroundTexture.tint =
-		textConfig.narrationText.narrationText1.overlayConfig.textBox.tint;
-	let text = new PIXI.Text(
-		textConfig.narrationText.narrationText1.pixiRequirements.text,
-		textConfig.narrationText.narrationText1.pixiRequirements.style
-	);
-	text.x = textConfig.narrationText.narrationText1.overlayConfig.text.x;
-	text.y = textConfig.narrationText.narrationText1.overlayConfig.text.y;
-	text.anchor.set(
-		textConfig.narrationText.narrationText1.overlayConfig.text.anchor
-	);
-	textBox.addChild(textBackGroundTexture, text);
+function manageTextContent(xCoordinate) {
+	updateTextList(xCoordinate);
+	displayTextInTextList();
+	updateTextDisplayZoneValue();
+}
+
+function isWarriorInTextAera(xCoordinate, index) {
+	const isWarriorInTextAreaBoolean =
+		xCoordinate >
+			textConfig.narrationText[index].overlayConfig.activationArea.x1 &&
+		xCoordinate <
+			textConfig.narrationText[index].overlayConfig.activationArea.x2;
+	return isWarriorInTextAreaBoolean;
+}
+
+function updateTextList(xCoordinate) {
+	for (const textIndex in textConfig.narrationText) {
+		if (
+			textListToShow.includes(
+				textListToShow[textIndex] &&
+					isWarriorInTextAera(xCoordinate, textIndex)
+			)
+		) {
+			continue;
+		} else if (
+			isWarriorInTextAera(xCoordinate, textIndex) &&
+			!textListToShow.includes(textConfig.narrationText[textIndex])
+		) {
+			textListToShow.push(textConfig.narrationText[textIndex]);
+		} else if (
+			!isWarriorInTextAera(xCoordinate, textIndex) &&
+			textListToShow.includes(textConfig.narrationText[textIndex])
+		) {
+			textListToShow.splice(textIndex, 1);
+		}
+	}
+}
+
+function hasBeenDisplayedInTextZone() {
+	if (
+		(hasBeenDisplayedZone1 &&
+			hasBeenDisplayedZone2 === undefined &&
+			hasBeenDisplayedZone3 === undefined) ||
+		(hasBeenDisplayedZone1 &&
+			hasBeenDisplayedZone2 &&
+			hasBeenDisplayedZone3 === undefined) ||
+		(hasBeenDisplayedZone1 &&
+			hasBeenDisplayedZone2 &&
+			hasBeenDisplayedZone3)
+	) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function displayTextInTextList() {
+	if (
+		!!textListToShow.length &&
+		!displayingText &&
+		!hasBeenDisplayedInTextZone() &&
+		!isJumping
+	) {
+		buildTextBox(textListToShow[indexOfTextList]);
+		displayingText = true;
+	}
+}
+
+function nextContent() {
+	if (indexOfTextList < textListToShow.length - 1) {
+		removeTextContent();
+		indexOfTextList++;
+		buildTextBox(textListToShow[indexOfTextList]);
+	} else {
+		removeTextBox();
+		displayingText = false;
+		switch (textDisplayZone) {
+			case textDisplayZoneEnum.ZONE_ONE:
+				hasBeenDisplayedZone1 = true;
+				break;
+			case textDisplayZoneEnum.ZONE_TWO:
+				hasBeenDisplayedZone2 = true;
+				break;
+			case textDisplayZoneEnum.ZONE_THREE:
+				hasBeenDisplayedZone3 = true;
+				break;
+			case textDisplayZoneEnum.NO_ZONE:
+			default:
+				return;
+		}
+	}
+}
+
+function updateTextDisplayZoneValue() {
+	if (warrior.x > 0 && warrior.x < 300) {
+		textDisplayZone = textDisplayZoneEnum.ZONE_ONE;
+	} else if (warrior.x > 1020 && warrior.x < 1150) {
+		textDisplayZone = textDisplayZoneEnum.ZONE_TWO;
+	} else if (warrior.x > 10000 && warrior.x < 10000) {
+		textDisplayZone = textDisplayZoneEnum.ZONE_THREE;
+	} else {
+		textDisplayZone = textDisplayZoneEnum.NO_ZONE;
+	}
+}
+
+function buildTextBox(textConfig) {
+	buildTextBackgroundTexture(textConfig);
+	buildText(textConfig);
+	buildNextTextButtonImg(textConfig);
+	textBox.addChild(textBackGroundTexture, text, nextTextButtonImg);
 	app.stage.addChild(textBox);
 }
 
-function displayInitialMsg() {
-	buildText(textConfig);
-	removeTextBox();
+function buildTextBackgroundTexture(textConfig) {
+	textBackGroundTexture.x = textConfig.overlayConfig.textBox.x;
+	textBackGroundTexture.y = textConfig.overlayConfig.textBox.y;
+	textBackGroundTexture.width = textConfig.overlayConfig.textBox.width;
+	textBackGroundTexture.height = textConfig.overlayConfig.textBox.height;
+	textBackGroundTexture.anchor.set(textConfig.overlayConfig.textBox.anchor);
+	textBackGroundTexture.tint = textConfig.overlayConfig.textBox.tint;
+}
+
+function buildText(textConfig) {
+	text = new PIXI.Text(
+		textConfig.pixiRequirements.text,
+		textConfig.pixiRequirements.style
+	);
+	text.x = textConfig.overlayConfig.text.x;
+	text.y = textConfig.overlayConfig.text.y;
+	text.anchor.set(textConfig.overlayConfig.text.anchor);
+}
+
+function buildNextTextButtonImg(textConfig) {
+	nextTextButtonImg = new PIXI.Sprite(
+		PIXI.Texture.from(textConfig.overlayConfig.nextButtonImg.imgPath)
+	);
+	nextTextButtonImg.x = textConfig.overlayConfig.nextButtonImg.x;
+	nextTextButtonImg.y = textConfig.overlayConfig.nextButtonImg.y;
+	nextTextButtonImg.width = textConfig.overlayConfig.nextButtonImg.width;
+	nextTextButtonImg.height = textConfig.overlayConfig.nextButtonImg.height;
+	nextTextButtonImg.anchor.set(textConfig.overlayConfig.nextButtonImg.anchor);
+}
+
+function removeTextContent() {
+	text = new PIXI.Text();
 }
 
 function removeTextBox() {
-	// find better method
-	setTimeout(() => {
-		textBox.parent.removeChild(textBox);
+	const timer = setTimeout(() => {
 		textBox.destroy({children: true, texture: true, baseTexture: true});
-	}, 5000);
-	//	app.stage.removeChild(textBox);
+		clearTimeout(timer);
+	}, 50);
 }
 
 // Camera functions :
 
 function updateCameraCheckers() {
-	isWarriorLeftCentered = warrior.x <= updatedLeftEdgeScreen + 250;
-	isWarriorRightCentered = warrior.x >= updatedRightEdgeScreen - 250;
+	isWarriorLeftCentered = warrior.x <= updatedLeftEdgeScreen + 350;
+	isWarriorRightCentered = warrior.x >= updatedRightEdgeScreen - 350;
 	leftEdgeStageReached = foreground.x >= app.stage.x;
 	rightEdgeStageReached = foreground.x === -app.stage.width;
 }
@@ -1333,6 +1539,7 @@ function moveCamera() {
 		(isWarriorLeftCentered && direction === -1)
 	) {
 		moveBackground();
+		moveMiddleground();
 		moveForeground();
 		updateEdgeScreenValue();
 		updateForegroundCollidersPosition();
@@ -1341,6 +1548,10 @@ function moveCamera() {
 
 function moveBackground() {
 	background.x -= vx * direction * 0.5;
+}
+
+function moveMiddleground() {
+	middleground.x -= vx * direction * 0.75;
 }
 
 function moveForeground() {

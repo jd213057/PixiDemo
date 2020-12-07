@@ -1,5 +1,6 @@
 /**
  * @type {string}
+ * @description File path to images's folder
  */
 const pathToImgFolder = '/static/assets/images/';
 /**
