@@ -849,7 +849,7 @@ function setKeyboardControls() {
 
 function move() {
 	if (detectSpriteCollision(bottomCollisionBox, collidersCheckList)) {
-		playSound(walkSound);
+		playSound(walkSound, 1);
 		animationState = animationStateEnum.RUNNING;
 	}
 	vx = 5;
@@ -860,7 +860,7 @@ function jump() {
 		return;
 	} else {
 		playingSound = false;
-		playSound(warriorJumpSound);
+		playSound(warriorJumpSound, 1);
 		animationState = animationStateEnum.JUMPING;
 		vy = -18;
 		warrior.y += vy;
@@ -869,12 +869,12 @@ function jump() {
 }
 
 function smallAttack() {
-	playSound(attackSound);
+	playSound(attackSound, 1);
 	animationState = animationStateEnum.ATTACKING_ONE;
 }
 
 function bigAttack() {
-	playSound(attackSound);
+	playSound(attackSound, 1);
 	animationState = animationStateEnum.ATTACKING_TWO;
 }
 
@@ -945,10 +945,7 @@ function activateObjectAround() {
 }
 
 function openTreasureChest(i) {
-	if (openingTreasureChestSound.currentTime !== 0) {
-		openingTreasureChestSound.currentTime = 0;
-	}
-	openingTreasureChestSound.play();
+	playSound(openingTreasureChestSound, 0.7);
 	loadOpeningTreasureChestTexture(i);
 	setTimeout(loadOpenedTreasureChestTexture(i), 400);
 }
@@ -1081,13 +1078,17 @@ function applyingGravity() {
 
 function setBackgroundVolume() {
 	const backgroundAudio = document.getElementById('audio');
-	backgroundAudio.volume = 0.5;
+	backgroundAudio.volume = 0.4;
 }
 
-function playSound(sound) {
+function playSound(sound, volume) {
 	if (!playingSound) {
-		sound.currentTime = 0;
-		sound.volume = 1;
+		if (sound.currentTime !== 0) {
+			sound.currentTime = 0;
+		}
+		if (sound.currentTime !== 0 && sound.volume !== volume) {
+			sound.volume = volume;
+		}
 		sound.play();
 		playingSound = true;
 	}
@@ -1096,7 +1097,7 @@ function playSound(sound) {
 function stopSound() {
 	attackSound.pause();
 	walkSound.pause();
-	warriorJumpSound.pause();
+	if (isJumping === false) warriorJumpSound.pause();
 }
 
 function setAudioEvents() {
@@ -1366,8 +1367,8 @@ function loadClosedTreasureChestTexture(i) {
 
 function manageTextContent(xCoordinate) {
 	updateTextList(xCoordinate);
-	displayTextInTextList();
 	updateTextDisplayZoneValue();
+	displayTextInTextList();
 }
 
 function isWarriorInTextAera(xCoordinate, index) {
@@ -1400,19 +1401,17 @@ function updateTextList(xCoordinate) {
 			textListToShow.splice(textIndex, 1);
 		}
 	}
+	if (textListToShow.length === 0) indexOfTextList = 0;
 }
 
 function hasBeenDisplayedInTextZone() {
 	switch (textDisplayZone) {
 		case textDisplayZoneEnum.ZONE_ONE:
 			if (hasBeenDisplayedZone1) return true;
-			break;
 		case textDisplayZoneEnum.ZONE_TWO:
 			if (hasBeenDisplayedZone2) return true;
-			break;
 		case textDisplayZoneEnum.ZONE_THREE:
 			if (hasBeenDisplayedZone3) return true;
-			break;
 		case textDisplayZoneEnum.NO_ZONE:
 		default:
 			return false;
@@ -1433,6 +1432,7 @@ function displayTextInTextList() {
 }
 
 function nextContent() {
+	playSound(openingTreasureChestSound, 0.7);
 	if (indexOfTextList < textListToShow.length - 1) {
 		removeTextContent();
 		indexOfTextList++;
@@ -1460,7 +1460,7 @@ function nextContent() {
 function updateTextDisplayZoneValue() {
 	if (warrior.x > 0 && warrior.x < 300) {
 		textDisplayZone = textDisplayZoneEnum.ZONE_ONE;
-	} else if (warrior.x > 1020 && warrior.x < 1150) {
+	} else if (warrior.x > 990 && warrior.x < 1150) {
 		textDisplayZone = textDisplayZoneEnum.ZONE_TWO;
 	} else if (warrior.x > 10000 && warrior.x < 10000) {
 		textDisplayZone = textDisplayZoneEnum.ZONE_THREE;

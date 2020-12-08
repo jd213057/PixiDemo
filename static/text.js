@@ -107,7 +107,7 @@ const narrationText = {
 				anchor: 0.0,
 				x: 235,
 				width: 40,
-				y: 75,
+				y: 90,
 				height: 40,
 			},
 			textBox: {
@@ -115,11 +115,11 @@ const narrationText = {
 				x: 30,
 				width: 260,
 				y: 30,
-				height: 90,
+				height: 105,
 				tint: '#000000',
 			},
 			activationArea: {
-				x1: 1020,
+				x1: 990,
 				x2: 1150,
 			},
 		},
@@ -161,7 +161,7 @@ const narrationText = {
 				tint: '#000000',
 			},
 			activationArea: {
-				x1: 1020,
+				x1: 990,
 				x2: 1150,
 			},
 		},
@@ -203,7 +203,7 @@ const narrationText = {
 				tint: '#000000',
 			},
 			activationArea: {
-				x1: 1020,
+				x1: 990,
 				x2: 1150,
 			},
 		},
@@ -244,7 +244,7 @@ const narrationText = {
 				tint: '#000000',
 			},
 			activationArea: {
-				x1: 1020,
+				x1: 990,
 				x2: 1150,
 			},
 		},
@@ -286,7 +286,7 @@ const narrationText = {
 				tint: '#000000',
 			},
 			activationArea: {
-				x1: 1020,
+				x1: 990,
 				x2: 1150,
 			},
 		},
@@ -328,13 +328,13 @@ const narrationText = {
 				tint: '#000000',
 			},
 			activationArea: {
-				x1: 1020,
+				x1: 990,
 				x2: 1150,
 			},
 		},
 		pixiRequirements: {
 			text:
-				'Guy: Thank you my Lord! As I said, princess Lemona is on the other side of the valley. The journey may be long and you encounter many enemies and traps. Please be careful my Lord!',
+				'Guy: Thank you my Lord! As I said, princess Lemona is on the other side of the valley. The journey may be long and you may encounter many enemies and traps. Please be careful my Lord!',
 			style: {
 				fontFamily: 'Wariorus',
 				fontSize: 14,
@@ -370,7 +370,7 @@ const narrationText = {
 				tint: '#000000',
 			},
 			activationArea: {
-				x1: 1020,
+				x1: 990,
 				x2: 1150,
 			},
 		},
