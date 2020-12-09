@@ -1,10 +1,5 @@
 /**
  * @type {string}
- * @description File path to images's folder
- */
-const pathToImgFolder = '/static/assets/images/';
-/**
- * @type {string}
  * @description File path glossary to images's folder
  */
 const pathDictionnary = {
@@ -19,13 +14,14 @@ const pathDictionnary = {
 	treasureChestImgPath:
 		'objects/treasure_chest/opening/treasure_chest_opening_00.png',
 	blockImgPath: 'Levels/level_01_block_01_64.png',
+	doorImgPath: 'Levels/level_01_door_01_64.png',
 	topCastleImgPath: 'Levels/level_01_top_castle_02_64.png',
 	mineImgPath: 'Levels/level_01_mine_indoor_01_64.png',
 	mobileBoxImgPath: 'Levels/level_01_box_02_32.png',
 };
 /**
  * @type {Object}
- * @description List of wall colliders
+ * @description List of warrior colliders
  */
 const backdrops = {
 	middlegroundSprite1: {
@@ -105,7 +101,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider2: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 32,
 		y: 288,
@@ -113,7 +109,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider3: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 64,
 		y: 288,
@@ -121,7 +117,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider4: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 96,
 		y: 288,
@@ -129,7 +125,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider5: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 128,
 		y: 288,
@@ -137,7 +133,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider6: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 160,
 		y: 288,
@@ -145,7 +141,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider7: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 192,
 		y: 288,
@@ -153,7 +149,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider8: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 224,
 		y: 288,
@@ -161,7 +157,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider9: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 256,
 		y: 288,
@@ -169,7 +165,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider10: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 288,
 		y: 288,
@@ -177,7 +173,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider11: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 320,
 		y: 288,
@@ -185,7 +181,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider12: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 352,
 		y: 288,
@@ -193,7 +189,8 @@ const obstacleColliders = {
 		height: 32,
 	},
 	groundCollider1: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 0,
 		y: 308,
@@ -201,7 +198,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider2: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 64,
 		y: 308,
@@ -209,7 +207,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider3: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 64,
 		y: 308,
@@ -217,7 +216,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider4: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 128,
 		y: 308,
@@ -225,7 +225,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider5: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 192,
 		y: 308,
@@ -233,7 +234,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider6: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 256,
 		y: 308,
@@ -241,7 +243,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider7: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 320,
 		y: 308,
@@ -249,7 +252,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider8: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 0,
 		y: 372,
@@ -257,7 +261,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider9: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 64,
 		y: 372,
@@ -265,7 +270,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider10: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 64,
 		y: 372,
@@ -273,7 +279,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider11: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 128,
 		y: 372,
@@ -281,7 +288,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider12: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 192,
 		y: 372,
@@ -289,7 +297,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider13: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 256,
 		y: 372,
@@ -297,7 +306,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider14: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 320,
 		y: 372,
@@ -305,7 +315,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider15: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 0,
 		y: 436,
@@ -313,7 +324,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider16: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 64,
 		y: 436,
@@ -321,7 +333,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider17: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 64,
 		y: 436,
@@ -329,7 +342,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider18: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 128,
 		y: 436,
@@ -337,7 +351,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider19: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 192,
 		y: 436,
@@ -345,7 +360,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider20: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 256,
 		y: 436,
@@ -353,7 +369,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider21: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 320,
 		y: 436,
@@ -361,7 +378,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider22: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 0,
 		y: 500,
@@ -369,7 +387,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider23: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 64,
 		y: 500,
@@ -377,7 +396,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider24: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 64,
 		y: 500,
@@ -385,7 +405,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider25: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 128,
 		y: 500,
@@ -393,7 +414,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider26: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 192,
 		y: 500,
@@ -401,7 +423,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider27: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 256,
 		y: 500,
@@ -409,7 +432,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider28: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 320,
 		y: 500,
@@ -417,7 +441,7 @@ const obstacleColliders = {
 		height: 64,
 	},
 	boxCollider1: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.boxImgPath,
 		anchor: 0.0,
 		x: 490,
 		y: 308,
@@ -425,7 +449,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	boxCollider2: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.boxImgPath,
 		anchor: 0.0,
 		x: 522,
 		y: 308,
@@ -433,7 +457,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	boxCollider3: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.boxImgPath,
 		anchor: 0.0,
 		x: 620,
 		y: 378,
@@ -441,7 +465,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	boxCollider4: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.boxImgPath,
 		anchor: 0.0,
 		x: 652,
 		y: 378,
@@ -449,7 +473,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	boxCollider5: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.boxImgPath,
 		anchor: 0.0,
 		x: 750,
 		y: 448,
@@ -457,7 +481,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	boxCollider6: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.boxImgPath,
 		anchor: 0.0,
 		x: 782,
 		y: 448,
@@ -465,7 +489,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider13: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 880,
 		y: 492,
@@ -473,7 +497,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider14: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 912,
 		y: 492,
@@ -481,7 +505,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider15: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 944,
 		y: 492,
@@ -489,7 +513,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider16: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 976,
 		y: 492,
@@ -497,7 +521,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider17: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 1008,
 		y: 492,
@@ -505,7 +529,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider18: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 1040,
 		y: 492,
@@ -513,7 +537,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider19: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 1072,
 		y: 492,
@@ -521,7 +545,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider20: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 1104,
 		y: 492,
@@ -529,7 +553,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider21: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 1136,
 		y: 492,
@@ -537,7 +561,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider22: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 1168,
 		y: 492,
@@ -545,7 +569,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider23: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 1200,
 		y: 492,
@@ -553,7 +577,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider24: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 1232,
 		y: 492,
@@ -561,7 +585,8 @@ const obstacleColliders = {
 		height: 32,
 	},
 	groundCollider29: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 880,
 		y: 508,
@@ -569,7 +594,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider30: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 944,
 		y: 508,
@@ -577,7 +603,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider31: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 1008,
 		y: 508,
@@ -585,7 +612,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider32: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 1072,
 		y: 508,
@@ -593,7 +621,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider33: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 1136,
 		y: 508,
@@ -601,7 +630,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider34: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 1200,
 		y: 508,
@@ -609,7 +639,7 @@ const obstacleColliders = {
 		height: 64,
 	},
 	boxCollider7: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.boxImgPath,
 		anchor: 0.0,
 		x: 1168,
 		y: 358,
@@ -617,7 +647,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	boxCollider8: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.boxImgPath,
 		anchor: 0.0,
 		x: 1136,
 		y: 208,
@@ -625,7 +655,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	boxCollider9: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.boxImgPath,
 		anchor: 0.0,
 		x: 1168,
 		y: 58,
@@ -633,7 +663,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	boxCollider10: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.boxImgPath,
 		anchor: 0.0,
 		x: 1200,
 		y: 58,
@@ -641,7 +671,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	boxCollider11: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.boxImgPath,
 		anchor: 0.0,
 		x: 1232,
 		y: 58,
@@ -649,7 +679,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider25: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 2200,
 		y: 492,
@@ -657,7 +687,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider26: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 2232,
 		y: 492,
@@ -665,7 +695,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider27: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 2264,
 		y: 492,
@@ -673,7 +703,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider28: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 2296,
 		y: 492,
@@ -681,7 +711,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider29: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 2328,
 		y: 492,
@@ -689,7 +719,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider30: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 2360,
 		y: 492,
@@ -697,7 +727,8 @@ const obstacleColliders = {
 		height: 32,
 	},
 	groundCollider35: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2200,
 		y: 508,
@@ -705,7 +736,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider36: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2264,
 		y: 508,
@@ -713,7 +745,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider37: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2328,
 		y: 508,
@@ -721,7 +754,7 @@ const obstacleColliders = {
 		height: 64,
 	},
 	grassCollider31: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 2392,
 		y: 364,
@@ -729,7 +762,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider32: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 2424,
 		y: 364,
@@ -737,7 +770,8 @@ const obstacleColliders = {
 		height: 32,
 	},
 	groundCollider38: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2392,
 		y: 508,
@@ -745,7 +779,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider39: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2392,
 		y: 444,
@@ -753,7 +788,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider40: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2392,
 		y: 380,
@@ -761,7 +797,7 @@ const obstacleColliders = {
 		height: 64,
 	},
 	grassCollider33: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 2456,
 		y: 236,
@@ -769,7 +805,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider34: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 2488,
 		y: 236,
@@ -777,7 +813,8 @@ const obstacleColliders = {
 		height: 32,
 	},
 	groundCollider41: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2456,
 		y: 508,
@@ -785,7 +822,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider42: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2456,
 		y: 444,
@@ -793,7 +831,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider43: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2456,
 		y: 380,
@@ -801,7 +840,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider44: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2456,
 		y: 316,
@@ -809,7 +849,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider45: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2456,
 		y: 252,
@@ -817,7 +858,7 @@ const obstacleColliders = {
 		height: 64,
 	},
 	grassCollider35: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 2520,
 		y: 236,
@@ -825,7 +866,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	boxCollider12: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.boxImgPath,
 		anchor: 0.0,
 		x: 2520,
 		y: 110,
@@ -833,7 +874,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider36: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 2552,
 		y: 236,
@@ -841,7 +882,8 @@ const obstacleColliders = {
 		height: 32,
 	},
 	groundCollider46: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2520,
 		y: 252,
@@ -849,7 +891,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider47: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2520,
 		y: 508,
@@ -857,7 +900,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider48: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2520,
 		y: 444,
@@ -866,7 +910,7 @@ const obstacleColliders = {
 	},
 
 	grassCollider38: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 2584,
 		y: 236,
@@ -874,7 +918,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider39: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 2616,
 		y: 236,
@@ -882,7 +926,8 @@ const obstacleColliders = {
 		height: 32,
 	},
 	groundCollider49: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2584,
 		y: 252,
@@ -890,7 +935,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider50: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2584,
 		y: 508,
@@ -898,7 +944,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider51: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2584,
 		y: 444,
@@ -906,7 +953,7 @@ const obstacleColliders = {
 		height: 64,
 	},
 	grassCollider40: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 2648,
 		y: 236,
@@ -914,7 +961,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider41: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 2680,
 		y: 236,
@@ -922,7 +969,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	boxCollider13: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.boxImgPath,
 		anchor: 0.0,
 		x: 2680,
 		y: 110,
@@ -930,7 +977,8 @@ const obstacleColliders = {
 		height: 32,
 	},
 	groundCollider52: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2648,
 		y: 252,
@@ -938,7 +986,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider53: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2648,
 		y: 508,
@@ -946,7 +995,7 @@ const obstacleColliders = {
 		height: 64,
 	},
 	grassCollider42: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 2712,
 		y: 236,
@@ -954,7 +1003,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider43: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 2744,
 		y: 236,
@@ -962,7 +1011,8 @@ const obstacleColliders = {
 		height: 32,
 	},
 	groundCollider54: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2712,
 		y: 252,
@@ -970,7 +1020,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider55: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2712,
 		y: 508,
@@ -978,7 +1029,7 @@ const obstacleColliders = {
 		height: 64,
 	},
 	grassCollider44: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 2776,
 		y: 236,
@@ -986,7 +1037,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider45: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 2808,
 		y: 236,
@@ -994,7 +1045,8 @@ const obstacleColliders = {
 		height: 32,
 	},
 	groundCollider56: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2776,
 		y: 252,
@@ -1002,7 +1054,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider57: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2776,
 		y: 316,
@@ -1010,7 +1063,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider58: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2776,
 		y: 348,
@@ -1018,7 +1072,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider59: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2776,
 		y: 508,
@@ -1026,7 +1081,7 @@ const obstacleColliders = {
 		height: 64,
 	},
 	grassCollider46: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 2840,
 		y: 300,
@@ -1034,7 +1089,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider47: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 2872,
 		y: 300,
@@ -1042,7 +1097,8 @@ const obstacleColliders = {
 		height: 32,
 	},
 	groundCollider60: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2840,
 		y: 316,
@@ -1050,7 +1106,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider61: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2840,
 		y: 348,
@@ -1058,7 +1115,7 @@ const obstacleColliders = {
 		height: 64,
 	},
 	boxCollider14: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.boxImgPath,
 		anchor: 0.0,
 		x: 2824,
 		y: 110,
@@ -1066,7 +1123,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	boxCollider15: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.boxImgPath,
 		anchor: 0.0,
 		x: 2904,
 		y: 380,
@@ -1074,7 +1131,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	boxCollider16: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.boxImgPath,
 		anchor: 0.0,
 		x: 2968,
 		y: 110,
@@ -1082,7 +1139,8 @@ const obstacleColliders = {
 		height: 32,
 	},
 	groundCollider62: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2840,
 		y: 508,
@@ -1090,7 +1148,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider63: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2904,
 		y: 508,
@@ -1098,7 +1157,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider64: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 2968,
 		y: 508,
@@ -1106,7 +1166,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider65: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3032,
 		y: 508,
@@ -1114,7 +1175,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider66: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3096,
 		y: 508,
@@ -1122,7 +1184,7 @@ const obstacleColliders = {
 		height: 64,
 	},
 	grassCollider48: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 3160,
 		y: 108,
@@ -1130,7 +1192,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider49: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 3192,
 		y: 108,
@@ -1138,7 +1200,8 @@ const obstacleColliders = {
 		height: 32,
 	},
 	groundCollider67: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3160,
 		y: 124,
@@ -1146,7 +1209,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider68: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3160,
 		y: 188,
@@ -1154,7 +1218,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider69: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3160,
 		y: 252,
@@ -1162,7 +1227,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider70: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3160,
 		y: 316,
@@ -1170,7 +1236,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider71: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3160,
 		y: 380,
@@ -1178,7 +1245,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider72: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3160,
 		y: 444,
@@ -1186,7 +1254,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider73: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3160,
 		y: 508,
@@ -1194,7 +1263,7 @@ const obstacleColliders = {
 		height: 64,
 	},
 	grassCollider50: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 3224,
 		y: 108,
@@ -1202,7 +1271,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider51: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 3256,
 		y: 108,
@@ -1210,7 +1279,8 @@ const obstacleColliders = {
 		height: 32,
 	},
 	groundCollider74: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3224,
 		y: 124,
@@ -1218,7 +1288,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider75: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3224,
 		y: 188,
@@ -1226,7 +1297,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider76: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3224,
 		y: 252,
@@ -1234,7 +1306,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider77: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3224,
 		y: 316,
@@ -1242,7 +1315,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider78: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3224,
 		y: 380,
@@ -1250,7 +1324,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider79: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3224,
 		y: 444,
@@ -1258,7 +1333,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider80: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3224,
 		y: 508,
@@ -1266,7 +1342,7 @@ const obstacleColliders = {
 		height: 64,
 	},
 	grassCollider52: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 3288,
 		y: 108,
@@ -1274,7 +1350,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider53: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 3320,
 		y: 108,
@@ -1282,7 +1358,8 @@ const obstacleColliders = {
 		height: 32,
 	},
 	groundCollider81: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3288,
 		y: 124,
@@ -1290,7 +1367,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider82: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3288,
 		y: 188,
@@ -1298,7 +1376,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider83: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3288,
 		y: 252,
@@ -1306,7 +1385,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider84: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3288,
 		y: 316,
@@ -1314,7 +1394,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider85: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3288,
 		y: 380,
@@ -1322,7 +1403,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider86: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3288,
 		y: 444,
@@ -1330,7 +1412,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider87: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3288,
 		y: 508,
@@ -1338,7 +1421,7 @@ const obstacleColliders = {
 		height: 64,
 	},
 	boxCollider17: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.boxImgPath,
 		anchor: 0.0,
 		x: 3496,
 		y: 110,
@@ -1346,7 +1429,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider54: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 3672,
 		y: 108,
@@ -1354,7 +1437,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider55: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 3704,
 		y: 108,
@@ -1362,7 +1445,8 @@ const obstacleColliders = {
 		height: 32,
 	},
 	groundCollider88: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3672,
 		y: 124,
@@ -1370,7 +1454,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider89: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3672,
 		y: 188,
@@ -1378,7 +1463,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider90: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3672,
 		y: 252,
@@ -1386,7 +1472,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider91: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3672,
 		y: 316,
@@ -1394,7 +1481,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider92: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3672,
 		y: 380,
@@ -1402,7 +1490,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider93: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3672,
 		y: 444,
@@ -1410,7 +1499,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider94: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 3672,
 		y: 508,
@@ -1418,7 +1508,7 @@ const obstacleColliders = {
 		height: 64,
 	},
 	grassCollider56: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 4312,
 		y: 108,
@@ -1426,7 +1516,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider57: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 4344,
 		y: 108,
@@ -1434,7 +1524,8 @@ const obstacleColliders = {
 		height: 32,
 	},
 	groundCollider96: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4312,
 		y: 124,
@@ -1442,7 +1533,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider97: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4312,
 		y: 188,
@@ -1450,7 +1542,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider98: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4312,
 		y: 252,
@@ -1458,7 +1551,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider99: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4312,
 		y: 316,
@@ -1466,7 +1560,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider100: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4312,
 		y: 508,
@@ -1474,7 +1569,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider101: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4376,
 		y: -132,
@@ -1482,7 +1578,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider102: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4376,
 		y: -68,
@@ -1490,7 +1587,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider103: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4376,
 		y: -4,
@@ -1498,7 +1596,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider104: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4376,
 		y: 60,
@@ -1506,7 +1605,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider105: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4376,
 		y: 124,
@@ -1514,7 +1614,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider106: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4376,
 		y: 188,
@@ -1522,7 +1623,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider107: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4376,
 		y: 252,
@@ -1530,7 +1632,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider108: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4376,
 		y: 316,
@@ -1538,7 +1641,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider109: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4376,
 		y: 508,
@@ -1546,7 +1650,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider110: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4440,
 		y: -132,
@@ -1554,7 +1659,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider111: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4440,
 		y: -68,
@@ -1562,7 +1668,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider112: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4440,
 		y: -4,
@@ -1570,7 +1677,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider113: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4440,
 		y: 60,
@@ -1578,7 +1686,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider114: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4440,
 		y: 124,
@@ -1586,7 +1695,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider115: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4440,
 		y: 188,
@@ -1594,7 +1704,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider116: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4440,
 		y: 508,
@@ -1602,7 +1713,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider117: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4504,
 		y: -132,
@@ -1610,7 +1722,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider118: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4504,
 		y: -68,
@@ -1618,7 +1731,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider119: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4504,
 		y: -4,
@@ -1626,7 +1740,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider120: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4504,
 		y: 60,
@@ -1634,7 +1749,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider121: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4504,
 		y: 124,
@@ -1642,7 +1758,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider122: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4504,
 		y: 188,
@@ -1650,7 +1767,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider123: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4504,
 		y: 508,
@@ -1658,7 +1776,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider124: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4568,
 		y: -132,
@@ -1666,7 +1785,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider125: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4568,
 		y: -68,
@@ -1674,7 +1794,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider126: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4568,
 		y: -4,
@@ -1682,7 +1803,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider127: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4568,
 		y: 60,
@@ -1690,7 +1812,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider128: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4568,
 		y: 380,
@@ -1698,7 +1821,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider129: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4568,
 		y: 444,
@@ -1706,7 +1830,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider130: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4568,
 		y: 508,
@@ -1714,7 +1839,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider131: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4632,
 		y: -132,
@@ -1722,7 +1848,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider132: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4632,
 		y: -68,
@@ -1730,7 +1857,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider133: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4632,
 		y: -4,
@@ -1738,7 +1866,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider134: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4632,
 		y: 60,
@@ -1746,7 +1875,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider135: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4632,
 		y: 380,
@@ -1754,7 +1884,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider136: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4632,
 		y: 444,
@@ -1762,7 +1893,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider137: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4632,
 		y: 508,
@@ -1770,7 +1902,7 @@ const obstacleColliders = {
 		height: 64,
 	},
 	grassCollider58: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 4696,
 		y: 236,
@@ -1778,7 +1910,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider59: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 4728,
 		y: 236,
@@ -1786,7 +1918,8 @@ const obstacleColliders = {
 		height: 32,
 	},
 	groundCollider138: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4696,
 		y: 252,
@@ -1794,7 +1927,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider139: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4696,
 		y: 316,
@@ -1802,7 +1936,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider140: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4696,
 		y: 380,
@@ -1810,7 +1945,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider141: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4696,
 		y: 444,
@@ -1818,7 +1954,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider142: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4696,
 		y: 508,
@@ -1826,7 +1963,7 @@ const obstacleColliders = {
 		height: 64,
 	},
 	grassCollider60: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 4760,
 		y: 236,
@@ -1834,7 +1971,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider61: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 4792,
 		y: 236,
@@ -1842,7 +1979,8 @@ const obstacleColliders = {
 		height: 32,
 	},
 	groundCollider143: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4760,
 		y: 252,
@@ -1850,7 +1988,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider144: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4760,
 		y: 316,
@@ -1858,7 +1997,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider145: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4760,
 		y: 380,
@@ -1866,7 +2006,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider146: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4760,
 		y: 444,
@@ -1874,7 +2015,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider147: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4760,
 		y: 508,
@@ -1882,7 +2024,7 @@ const obstacleColliders = {
 		height: 64,
 	},
 	grassCollider62: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 4824,
 		y: 236,
@@ -1890,7 +2032,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider63: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 4856,
 		y: 236,
@@ -1898,7 +2040,8 @@ const obstacleColliders = {
 		height: 32,
 	},
 	groundCollider148: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4824,
 		y: 252,
@@ -1906,7 +2049,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider149: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4824,
 		y: 316,
@@ -1914,7 +2058,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider150: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4824,
 		y: 380,
@@ -1922,7 +2067,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider151: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4824,
 		y: 444,
@@ -1930,7 +2076,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider152: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4824,
 		y: 508,
@@ -1938,7 +2085,7 @@ const obstacleColliders = {
 		height: 64,
 	},
 	grassCollider64: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 4888,
 		y: 236,
@@ -1946,7 +2093,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider65: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 4920,
 		y: 236,
@@ -1954,7 +2101,8 @@ const obstacleColliders = {
 		height: 32,
 	},
 	groundCollider153: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4888,
 		y: 252,
@@ -1962,7 +2110,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider154: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4888,
 		y: 316,
@@ -1970,7 +2119,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider155: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4888,
 		y: 380,
@@ -1978,7 +2128,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider156: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4888,
 		y: 444,
@@ -1986,7 +2137,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider157: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4888,
 		y: 508,
@@ -1994,7 +2146,7 @@ const obstacleColliders = {
 		height: 64,
 	},
 	grassCollider66: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 4932,
 		y: 236,
@@ -2002,7 +2154,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider67: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 4964,
 		y: 236,
@@ -2010,7 +2162,8 @@ const obstacleColliders = {
 		height: 32,
 	},
 	groundCollider158: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4932,
 		y: 252,
@@ -2018,7 +2171,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider159: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4932,
 		y: 316,
@@ -2026,7 +2180,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider160: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4932,
 		y: 380,
@@ -2034,7 +2189,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider161: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4932,
 		y: 444,
@@ -2042,7 +2198,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider162: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4932,
 		y: 508,
@@ -2050,7 +2207,7 @@ const obstacleColliders = {
 		height: 64,
 	},
 	grassCollider68: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 4996,
 		y: 300,
@@ -2058,7 +2215,7 @@ const obstacleColliders = {
 		height: 32,
 	},
 	grassCollider69: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 5028,
 		y: 300,
@@ -2066,7 +2223,8 @@ const obstacleColliders = {
 		height: 32,
 	},
 	groundCollider163: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4996,
 		y: 316,
@@ -2074,7 +2232,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider164: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4996,
 		y: 380,
@@ -2082,7 +2241,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider165: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4996,
 		y: 444,
@@ -2090,7 +2250,8 @@ const obstacleColliders = {
 		height: 64,
 	},
 	groundCollider166: {
-		imgPath: pathToImgFolder + 'Levels/level_01_ground_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.groundImgPath,
 		anchor: 0.0,
 		x: 4996,
 		y: 508,
@@ -2105,8 +2266,8 @@ const obstacleColliders = {
 const objectColliders = {
 	treasureChest1: {
 		imgPath:
-			pathToImgFolder +
-			'objects/treasure_chest/opening/treasure_chest_opening_00.png',
+			pathDictionnary.pathToImgFolder +
+			pathDictionnary.treasureChestImgPath,
 		anchor: 0.0,
 		x: 1232,
 		y: 26,
@@ -2115,8 +2276,8 @@ const objectColliders = {
 	},
 	treasureChest2: {
 		imgPath:
-			pathToImgFolder +
-			'objects/treasure_chest/opening/treasure_chest_opening_00.png',
+			pathDictionnary.pathToImgFolder +
+			pathDictionnary.treasureChestImgPath,
 		anchor: 0.0,
 		x: 2520,
 		y: 412,
@@ -2125,8 +2286,8 @@ const objectColliders = {
 	},
 	treasureChest3: {
 		imgPath:
-			pathToImgFolder +
-			'objects/treasure_chest/opening/treasure_chest_opening_00.png',
+			pathDictionnary.pathToImgFolder +
+			pathDictionnary.treasureChestImgPath,
 		anchor: 0.0,
 		x: 4344,
 		y: 76,
@@ -2140,7 +2301,7 @@ const objectColliders = {
  */
 const decorsColliders = {
 	blockCollider1: {
-		imgPath: pathToImgFolder + 'Levels/level_01_block_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.blockImgPath,
 		anchor: 0.0,
 		x: 0,
 		y: 224,
@@ -2148,7 +2309,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	blockCollider2: {
-		imgPath: pathToImgFolder + 'Levels/level_01_block_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.blockImgPath,
 		anchor: 0.0,
 		x: 128,
 		y: 224,
@@ -2156,7 +2317,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	blockCollider3: {
-		imgPath: pathToImgFolder + 'Levels/level_01_block_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.blockImgPath,
 		anchor: 0.0,
 		x: 0,
 		y: 161,
@@ -2164,7 +2325,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	blockCollider4: {
-		imgPath: pathToImgFolder + 'Levels/level_01_block_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.blockImgPath,
 		anchor: 0.0,
 		x: 128,
 		y: 161,
@@ -2172,7 +2333,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	blockCollider5: {
-		imgPath: pathToImgFolder + 'Levels/level_01_block_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.blockImgPath,
 		anchor: 0.0,
 		x: 0,
 		y: 98,
@@ -2180,7 +2341,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	blockCollider6: {
-		imgPath: pathToImgFolder + 'Levels/level_01_block_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.blockImgPath,
 		anchor: 0.0,
 		x: 128,
 		y: 98,
@@ -2188,7 +2349,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	blockCollider7: {
-		imgPath: pathToImgFolder + 'Levels/level_01_block_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.blockImgPath,
 		anchor: 0.0,
 		x: 64,
 		y: 98,
@@ -2196,7 +2357,8 @@ const decorsColliders = {
 		height: 64,
 	},
 	topCastleCollider1: {
-		imgPath: pathToImgFolder + 'Levels/level_01_top_castle_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.topCastleImgPath,
 		anchor: 0.0,
 		x: 0,
 		y: 34,
@@ -2204,7 +2366,8 @@ const decorsColliders = {
 		height: 64,
 	},
 	topCastleCollider2: {
-		imgPath: pathToImgFolder + 'Levels/level_01_top_castle_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.topCastleImgPath,
 		anchor: 0.0,
 		x: 64,
 		y: 34,
@@ -2212,7 +2375,8 @@ const decorsColliders = {
 		height: 64,
 	},
 	topCastleCollider3: {
-		imgPath: pathToImgFolder + 'Levels/level_01_top_castle_02_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.topCastleImgPath,
 		anchor: 0.0,
 		x: 128,
 		y: 34,
@@ -2220,7 +2384,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	doorCollider1: {
-		imgPath: pathToImgFolder + 'Levels/level_01_door_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.doorImgPath,
 		anchor: 0.0,
 		x: 64,
 		y: 161,
@@ -2228,7 +2392,7 @@ const decorsColliders = {
 		height: 128,
 	},
 	blockCollider8: {
-		imgPath: pathToImgFolder + 'Levels/level_01_block_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.blockImgPath,
 		anchor: 0.0,
 		x: 1136,
 		y: 428,
@@ -2237,7 +2401,7 @@ const decorsColliders = {
 		zIndex: 0,
 	},
 	blockCollider9: {
-		imgPath: pathToImgFolder + 'Levels/level_01_block_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.blockImgPath,
 		anchor: 0.0,
 		x: 1136,
 		y: 364,
@@ -2245,7 +2409,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	blockCollider10: {
-		imgPath: pathToImgFolder + 'Levels/level_01_block_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.blockImgPath,
 		anchor: 0.0,
 		x: 1136,
 		y: 300,
@@ -2253,7 +2417,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	blockCollider11: {
-		imgPath: pathToImgFolder + 'Levels/level_01_block_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.blockImgPath,
 		anchor: 0.0,
 		x: 1136,
 		y: 236,
@@ -2261,7 +2425,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	blockCollider12: {
-		imgPath: pathToImgFolder + 'Levels/level_01_block_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.blockImgPath,
 		anchor: 0.0,
 		x: 1136,
 		y: 172,
@@ -2269,7 +2433,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	blockCollider13: {
-		imgPath: pathToImgFolder + 'Levels/level_01_block_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.blockImgPath,
 		anchor: 0.0,
 		x: 1136,
 		y: 108,
@@ -2277,7 +2441,8 @@ const decorsColliders = {
 		height: 64,
 	},
 	topCastleCollider4: {
-		imgPath: pathToImgFolder + 'Levels/level_01_top_castle_01_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.topCastleImgPath,
 		anchor: 0.0,
 		x: 1136,
 		y: 44,
@@ -2285,7 +2450,8 @@ const decorsColliders = {
 		height: 64,
 	},
 	topCastleCollider5: {
-		imgPath: pathToImgFolder + 'Levels/level_01_top_castle_02_64.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.topCastleImgPath,
 		anchor: 0.0,
 		x: 1200,
 		y: 44,
@@ -2293,7 +2459,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	blockCollider14: {
-		imgPath: pathToImgFolder + 'Levels/level_01_block_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.blockImgPath,
 		anchor: 0.0,
 		x: 1200,
 		y: 428,
@@ -2302,7 +2468,7 @@ const decorsColliders = {
 		zIndex: 0,
 	},
 	blockCollider15: {
-		imgPath: pathToImgFolder + 'Levels/level_01_block_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.blockImgPath,
 		anchor: 0.0,
 		x: 1200,
 		y: 364,
@@ -2310,7 +2476,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	blockCollider16: {
-		imgPath: pathToImgFolder + 'Levels/level_01_block_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.blockImgPath,
 		anchor: 0.0,
 		x: 1200,
 		y: 300,
@@ -2318,7 +2484,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	blockCollider17: {
-		imgPath: pathToImgFolder + 'Levels/level_01_block_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.blockImgPath,
 		anchor: 0.0,
 		x: 1200,
 		y: 236,
@@ -2326,7 +2492,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	blockCollider18: {
-		imgPath: pathToImgFolder + 'Levels/level_01_block_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.blockImgPath,
 		anchor: 0.0,
 		x: 1200,
 		y: 172,
@@ -2334,7 +2500,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	blockCollider19: {
-		imgPath: pathToImgFolder + 'Levels/level_01_block_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.blockImgPath,
 		anchor: 0.0,
 		x: 1200,
 		y: 108,
@@ -2342,7 +2508,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider1: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 2520,
 		y: 380,
@@ -2350,7 +2516,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider2: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 2520,
 		y: 316,
@@ -2358,7 +2524,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider3: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 2584,
 		y: 380,
@@ -2366,7 +2532,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider4: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 2584,
 		y: 316,
@@ -2374,7 +2540,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider5: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 2648,
 		y: 380,
@@ -2382,7 +2548,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider6: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 2648,
 		y: 316,
@@ -2390,7 +2556,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider7: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 2648,
 		y: 444,
@@ -2398,7 +2564,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider8: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 2712,
 		y: 380,
@@ -2406,7 +2572,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider9: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 2712,
 		y: 316,
@@ -2414,7 +2580,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider10: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 2712,
 		y: 444,
@@ -2422,7 +2588,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider11: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 2776,
 		y: 444,
@@ -2430,7 +2596,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider12: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 2776,
 		y: 380,
@@ -2438,7 +2604,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider13: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 2840,
 		y: 444,
@@ -2446,7 +2612,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider14: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 2840,
 		y: 380,
@@ -2454,7 +2620,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider15: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 4312,
 		y: 380,
@@ -2462,7 +2628,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider16: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 4312,
 		y: 444,
@@ -2470,7 +2636,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider17: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 4376,
 		y: 380,
@@ -2478,7 +2644,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider18: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 4376,
 		y: 444,
@@ -2486,7 +2652,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider19: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 4440,
 		y: 252,
@@ -2494,7 +2660,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider20: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 4440,
 		y: 316,
@@ -2502,7 +2668,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider21: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 4440,
 		y: 380,
@@ -2510,7 +2676,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider22: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 4440,
 		y: 444,
@@ -2518,7 +2684,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider23: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 4504,
 		y: 252,
@@ -2526,7 +2692,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider24: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 4504,
 		y: 316,
@@ -2534,7 +2700,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider25: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 4504,
 		y: 380,
@@ -2542,7 +2708,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider26: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 4504,
 		y: 444,
@@ -2550,7 +2716,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider27: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 4568,
 		y: 124,
@@ -2558,7 +2724,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider28: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 4568,
 		y: 188,
@@ -2566,7 +2732,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider29: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 4568,
 		y: 252,
@@ -2574,7 +2740,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider30: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 4568,
 		y: 316,
@@ -2582,7 +2748,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider31: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 4632,
 		y: 124,
@@ -2590,7 +2756,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider32: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 4632,
 		y: 188,
@@ -2598,7 +2764,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider33: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 4632,
 		y: 252,
@@ -2606,7 +2772,7 @@ const decorsColliders = {
 		height: 64,
 	},
 	mineCollider34: {
-		imgPath: pathToImgFolder + 'Levels/level_01_mine_indoor_01_64.png',
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.mineImgPath,
 		anchor: 0.0,
 		x: 4632,
 		y: 316,
@@ -2617,7 +2783,8 @@ const decorsColliders = {
 
 const mobileColliders = {
 	mobileCollider1: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_02_32.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.mobileBoxImgPath,
 		anchor: 0.0,
 		x: 1420,
 		y: 320,
@@ -2626,7 +2793,8 @@ const mobileColliders = {
 		movement: '-1X',
 	},
 	mobileCollider2: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_02_32.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.mobileBoxImgPath,
 		anchor: 0.0,
 		x: 1452,
 		y: 320,
@@ -2635,7 +2803,8 @@ const mobileColliders = {
 		movement: '-1X',
 	},
 	mobileCollider3: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_02_32.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.mobileBoxImgPath,
 		anchor: 0.0,
 		x: 1484,
 		y: 320,
@@ -2644,7 +2813,8 @@ const mobileColliders = {
 		movement: '-1X',
 	},
 	mobileCollider4: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_02_32.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.mobileBoxImgPath,
 		anchor: 0.0,
 		x: 1720,
 		y: 320,
@@ -2653,7 +2823,8 @@ const mobileColliders = {
 		movement: '-1X',
 	},
 	mobileCollider5: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_02_32.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.mobileBoxImgPath,
 		anchor: 0.0,
 		x: 1752,
 		y: 320,
@@ -2662,7 +2833,8 @@ const mobileColliders = {
 		movement: '-1X',
 	},
 	mobileCollider6: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_02_32.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.mobileBoxImgPath,
 		anchor: 0.0,
 		x: 1784,
 		y: 320,
@@ -2671,7 +2843,8 @@ const mobileColliders = {
 		movement: '-1X',
 	},
 	mobileCollider7: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_02_32.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.mobileBoxImgPath,
 		anchor: 0.0,
 		x: 3832,
 		y: 444,
@@ -2680,7 +2853,8 @@ const mobileColliders = {
 		movement: '-1X',
 	},
 	mobileCollider8: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_02_32.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.mobileBoxImgPath,
 		anchor: 0.0,
 		x: 3864,
 		y: 444,
@@ -2689,7 +2863,8 @@ const mobileColliders = {
 		movement: '-1X',
 	},
 	mobileCollider9: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_02_32.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.mobileBoxImgPath,
 		anchor: 0.0,
 		x: 3896,
 		y: 444,
@@ -2698,7 +2873,8 @@ const mobileColliders = {
 		movement: '-1X',
 	},
 	mobileCollider10: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_02_32.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.mobileBoxImgPath,
 		anchor: 0.0,
 		x: 4184,
 		y: 508,
@@ -2707,7 +2883,8 @@ const mobileColliders = {
 		movement: '+1Y',
 	},
 	mobileCollider11: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_02_32.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.mobileBoxImgPath,
 		anchor: 0.0,
 		x: 4216,
 		y: 508,
@@ -2716,7 +2893,8 @@ const mobileColliders = {
 		movement: '+1Y',
 	},
 	mobileCollider12: {
-		imgPath: pathToImgFolder + 'Levels/level_01_box_02_32.png',
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.mobileBoxImgPath,
 		anchor: 0.0,
 		x: 4248,
 		y: 508,

@@ -1,5 +1,5 @@
 import loaders from './loaders.js';
-import colliders from './colliders.js';
+import spritesConfig from './sprites.js';
 import textConfig from './text.js';
 import PIXI from './pixi-legacy.js';
 
@@ -285,29 +285,16 @@ let text = new PIXI.Text();
  */
 let warningText = new PIXI.Text();
 /**
- * @type {any}
- * @description Next text button icon texture for related icon
- */
-let nextTextButtonImgPath = '/static/assets/images/TextBox/buttonX.png';
-/**
  * @type {PIXI.Texture}
  * @description Next text button icon texture for related icon
  */
 let warningNextTextButtonImgPath = '/static/assets/images/TextBox/buttonX.png';
-/**
- * @type {PIXI.Sprite}
- * @description Next text button icon for textBox
- */
-let nextTextButtonImg = new PIXI.Sprite(
-	PIXI.Texture.from('/static/assets/images/TextBox/buttonX.png')
-);
+
 /**
  * @type {PIXI.Sprite}
  * @description Next text button icon for warningTextBox
  */
-let warningNextTextButtonImg = new PIXI.Sprite(
-	PIXI.Texture.from('/static/assets/images/TextBox/buttonX.png')
-);
+let warningNextTextButtonImg = new PIXI.Sprite();
 /**
  * @type {PIXI.Container}
  * @description Container for text display
@@ -522,7 +509,6 @@ function setMiddleGroundImg() {
 		pathToAnimation + 'Levels/middleground_level_01.png'
 	);
 	let middlegroundSprite1 = new PIXI.Sprite(middlegroundImage);
-
 	middlegroundSprite1.anchor.set(0.0);
 	middlegroundSprite1.x = 0;
 	middlegroundSprite1.y = 0;
@@ -547,7 +533,7 @@ function setForeground() {
 }
 
 function setDecors() {
-	let decorsCollidersObject = colliders.decorsColliders;
+	let decorsCollidersObject = spritesConfig.decorsColliders;
 	let collider;
 	for (const decorsConf in decorsCollidersObject) {
 		collider = createBasicCollider(decorsCollidersObject[decorsConf]);
@@ -560,17 +546,17 @@ function setObjects() {
 	treasureChest1 = createBasicSprite(
 		treasureChest1TextureArray,
 		treasureChest1,
-		colliders.objectColliders.treasureChest1
+		spritesConfig.objectColliders.treasureChest1
 	);
 	treasureChest2 = createBasicSprite(
 		treasureChest2TextureArray,
 		treasureChest2,
-		colliders.objectColliders.treasureChest2
+		spritesConfig.objectColliders.treasureChest2
 	);
 	treasureChest3 = createBasicSprite(
 		treasureChest3TextureArray,
 		treasureChest3,
-		colliders.objectColliders.treasureChest3
+		spritesConfig.objectColliders.treasureChest3
 	);
 	foreground.addChild(treasureChest1, treasureChest2, treasureChest3);
 	objectCollidersList.push(treasureChest1, treasureChest2, treasureChest3);
@@ -580,7 +566,7 @@ function addWarriorToStage() {
 	warrior = createBasicSprite(
 		warriorTextureArray,
 		warrior,
-		colliders.warriorColliders.warriorCollider1
+		spritesConfig.warriorColliders.warriorCollider1
 	);
 	loadIdleTexture();
 	foreground.addChild(warrior);
@@ -596,7 +582,7 @@ function getInitialEdgeScreen() {
 }
 
 function setStaticColliders() {
-	let obstacleCollidersObject = colliders.obstacleColliders;
+	let obstacleCollidersObject = spritesConfig.obstacleColliders;
 	let collider;
 	for (const floorConf in obstacleCollidersObject) {
 		collider = createBasicCollider(obstacleCollidersObject[floorConf]);
@@ -607,7 +593,7 @@ function setStaticColliders() {
 
 function setMobileColliders() {
 	let collider;
-	let mobileCollidersObject = colliders.mobileColliders;
+	let mobileCollidersObject = spritesConfig.mobileColliders;
 	for (const mobileCollider in mobileCollidersObject) {
 		collider = createBasicCollider(mobileCollidersObject[mobileCollider]);
 		switch (mobileCollidersObject[mobileCollider].movement) {
@@ -659,14 +645,19 @@ function createBasicSprite(
 	spriteObjectToInitialize,
 	spriteConf
 ) {
-	let texture = PIXI.Texture.from(spriteConf.imgPath);
-	spriteTextureArray.push(texture);
+	let texture = spriteConf.imgPath
+		? PIXI.Texture.from(spriteConf.imgPath)
+		: PIXI.Texture.WHITE;
+	if (spriteTextureArray) {
+		spriteTextureArray.push(texture);
+	}
 	spriteObjectToInitialize = new PIXI.Sprite(texture);
 	spriteObjectToInitialize.anchor.set(spriteConf.anchor);
 	spriteObjectToInitialize.x = spriteConf.x;
 	spriteObjectToInitialize.y = spriteConf.y;
 	spriteObjectToInitialize.width = spriteConf.width;
 	spriteObjectToInitialize.height = spriteConf.height;
+	if (spriteConf.tint) spriteObjectToInitialize.tint = spriteConf.tint;
 	return spriteObjectToInitialize;
 }
 
@@ -804,9 +795,6 @@ function setControls() {
 
 function setKeyboardControls() {
 	window.addEventListener('keydown', (e) => {
-		/* 			if (e.defaultPrevented) {
-				return; // Ne devrait rien faire si l'événement de la touche était déjà consommé.
-			} */
 		switch (e.key) {
 			case 'ArrowDown':
 				crouch();
@@ -816,9 +804,7 @@ function setKeyboardControls() {
 				jump();
 				break;
 			case 'ArrowLeft':
-				console.log(warrior.x);
 				warrior.scale.x = -2;
-				console.log(warrior.x);
 				direction = -1;
 				clearInterval(vxTimer);
 				move();
@@ -842,10 +828,7 @@ function setKeyboardControls() {
 				activateObjectAround();
 				break;
 			case 'x':
-				if (displayingText /* && !displayingWarningText */) {
-					setTimeout(() => {
-						removeWarningTextBox();
-					}, 1000);
+				if (displayingText && !displayingWarningText) {
 					nextContent();
 				}
 				break;
@@ -855,13 +838,9 @@ function setKeyboardControls() {
 		if (e.key !== 'x' && displayingText && !displayingWarningText) {
 			displayWarningMsg();
 		}
-		/* 			e.preventDefault(); */
 	});
 
 	window.addEventListener('keyup', (e) => {
-		/* 		if (e.defaultPrevented) {
-			return; // Ne devrait rien faire si l'événement de la touche était déjà consommé.
-		} */
 		switch (e.key) {
 			case 'a':
 			case 'z':
@@ -1504,13 +1483,7 @@ function buildTextBox(textConfig) {
 		textBox = new PIXI.Container();
 		buildTextBackgroundTexture(textConfig);
 		buildText(textConfig);
-		/* 		if (textConfig.overlayConfig.nextButtonImg) {
-			buildNextTextButtonImg(textConfig);
-		} */
 		textBox.addChild(textBackGroundTexture, text);
-		/* nextTextButtonImg._destroyed
-			? textBox.addChild(textBackGroundTexture, text)
-			: textBox.addChild(textBackGroundTexture, text, nextTextButtonImg); */
 		app.stage.addChild(textBox);
 	}
 }
@@ -1542,13 +1515,11 @@ function buildTextBackgroundTexture(textConfig) {
 			baseTexture: true,
 		});
 	}
-	textBackGroundTexture = new PIXI.Sprite(PIXI.Texture.WHITE);
-	textBackGroundTexture.x = textConfig.overlayConfig.textBox.x;
-	textBackGroundTexture.y = textConfig.overlayConfig.textBox.y;
-	textBackGroundTexture.width = textConfig.overlayConfig.textBox.width;
-	textBackGroundTexture.height = textConfig.overlayConfig.textBox.height;
-	textBackGroundTexture.anchor.set(textConfig.overlayConfig.textBox.anchor);
-	textBackGroundTexture.tint = textConfig.overlayConfig.textBox.tint;
+	textBackGroundTexture = createBasicSprite(
+		null,
+		textBackGroundTexture,
+		textConfig.overlayConfig.textBox
+	);
 }
 
 function buildWarningTextBackgroundTexture(textConfig) {
@@ -1559,16 +1530,11 @@ function buildWarningTextBackgroundTexture(textConfig) {
 			baseTexture: true,
 		});
 	}
-	warningTextBackGroundTexture = new PIXI.Sprite(PIXI.Texture.WHITE);
-	warningTextBackGroundTexture.x = textConfig.overlayConfig.textBox.x;
-	warningTextBackGroundTexture.y = textConfig.overlayConfig.textBox.y;
-	warningTextBackGroundTexture.width = textConfig.overlayConfig.textBox.width;
-	warningTextBackGroundTexture.height =
-		textConfig.overlayConfig.textBox.height;
-	warningTextBackGroundTexture.anchor.set(
-		textConfig.overlayConfig.textBox.anchor
+	warningTextBackGroundTexture = createBasicSprite(
+		null,
+		warningTextBackGroundTexture,
+		textConfig.overlayConfig.textBox
 	);
-	warningTextBackGroundTexture.tint = textConfig.overlayConfig.textBox.tint;
 }
 
 function buildText(textConfig) {
@@ -1591,22 +1557,6 @@ function buildWarningText(textConfig) {
 	warningText.anchor.set(textConfig.overlayConfig.text.anchor);
 }
 
-/* function buildNextTextButtonImg(textConfig) {
-	if (nextTextButtonImg._destroyed !== true) {
-		nextTextButtonImg.destroy({
-			children: true,
-			texture: true,
-			baseTexture: true,
-		});
-	}
-	nextTextButtonImg = PIXI.Sprite.from(nextTextButtonImgPath);
-	nextTextButtonImg.x = textConfig.overlayConfig.nextButtonImg.x;
-	nextTextButtonImg.y = textConfig.overlayConfig.nextButtonImg.y;
-	nextTextButtonImg.width = textConfig.overlayConfig.nextButtonImg.width;
-	nextTextButtonImg.height = textConfig.overlayConfig.nextButtonImg.height;
-	nextTextButtonImg.anchor.set(textConfig.overlayConfig.nextButtonImg.anchor);
-} */
-
 function buildWarningNextTextButtonImg(textConfig) {
 	if (warningNextTextButtonImg._destroyed !== true) {
 		warningNextTextButtonImg.destroy({
@@ -1615,15 +1565,10 @@ function buildWarningNextTextButtonImg(textConfig) {
 			baseTexture: true,
 		});
 	}
-	warningNextTextButtonImg = PIXI.Sprite.from(warningNextTextButtonImgPath);
-	warningNextTextButtonImg.x = textConfig.overlayConfig.nextButtonImg.x;
-	warningNextTextButtonImg.y = textConfig.overlayConfig.nextButtonImg.y;
-	warningNextTextButtonImg.width =
-		textConfig.overlayConfig.nextButtonImg.width;
-	warningNextTextButtonImg.height =
-		textConfig.overlayConfig.nextButtonImg.height;
-	warningNextTextButtonImg.anchor.set(
-		textConfig.overlayConfig.nextButtonImg.anchor
+	warningNextTextButtonImg = createBasicSprite(
+		null,
+		warningNextTextButtonImg,
+		textConfig.overlayConfig.nextButtonImg
 	);
 }
 
@@ -1638,13 +1583,12 @@ function displayDynamicMsg() {
 
 function displayWarningMsg() {
 	displayingWarningText = true;
-	/* 	removeWarningTextContent(); */
 	buildWarningTextBox(textConfig.dynamicText.dynamicText2);
 	const timer = setTimeout(() => {
 		removeWarningTextBox();
 		displayingWarningText = false;
 		clearTimeout(timer);
-	}, 5000);
+	}, 2500);
 }
 
 function removeTextContent() {
@@ -1652,13 +1596,6 @@ function removeTextContent() {
 		text.destroy({children: true, texture: true, baseTexture: true});
 	}
 	text = new PIXI.Text();
-}
-
-function removeWarningTextContent() {
-	if (warningText._destroyed !== true) {
-		warningText.destroy({children: true, texture: true, baseTexture: true});
-	}
-	warningText = new PIXI.Text();
 }
 
 function removeTextBox() {
