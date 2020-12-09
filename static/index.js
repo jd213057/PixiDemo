@@ -56,6 +56,11 @@ let direction = 1;
 let displayingText = false;
 /**
  * @type {boolean}
+ * @description Indicates whether warning text content is been displayed or not
+ */
+let displayingWarningText = false;
+/**
+ * @type {boolean}
  * @description Indicates whether text content for first area of level has been displayed
  */
 let hasBeenDisplayedZone1;
@@ -270,20 +275,54 @@ let vy = 0;
  */
 let textBackGroundTexture = new PIXI.Sprite(PIXI.Texture.WHITE);
 /**
+ * @type {PIXI.Texture}
+ * @description Background texture for warningTextBox
+ */
+let warningTextBackGroundTexture = new PIXI.Sprite(PIXI.Texture.WHITE);
+/**
  * @type {PIXI.Text}
  * @description Container for text display
  */
 let text = new PIXI.Text();
 /**
  * @type {PIXI.Text}
+ * @description Container for warning text display
+ */
+let warningText = new PIXI.Text();
+/**
+ * @type {any}
+ * @description Next text button icon texture for related icon
+ */
+let nextTextButtonImgPath = '/static/assets/images/TextBox/buttonX.png';
+/**
+ * @type {PIXI.Texture}
+ * @description Next text button icon texture for related icon
+ */
+let warningNextTextButtonImgPath = '/static/assets/images/TextBox/buttonX.png';
+/**
+ * @type {PIXI.Sprite}
  * @description Next text button icon for textBox
  */
-let nextTextButtonImg = new PIXI.Sprite();
+let nextTextButtonImg = new PIXI.Sprite(
+	PIXI.Texture.from('/static/assets/images/TextBox/buttonX.png')
+);
+/**
+ * @type {PIXI.Sprite}
+ * @description Next text button icon for warningTextBox
+ */
+let warningNextTextButtonImg = new PIXI.Sprite(
+	PIXI.Texture.from('/static/assets/images/TextBox/buttonX.png')
+);
 /**
  * @type {PIXI.Container}
  * @description Container for text display
  */
 let textBox = new PIXI.Container();
+/**
+ * @type {PIXI.Container}
+ * @description Container for warning text display
+ */
+let warningTextBox = new PIXI.Container();
 /**
  * @type {PIXI.Container}
  * @description Container for all foreground stage elements
@@ -823,6 +862,9 @@ function setKeyboardControls() {
 			default:
 				return;
 		}
+		if (e.key !== 'x' && displayingText && !displayingWarningText) {
+			displayWarningMsg();
+		}
 		/* 			e.preventDefault(); */
 	});
 
@@ -945,16 +987,14 @@ function activateObjectAround() {
 }
 
 function openTreasureChest(i) {
+	displayDynamicMsg();
 	playSound(openingTreasureChestSound, 0.7);
 	loadOpeningTreasureChestTexture(i);
 	setTimeout(loadOpenedTreasureChestTexture(i), 400);
 }
 
 function closeTreasureChest(i) {
-	if (openingTreasureChestSound.currentTime !== 0) {
-		openingTreasureChestSound.currentTime = 0;
-	}
-	openingTreasureChestSound.play();
+	playSound(openingTreasureChestSound, 0.7);
 	loadClosingTreasureChestTexture(i);
 	setTimeout(loadClosedTreasureChestTexture(i), 400);
 }
@@ -1374,14 +1414,14 @@ function manageTextContent(xCoordinate) {
 function isWarriorInTextAera(xCoordinate, index) {
 	const isWarriorInTextAreaBoolean =
 		xCoordinate >
-			textConfig.narrationText[index].overlayConfig.activationArea.x1 &&
+			textConfig.staticText[index].overlayConfig.activationArea.x1 &&
 		xCoordinate <
-			textConfig.narrationText[index].overlayConfig.activationArea.x2;
+			textConfig.staticText[index].overlayConfig.activationArea.x2;
 	return isWarriorInTextAreaBoolean;
 }
 
 function updateTextList(xCoordinate) {
-	for (const textIndex in textConfig.narrationText) {
+	for (const textIndex in textConfig.staticText) {
 		if (
 			textListToShow.includes(
 				textListToShow[textIndex] &&
@@ -1391,12 +1431,12 @@ function updateTextList(xCoordinate) {
 			continue;
 		} else if (
 			isWarriorInTextAera(xCoordinate, textIndex) &&
-			!textListToShow.includes(textConfig.narrationText[textIndex])
+			!textListToShow.includes(textConfig.staticText[textIndex])
 		) {
-			textListToShow.push(textConfig.narrationText[textIndex]);
+			textListToShow.push(textConfig.staticText[textIndex]);
 		} else if (
 			!isWarriorInTextAera(xCoordinate, textIndex) &&
-			textListToShow.includes(textConfig.narrationText[textIndex])
+			textListToShow.includes(textConfig.staticText[textIndex])
 		) {
 			textListToShow.splice(textIndex, 1);
 		}
@@ -1474,9 +1514,32 @@ function buildTextBox(textConfig) {
 		textBox = new PIXI.Container();
 		buildTextBackgroundTexture(textConfig);
 		buildText(textConfig);
-		buildNextTextButtonImg(textConfig);
-		textBox.addChild(textBackGroundTexture, text, nextTextButtonImg);
+		if (textConfig.overlayConfig.nextButtonImg) {
+			buildNextTextButtonImg(textConfig);
+		}
+		nextTextButtonImg._destroyed
+			? textBox.addChild(textBackGroundTexture, text)
+			: textBox.addChild(textBackGroundTexture, text, nextTextButtonImg);
 		app.stage.addChild(textBox);
+	}
+}
+
+function buildWarningTextBox(textConfig) {
+	if (textConfig) {
+		warningTextBox = new PIXI.Container();
+		buildWarningTextBackgroundTexture(textConfig);
+		buildWarningText(textConfig);
+		if (textConfig.overlayConfig.nextButtonImg) {
+			buildWarningNextTextButtonImg(textConfig);
+		}
+		warningNextTextButtonImg._destroyed
+			? warningTextBox.addChild(warningTextBackGroundTexture, warningText)
+			: warningTextBox.addChild(
+					warningTextBackGroundTexture,
+					warningText,
+					warningNextTextButtonImg
+			  );
+		app.stage.addChild(warningTextBox);
 	}
 }
 
@@ -1497,6 +1560,26 @@ function buildTextBackgroundTexture(textConfig) {
 	textBackGroundTexture.tint = textConfig.overlayConfig.textBox.tint;
 }
 
+function buildWarningTextBackgroundTexture(textConfig) {
+	if (warningTextBackGroundTexture._destroyed !== true) {
+		warningTextBackGroundTexture.destroy({
+			children: true,
+			texture: true,
+			baseTexture: true,
+		});
+	}
+	warningTextBackGroundTexture = new PIXI.Sprite(PIXI.Texture.WHITE);
+	warningTextBackGroundTexture.x = textConfig.overlayConfig.textBox.x;
+	warningTextBackGroundTexture.y = textConfig.overlayConfig.textBox.y;
+	warningTextBackGroundTexture.width = textConfig.overlayConfig.textBox.width;
+	warningTextBackGroundTexture.height =
+		textConfig.overlayConfig.textBox.height;
+	warningTextBackGroundTexture.anchor.set(
+		textConfig.overlayConfig.textBox.anchor
+	);
+	warningTextBackGroundTexture.tint = textConfig.overlayConfig.textBox.tint;
+}
+
 function buildText(textConfig) {
 	text = new PIXI.Text(
 		textConfig.pixiRequirements.text,
@@ -1507,6 +1590,16 @@ function buildText(textConfig) {
 	text.anchor.set(textConfig.overlayConfig.text.anchor);
 }
 
+function buildWarningText(textConfig) {
+	warningText = new PIXI.Text(
+		textConfig.pixiRequirements.text,
+		textConfig.pixiRequirements.style
+	);
+	warningText.x = textConfig.overlayConfig.text.x;
+	warningText.y = textConfig.overlayConfig.text.y;
+	warningText.anchor.set(textConfig.overlayConfig.text.anchor);
+}
+
 function buildNextTextButtonImg(textConfig) {
 	if (nextTextButtonImg._destroyed !== true) {
 		nextTextButtonImg.destroy({
@@ -1515,14 +1608,52 @@ function buildNextTextButtonImg(textConfig) {
 			baseTexture: true,
 		});
 	}
-	nextTextButtonImg = new PIXI.Sprite(
-		PIXI.Texture.from(textConfig.overlayConfig.nextButtonImg.imgPath)
-	);
+	nextTextButtonImg = PIXI.Sprite.from(nextTextButtonImgPath);
 	nextTextButtonImg.x = textConfig.overlayConfig.nextButtonImg.x;
 	nextTextButtonImg.y = textConfig.overlayConfig.nextButtonImg.y;
 	nextTextButtonImg.width = textConfig.overlayConfig.nextButtonImg.width;
 	nextTextButtonImg.height = textConfig.overlayConfig.nextButtonImg.height;
 	nextTextButtonImg.anchor.set(textConfig.overlayConfig.nextButtonImg.anchor);
+}
+
+function buildWarningNextTextButtonImg(textConfig) {
+	if (warningNextTextButtonImg._destroyed !== true) {
+		warningNextTextButtonImg.destroy({
+			children: true,
+			texture: true,
+			baseTexture: true,
+		});
+	}
+	warningNextTextButtonImg = PIXI.Sprite.from(warningNextTextButtonImgPath);
+	warningNextTextButtonImg.x = textConfig.overlayConfig.nextButtonImg.x;
+	warningNextTextButtonImg.y = textConfig.overlayConfig.nextButtonImg.y;
+	warningNextTextButtonImg.width =
+		textConfig.overlayConfig.nextButtonImg.width;
+	warningNextTextButtonImg.height =
+		textConfig.overlayConfig.nextButtonImg.height;
+	warningNextTextButtonImg.anchor.set(
+		textConfig.overlayConfig.nextButtonImg.anchor
+	);
+}
+
+function displayDynamicMsg() {
+	removeTextContent();
+	buildTextBox(textConfig.dynamicText.dynamicText1);
+	const timer = setTimeout(() => {
+		removeTextBox();
+		clearTimeout(timer);
+	}, 5000);
+}
+
+function displayWarningMsg() {
+	displayingWarningText = true;
+	/* 	removeWarningTextContent(); */
+	buildWarningTextBox(textConfig.dynamicText.dynamicText2);
+	const timer = setTimeout(() => {
+		removeWarningTextBox();
+		displayingWarningText = false;
+		clearTimeout(timer);
+	}, 5000);
 }
 
 function removeTextContent() {
@@ -1532,8 +1663,27 @@ function removeTextContent() {
 	text = new PIXI.Text();
 }
 
+function removeWarningTextContent() {
+	if (warningText._destroyed !== true) {
+		warningText.destroy({children: true, texture: true, baseTexture: true});
+	}
+	warningText = new PIXI.Text();
+}
+
 function removeTextBox() {
-	textBox.destroy({children: true, texture: true, baseTexture: true});
+	if (textBox._destroyed !== true) {
+		textBox.destroy({children: false, texture: true, baseTexture: true});
+	}
+}
+
+function removeWarningTextBox() {
+	if (warningTextBox._destroyed !== true) {
+		warningTextBox.destroy({
+			children: false,
+			texture: true,
+			baseTexture: true,
+		});
+	}
 }
 
 // Camera functions :

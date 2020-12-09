@@ -10,10 +10,34 @@ const pathToImgFolder = '/static/assets/images/';
 const pathToNextTextIcon = 'TextBox/buttonX.png';
 /**
  * @type {Object}
- * @description List of narrative texts
+ * @description Config setup for text styling
  */
-const narrationText = {
-	narrationText1: {
+const styleConfig = {
+	staticConfig: {
+		fontFamily: 'Wariorus',
+		fontSize: 14,
+		fill: ['#FF1010'],
+		align: 'left',
+		wordWrap: true,
+		wordWrapWidth: 230,
+		lineHeight: 18,
+	},
+	dynamicConfig: {
+		fontFamily: 'Wariorus',
+		fontSize: 14,
+		fill: ['#f9f00d'],
+		align: 'left',
+		wordWrap: true,
+		wordWrapWidth: 350,
+		lineHeight: 22,
+	},
+};
+/**
+ * @type {Object}
+ * @description List of static texts
+ */
+const staticText = {
+	staticText1: {
 		overlayConfig: {
 			text: {
 				anchor: 0.0,
@@ -43,18 +67,10 @@ const narrationText = {
 		},
 		pixiRequirements: {
 			text: "Warrior: What a good day! Let's go for a morning walk.",
-			style: {
-				fontFamily: 'Wariorus',
-				fontSize: 14,
-				fill: ['#FF1010'],
-				align: 'left',
-				wordWrap: true,
-				wordWrapWidth: 230,
-				lineHeight: 18,
-			},
+			style: styleConfig.staticConfig,
 		},
 	},
-	narrationText2: {
+	staticText2: {
 		overlayConfig: {
 			text: {
 				anchor: 0.0,
@@ -84,18 +100,10 @@ const narrationText = {
 		},
 		pixiRequirements: {
 			text: 'Use the right arrow to go towards right of the screen.',
-			style: {
-				fontFamily: 'Wariorus',
-				fontSize: 14,
-				fill: ['#FF1010'],
-				align: 'left',
-				wordWrap: true,
-				wordWrapWidth: 230,
-				lineHeight: 18,
-			},
+			style: styleConfig.staticConfig,
 		},
 	},
-	narrationText3: {
+	staticText3: {
 		overlayConfig: {
 			text: {
 				anchor: 0.0,
@@ -126,18 +134,10 @@ const narrationText = {
 		pixiRequirements: {
 			text:
 				'Warrior: Hey you! You seem to be worried about something... Maybe I can help!',
-			style: {
-				fontFamily: 'Wariorus',
-				fontSize: 14,
-				fill: ['#FF1010'],
-				align: 'left',
-				wordWrap: true,
-				wordWrapWidth: 230,
-				lineHeight: 18,
-			},
+			style: styleConfig.staticConfig,
 		},
 	},
-	narrationText4: {
+	staticText4: {
 		overlayConfig: {
 			text: {
 				anchor: 0.0,
@@ -168,18 +168,10 @@ const narrationText = {
 		pixiRequirements: {
 			text:
 				'Guy: Oh my Lord! I come from the other side of the valley. My Princess, princess Lemona sent me for help...',
-			style: {
-				fontFamily: 'Wariorus',
-				fontSize: 14,
-				fill: ['#FF1010'],
-				align: 'left',
-				wordWrap: true,
-				wordWrapWidth: 230,
-				lineHeight: 18,
-			},
+			style: styleConfig.staticConfig,
 		},
 	},
-	narrationText5: {
+	staticText5: {
 		overlayConfig: {
 			text: {
 				anchor: 0.0,
@@ -209,18 +201,10 @@ const narrationText = {
 		},
 		pixiRequirements: {
 			text: 'Warrior: What is wrong ?',
-			style: {
-				fontFamily: 'Wariorus',
-				fontSize: 14,
-				fill: ['#FF1010'],
-				align: 'left',
-				wordWrap: true,
-				wordWrapWidth: 230,
-				lineHeight: 18,
-			},
+			style: styleConfig.staticConfig,
 		},
 	},
-	narrationText6: {
+	staticText6: {
 		overlayConfig: {
 			text: {
 				anchor: 0.0,
@@ -251,18 +235,10 @@ const narrationText = {
 		pixiRequirements: {
 			text:
 				'Guy: Princess Lemona recently received some threats from a famous and powerful wizard named Corona. She thinks she might be in danger.',
-			style: {
-				fontFamily: 'Wariorus',
-				fontSize: 14,
-				fill: ['#FF1010'],
-				align: 'left',
-				wordWrap: true,
-				wordWrapWidth: 230,
-				lineHeight: 18,
-			},
+			style: styleConfig.staticConfig,
 		},
 	},
-	narrationText7: {
+	staticText7: {
 		overlayConfig: {
 			text: {
 				anchor: 0.0,
@@ -293,18 +269,10 @@ const narrationText = {
 		pixiRequirements: {
 			text:
 				'Warrior: Well I see! I will go see her and make sure she is allright then.',
-			style: {
-				fontFamily: 'Wariorus',
-				fontSize: 14,
-				fill: ['#FF1010'],
-				align: 'left',
-				wordWrap: true,
-				wordWrapWidth: 230,
-				lineHeight: 18,
-			},
+			style: styleConfig.staticConfig,
 		},
 	},
-	narrationText8: {
+	staticText8: {
 		overlayConfig: {
 			text: {
 				anchor: 0.0,
@@ -335,18 +303,10 @@ const narrationText = {
 		pixiRequirements: {
 			text:
 				'Guy: Thank you my Lord! As I said, princess Lemona is on the other side of the valley. The journey may be long and you may encounter many enemies and traps. Please be careful my Lord!',
-			style: {
-				fontFamily: 'Wariorus',
-				fontSize: 14,
-				fill: ['#FF1010'],
-				align: 'left',
-				wordWrap: true,
-				wordWrapWidth: 230,
-				lineHeight: 18,
-			},
+			style: styleConfig.staticConfig,
 		},
 	},
-	narrationText9: {
+	staticText9: {
 		overlayConfig: {
 			text: {
 				anchor: 0.0,
@@ -377,18 +337,10 @@ const narrationText = {
 		pixiRequirements: {
 			text:
 				"Guy: One last thing! During your trip you will find some treasure chests. Don't hesitate to open them, their content may help you!",
-			style: {
-				fontFamily: 'Wariorus',
-				fontSize: 14,
-				fill: ['#FF1010'],
-				align: 'left',
-				wordWrap: true,
-				wordWrapWidth: 230,
-				lineHeight: 18,
-			},
+			style: styleConfig.staticConfig,
 		},
 	},
-	narrationText10: {
+	staticText10: {
 		overlayConfig: {
 			text: {
 				anchor: 0.0,
@@ -419,18 +371,10 @@ const narrationText = {
 		pixiRequirements: {
 			text:
 				'Guy: Oh my Lord! Princess Lemona is not in here anymore... I found this letter on the floor. It says that she was kidnapped by this wizard.',
-			style: {
-				fontFamily: 'Wariorus',
-				fontSize: 14,
-				fill: ['#FF1010'],
-				align: 'left',
-				wordWrap: true,
-				wordWrapWidth: 230,
-				lineHeight: 18,
-			},
+			style: styleConfig.staticConfig,
 		},
 	},
-	narrationText11: {
+	staticText11: {
 		overlayConfig: {
 			text: {
 				anchor: 0.0,
@@ -461,18 +405,10 @@ const narrationText = {
 		pixiRequirements: {
 			text:
 				'Warrior: What a tragedy! Listen...Hummm....What is your name?',
-			style: {
-				fontFamily: 'Wariorus',
-				fontSize: 14,
-				fill: ['#FF1010'],
-				align: 'left',
-				wordWrap: true,
-				wordWrapWidth: 230,
-				lineHeight: 18,
-			},
+			style: styleConfig.staticConfig,
 		},
 	},
-	narrationText12: {
+	staticText12: {
 		overlayConfig: {
 			text: {
 				anchor: 0.0,
@@ -502,18 +438,10 @@ const narrationText = {
 		},
 		pixiRequirements: {
 			text: 'Guy: My name...Grogu, my Lord.',
-			style: {
-				fontFamily: 'Wariorus',
-				fontSize: 14,
-				fill: ['#FF1010'],
-				align: 'left',
-				wordWrap: true,
-				wordWrapWidth: 230,
-				lineHeight: 18,
-			},
+			style: styleConfig.staticConfig,
 		},
 	},
-	narrationText13: {
+	staticText13: {
 		overlayConfig: {
 			text: {
 				anchor: 0.0,
@@ -544,29 +472,16 @@ const narrationText = {
 		pixiRequirements: {
 			text:
 				'Warrior: Well Grogu, I will rescue princess Lemona from this Corona! That is my word and duty. May this valley be peaceful again...',
-			style: {
-				fontFamily: 'Wariorus',
-				fontSize: 14,
-				fill: ['#FF1010'],
-				align: 'left',
-				wordWrap: true,
-				wordWrapWidth: 230,
-				lineHeight: 18,
-			},
+			style: styleConfig.staticConfig,
 		},
 	},
 };
 /**
  * @type {Object}
- * @description List of dialog texts
+ * @description List of dynamic texts
  */
-const dialogText = {};
-/**
- * @type {Object}
- * @description List of mission texts
- */
-const objectiveText = {
-	objectiveText1: {
+const dynamicText = {
+	dynamicText1: {
 		overlayConfig: {
 			text: {
 				anchor: 0.0,
@@ -588,22 +503,42 @@ const objectiveText = {
 		},
 		pixiRequirements: {
 			text: 'Treasure chest opened! You have won this item.',
-			style: {
-				fontFamily: 'Wariorus',
-				fontSize: 14,
-				fill: ['#FF1010'],
-				align: 'left',
-				wordWrap: true,
-				wordWrapWidth: 230,
-				lineHeight: 18,
+			style: styleConfig.staticConfig,
+		},
+	},
+	dynamicText2: {
+		overlayConfig: {
+			text: {
+				anchor: 0.0,
+				x: 300,
+				y: 255,
 			},
+			nextButtonImg: {
+				imgPath: pathToImgFolder + pathToNextTextIcon,
+				anchor: 0.0,
+				x: 358,
+				width: 40,
+				y: 240,
+				height: 40,
+			},
+			textBox: {
+				anchor: 0.0,
+				x: 275,
+				width: 400,
+				y: 230,
+				height: 80,
+				tint: '#000000',
+			},
+			activationArea: {
+				x1: null,
+				x2: null,
+			},
+		},
+		pixiRequirements: {
+			text: 'Press       to read all text content. Then you can move...',
+			style: styleConfig.dynamicConfig,
 		},
 	},
 };
-/**
- * @type {Object}
- * @description List of tutorial texts
- */
-const helpText = {};
 
-export default {narrationText, dialogText, objectiveText, helpText};
+export default {staticText, dynamicText};

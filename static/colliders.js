@@ -4,6 +4,22 @@
  */
 const pathToImgFolder = '/static/assets/images/';
 /**
+ * @type {string}
+ * @description File path glossary to images's folder
+ */
+const pathGlossary = {
+	pathToImgFolder: '/static/assets/images/',
+	grassImgPath: 'Levels/level_01_grass_01_32.png',
+	groundImgPath: 'Levels/level_01_ground_01_64.png',
+	boxImgPath: 'Levels/level_01_box_01_32.png',
+	treasureChestImgPath:
+		'objects/treasure_chest/opening/treasure_chest_opening_00.png',
+	blockImgPath: 'Levels/level_01_block_01_64.png',
+	topCastleImgPath: 'Levels/level_01_top_castle_02_64.png',
+	mineImgPath: 'Levels/level_01_mine_indoor_01_64.png',
+	mobileBoxImgPath: 'Levels/level_01_box_02_32.png',
+};
+/**
  * @type {Object}
  * @description List of wall colliders
  */
@@ -14,7 +30,7 @@ const wallColliders = {};
  */
 const floorColliders = {
 	grassCollider1: {
-		imgPath: pathToImgFolder + 'Levels/level_01_grass_01_32.png',
+		imgPath: pathGlossary.pathToImgFolder + pathGlossary.grassImgPath,
 		anchor: 0.0,
 		x: 0,
 		y: 288,
