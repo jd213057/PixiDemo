@@ -44,14 +44,14 @@ const staticText = {
 				x: 50,
 				y: 50,
 			},
-			nextButtonImg: {
+			/* 			nextButtonImg: {
 				imgPath: pathToImgFolder + pathToNextTextIcon,
 				anchor: 0.0,
 				x: 235,
 				width: 40,
 				y: 75,
 				height: 40,
-			},
+			}, */
 			textBox: {
 				anchor: 0.0,
 				x: 30,
@@ -77,14 +77,14 @@ const staticText = {
 				x: 50,
 				y: 50,
 			},
-			nextButtonImg: {
+			/* 			nextButtonImg: {
 				imgPath: pathToImgFolder + pathToNextTextIcon,
 				anchor: 0.0,
 				x: 235,
 				width: 40,
 				y: 75,
 				height: 40,
-			},
+			}, */
 			textBox: {
 				anchor: 0.0,
 				x: 30,
@@ -110,14 +110,14 @@ const staticText = {
 				x: 50,
 				y: 50,
 			},
-			nextButtonImg: {
+			/* 			nextButtonImg: {
 				imgPath: pathToImgFolder + pathToNextTextIcon,
 				anchor: 0.0,
 				x: 235,
 				width: 40,
 				y: 90,
 				height: 40,
-			},
+			}, */
 			textBox: {
 				anchor: 0.0,
 				x: 30,
@@ -144,14 +144,14 @@ const staticText = {
 				x: 50,
 				y: 50,
 			},
-			nextButtonImg: {
+			/* 			nextButtonImg: {
 				imgPath: pathToImgFolder + pathToNextTextIcon,
 				anchor: 0.0,
 				x: 235,
 				width: 40,
 				y: 125,
 				height: 40,
-			},
+			}, */
 			textBox: {
 				anchor: 0.0,
 				x: 30,
@@ -178,14 +178,14 @@ const staticText = {
 				x: 50,
 				y: 50,
 			},
-			nextButtonImg: {
+			/* 			nextButtonImg: {
 				imgPath: pathToImgFolder + pathToNextTextIcon,
 				anchor: 0.0,
 				x: 235,
 				width: 40,
 				y: 65,
 				height: 40,
-			},
+			}, */
 			textBox: {
 				anchor: 0.0,
 				x: 30,
@@ -211,14 +211,14 @@ const staticText = {
 				x: 50,
 				y: 50,
 			},
-			nextButtonImg: {
+			/* 			nextButtonImg: {
 				imgPath: pathToImgFolder + pathToNextTextIcon,
 				anchor: 0.0,
 				x: 235,
 				width: 40,
 				y: 155,
 				height: 40,
-			},
+			}, */
 			textBox: {
 				anchor: 0.0,
 				x: 30,
@@ -245,14 +245,14 @@ const staticText = {
 				x: 50,
 				y: 50,
 			},
-			nextButtonImg: {
+			/* 			nextButtonImg: {
 				imgPath: pathToImgFolder + pathToNextTextIcon,
 				anchor: 0.0,
 				x: 235,
 				width: 40,
 				y: 85,
 				height: 40,
-			},
+			}, */
 			textBox: {
 				anchor: 0.0,
 				x: 30,
@@ -279,14 +279,14 @@ const staticText = {
 				x: 50,
 				y: 50,
 			},
-			nextButtonImg: {
+			/* 			nextButtonImg: {
 				imgPath: pathToImgFolder + pathToNextTextIcon,
 				anchor: 0.0,
 				x: 235,
 				width: 40,
 				y: 210,
 				height: 40,
-			},
+			}, */
 			textBox: {
 				anchor: 0.0,
 				x: 30,
@@ -313,14 +313,14 @@ const staticText = {
 				x: 50,
 				y: 50,
 			},
-			nextButtonImg: {
+			/* 			nextButtonImg: {
 				imgPath: pathToImgFolder + pathToNextTextIcon,
 				anchor: 0.0,
 				x: 235,
 				width: 40,
 				y: 155,
 				height: 40,
-			},
+			}, */
 			textBox: {
 				anchor: 0.0,
 				x: 30,
@@ -347,14 +347,14 @@ const staticText = {
 				x: 50,
 				y: 50,
 			},
-			nextButtonImg: {
+			/* 			nextButtonImg: {
 				imgPath: pathToImgFolder + pathToNextTextIcon,
 				anchor: 0.0,
 				x: 30,
 				width: 25,
 				y: 25,
 				height: 25,
-			},
+			}, */
 			textBox: {
 				anchor: 0.0,
 				x: 30,
@@ -381,14 +381,14 @@ const staticText = {
 				x: 50,
 				y: 50,
 			},
-			nextButtonImg: {
+			/* 			nextButtonImg: {
 				imgPath: pathToImgFolder + pathToNextTextIcon,
 				anchor: 0.0,
 				x: 30,
 				width: 25,
 				y: 25,
 				height: 25,
-			},
+			}, */
 			textBox: {
 				anchor: 0.0,
 				x: 30,
@@ -415,14 +415,14 @@ const staticText = {
 				x: 50,
 				y: 50,
 			},
-			nextButtonImg: {
+			/* 			nextButtonImg: {
 				imgPath: pathToImgFolder + pathToNextTextIcon,
 				anchor: 0.0,
 				x: 30,
 				width: 25,
 				y: 25,
 				height: 25,
-			},
+			}, */
 			textBox: {
 				anchor: 0.0,
 				x: 30,
@@ -448,14 +448,14 @@ const staticText = {
 				x: 50,
 				y: 50,
 			},
-			nextButtonImg: {
+			/* 			nextButtonImg: {
 				imgPath: pathToImgFolder + pathToNextTextIcon,
 				anchor: 0.0,
 				x: 30,
 				width: 25,
 				y: 25,
 				height: 25,
-			},
+			}, */
 			textBox: {
 				anchor: 0.0,
 				x: 30,

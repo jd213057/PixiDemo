@@ -151,14 +151,9 @@ let rightEdgeStageReached = false;
 let collidersCheckList = [];
 /**
  * @type {Array}
- * @description ArrayList of all colliders
- */
-let wallCollidersList = [];
-/**
- * @type {Array}
  * @description ArrayList of floor colliders
  */
-let floorCollidersList = [];
+let obstacleCollidersList = [];
 /**
  * @type {Array}
  * @description ArrayList of object colliders
@@ -527,6 +522,7 @@ function setMiddleGroundImg() {
 		pathToAnimation + 'Levels/middleground_level_01.png'
 	);
 	let middlegroundSprite1 = new PIXI.Sprite(middlegroundImage);
+
 	middlegroundSprite1.anchor.set(0.0);
 	middlegroundSprite1.x = 0;
 	middlegroundSprite1.y = 0;
@@ -561,53 +557,32 @@ function setDecors() {
 }
 
 function setObjects() {
-	let treasureChestTexture = PIXI.Texture.from(
-		colliders.objectColliders.treasureChest1.imgPath
+	treasureChest1 = createBasicSprite(
+		treasureChest1TextureArray,
+		treasureChest1,
+		colliders.objectColliders.treasureChest1
 	);
-	//Treasure chest 1
-	treasureChest1TextureArray.push(treasureChestTexture);
-	treasureChest1 = new PIXI.Sprite(treasureChestTexture);
-	treasureChest1.anchor.set(colliders.objectColliders.treasureChest1.anchor);
-	treasureChest1.x = colliders.objectColliders.treasureChest1.x;
-	treasureChest1.y = colliders.objectColliders.treasureChest1.y;
-	treasureChest1.width = colliders.objectColliders.treasureChest1.width;
-	treasureChest1.height = colliders.objectColliders.treasureChest1.height;
-	foreground.addChild(treasureChest1);
-	objectCollidersList.push(treasureChest1);
-	//Treasure chest 2
-	treasureChest2TextureArray.push(treasureChestTexture);
-	treasureChest2 = new PIXI.Sprite(treasureChestTexture);
-	treasureChest2.anchor.set(colliders.objectColliders.treasureChest2.anchor);
-	treasureChest2.x = colliders.objectColliders.treasureChest2.x;
-	treasureChest2.y = colliders.objectColliders.treasureChest2.y;
-	treasureChest2.width = colliders.objectColliders.treasureChest2.width;
-	treasureChest2.height = colliders.objectColliders.treasureChest2.height;
-	foreground.addChild(treasureChest2);
-	objectCollidersList.push(treasureChest2);
-	//Treasure chest 3
-	treasureChest3TextureArray.push(treasureChestTexture);
-	treasureChest3 = new PIXI.Sprite(treasureChestTexture);
-	treasureChest3.anchor.set(colliders.objectColliders.treasureChest3.anchor);
-	treasureChest3.x = colliders.objectColliders.treasureChest3.x;
-	treasureChest3.y = colliders.objectColliders.treasureChest3.y;
-	treasureChest3.width = colliders.objectColliders.treasureChest3.width;
-	treasureChest3.height = colliders.objectColliders.treasureChest3.height;
-	foreground.addChild(treasureChest3);
-	objectCollidersList.push(treasureChest3);
+	treasureChest2 = createBasicSprite(
+		treasureChest2TextureArray,
+		treasureChest2,
+		colliders.objectColliders.treasureChest2
+	);
+	treasureChest3 = createBasicSprite(
+		treasureChest3TextureArray,
+		treasureChest3,
+		colliders.objectColliders.treasureChest3
+	);
+	foreground.addChild(treasureChest1, treasureChest2, treasureChest3);
+	objectCollidersList.push(treasureChest1, treasureChest2, treasureChest3);
 }
 
 function addWarriorToStage() {
-	let texture = PIXI.Texture.from(
-		pathToAnimation + 'Adventurer/Idle/adventurer-idle-00.png'
+	warrior = createBasicSprite(
+		warriorTextureArray,
+		warrior,
+		colliders.warriorColliders.warriorCollider1
 	);
-	warriorTextureArray.push(texture);
-	warrior = new PIXI.AnimatedSprite(warriorTextureArray);
 	loadIdleTexture();
-	warrior.anchor.set(0.5);
-	warrior.scale.x = 2;
-	warrior.scale.y = 2;
-	warrior.x = app.screen.width / 2 - 200;
-	warrior.y = app.screen.height / 2 - 150;
 	foreground.addChild(warrior);
 }
 
@@ -621,18 +596,12 @@ function getInitialEdgeScreen() {
 }
 
 function setStaticColliders() {
-	let floorCollidersObject = colliders.floorColliders;
-	let wallCollidersObject = colliders.wallColliders;
+	let obstacleCollidersObject = colliders.obstacleColliders;
 	let collider;
-	for (const floorConf in floorCollidersObject) {
-		collider = createBasicCollider(floorCollidersObject[floorConf]);
+	for (const floorConf in obstacleCollidersObject) {
+		collider = createBasicCollider(obstacleCollidersObject[floorConf]);
 		foreground.addChild(collider);
-		floorCollidersList.push(collider.getBounds());
-	}
-	for (const wallConf in wallCollidersObject) {
-		collider = createBasicCollider(wallCollidersObject[wallConf]);
-		foreground.addChild(collider);
-		wallCollidersList.push(collider);
+		obstacleCollidersList.push(collider.getBounds());
 	}
 }
 
@@ -683,6 +652,22 @@ function setTopToBottomMobileContainer(collider) {
 function setBottomToTopMobileSubContainer(collider) {
 	bottomToTopForegroundSubContainer.addChild(collider);
 	bottomToTopCollidersList.push(collider);
+}
+
+function createBasicSprite(
+	spriteTextureArray,
+	spriteObjectToInitialize,
+	spriteConf
+) {
+	let texture = PIXI.Texture.from(spriteConf.imgPath);
+	spriteTextureArray.push(texture);
+	spriteObjectToInitialize = new PIXI.Sprite(texture);
+	spriteObjectToInitialize.anchor.set(spriteConf.anchor);
+	spriteObjectToInitialize.x = spriteConf.x;
+	spriteObjectToInitialize.y = spriteConf.y;
+	spriteObjectToInitialize.width = spriteConf.width;
+	spriteObjectToInitialize.height = spriteConf.height;
+	return spriteObjectToInitialize;
 }
 
 function createBasicCollider(colliderConf) {
@@ -786,7 +771,7 @@ function updateMobileColliders() {
 
 function updateAllCollidersList() {
 	collidersCheckList = [
-		floorCollidersList,
+		obstacleCollidersList,
 		leftToRightCollidersList,
 		rightToLeftCollidersList,
 		topToBottomCollidersList,
@@ -831,7 +816,9 @@ function setKeyboardControls() {
 				jump();
 				break;
 			case 'ArrowLeft':
+				console.log(warrior.x);
 				warrior.scale.x = -2;
+				console.log(warrior.x);
 				direction = -1;
 				clearInterval(vxTimer);
 				move();
@@ -855,7 +842,10 @@ function setKeyboardControls() {
 				activateObjectAround();
 				break;
 			case 'x':
-				if (displayingText) {
+				if (displayingText /* && !displayingWarningText */) {
+					setTimeout(() => {
+						removeWarningTextBox();
+					}, 1000);
 					nextContent();
 				}
 				break;
@@ -1514,12 +1504,13 @@ function buildTextBox(textConfig) {
 		textBox = new PIXI.Container();
 		buildTextBackgroundTexture(textConfig);
 		buildText(textConfig);
-		if (textConfig.overlayConfig.nextButtonImg) {
+		/* 		if (textConfig.overlayConfig.nextButtonImg) {
 			buildNextTextButtonImg(textConfig);
-		}
-		nextTextButtonImg._destroyed
+		} */
+		textBox.addChild(textBackGroundTexture, text);
+		/* nextTextButtonImg._destroyed
 			? textBox.addChild(textBackGroundTexture, text)
-			: textBox.addChild(textBackGroundTexture, text, nextTextButtonImg);
+			: textBox.addChild(textBackGroundTexture, text, nextTextButtonImg); */
 		app.stage.addChild(textBox);
 	}
 }
@@ -1563,7 +1554,7 @@ function buildTextBackgroundTexture(textConfig) {
 function buildWarningTextBackgroundTexture(textConfig) {
 	if (warningTextBackGroundTexture._destroyed !== true) {
 		warningTextBackGroundTexture.destroy({
-			children: true,
+			children: false,
 			texture: true,
 			baseTexture: true,
 		});
@@ -1600,7 +1591,7 @@ function buildWarningText(textConfig) {
 	warningText.anchor.set(textConfig.overlayConfig.text.anchor);
 }
 
-function buildNextTextButtonImg(textConfig) {
+/* function buildNextTextButtonImg(textConfig) {
 	if (nextTextButtonImg._destroyed !== true) {
 		nextTextButtonImg.destroy({
 			children: true,
@@ -1614,12 +1605,12 @@ function buildNextTextButtonImg(textConfig) {
 	nextTextButtonImg.width = textConfig.overlayConfig.nextButtonImg.width;
 	nextTextButtonImg.height = textConfig.overlayConfig.nextButtonImg.height;
 	nextTextButtonImg.anchor.set(textConfig.overlayConfig.nextButtonImg.anchor);
-}
+} */
 
 function buildWarningNextTextButtonImg(textConfig) {
 	if (warningNextTextButtonImg._destroyed !== true) {
 		warningNextTextButtonImg.destroy({
-			children: true,
+			children: false,
 			texture: true,
 			baseTexture: true,
 		});
@@ -1733,12 +1724,10 @@ function updateEdgeScreenValue() {
 
 function updateForegroundCollidersPosition() {
 	const decorsColliderListLength = decorsCollidersList.length;
-	const floorColliderListLength = floorCollidersList.length;
-	const wallCollidersListLength = wallCollidersList.length;
+	const obstacleColliderListLength = obstacleCollidersList.length;
 	const objectCollidersListLength = objectCollidersList.length;
 	decorsCollidersList = [];
-	floorCollidersList = [];
-	wallCollidersList = [];
+	obstacleCollidersList = [];
 	objectCollidersList = [];
 	leftToRightCollidersList = [];
 	rightToLeftCollidersList = [];
@@ -1747,30 +1736,16 @@ function updateForegroundCollidersPosition() {
 	}
 	for (
 		let i = decorsColliderListLength;
-		i < decorsColliderListLength + floorColliderListLength;
+		i < decorsColliderListLength + obstacleColliderListLength;
 		i++
 	) {
-		floorCollidersList.push(foreground.children[i].getBounds());
+		obstacleCollidersList.push(foreground.children[i].getBounds());
 	}
 	for (
-		let i = decorsColliderListLength + floorColliderListLength;
+		let i = decorsColliderListLength + obstacleColliderListLength;
 		i <
 		decorsColliderListLength +
-			floorColliderListLength +
-			wallCollidersListLength;
-		i++
-	) {
-		wallCollidersList.push(foreground.children[i].getBounds());
-	}
-	for (
-		let i =
-			decorsColliderListLength +
-			floorColliderListLength +
-			wallCollidersListLength;
-		i <
-		decorsColliderListLength +
-			floorColliderListLength +
-			wallCollidersListLength +
+			obstacleColliderListLength +
 			objectCollidersListLength;
 		i++
 	) {

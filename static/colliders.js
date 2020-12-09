@@ -7,8 +7,12 @@ const pathToImgFolder = '/static/assets/images/';
  * @type {string}
  * @description File path glossary to images's folder
  */
-const pathGlossary = {
+const pathDictionnary = {
 	pathToImgFolder: '/static/assets/images/',
+	backgroundImgPath: 'Levels/firstmaplevel_background.png',
+	middlegroundImgPath: 'Levels/middleground_level_01.png',
+	warrior1ImgPath: 'Adventurer/Idle/adventurer-idle-00.png',
+	warrior2ImgPath: 'Warrior/Animations/Idle/Idle__000.png',
 	grassImgPath: 'Levels/level_01_grass_01_32.png',
 	groundImgPath: 'Levels/level_01_ground_01_64.png',
 	boxImgPath: 'Levels/level_01_box_01_32.png',
@@ -23,14 +27,77 @@ const pathGlossary = {
  * @type {Object}
  * @description List of wall colliders
  */
-const wallColliders = {};
+const backdrops = {
+	middlegroundSprite1: {
+		imgPath:
+			pathDictionnary.pathToImgFolder +
+			pathDictionnary.middlegroundImgPath,
+		anchor: 0.0,
+		x: 0,
+		y: 0,
+		width: 3073,
+		height: 642,
+	},
+	middlegroundSprite2: {
+		imgPath:
+			pathDictionnary.pathToImgFolder +
+			pathDictionnary.middlegroundImgPath,
+		anchor: 0.0,
+		x: 3072,
+		y: 0,
+		width: 3073,
+		height: 642,
+	},
+	backgroundSprite1: {
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.backgroundImgPath,
+		anchor: 0.0,
+		x: 0,
+		y: 0,
+		width: 3073,
+		height: 642,
+	},
+	backgroundSprite2: {
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.backgroundImgPath,
+		anchor: 0.0,
+		x: 0,
+		y: 0,
+		width: 3073,
+		height: 642,
+	},
+};
+/**
+ * @type {Object}
+ * @description List of wall colliders
+ */
+const warriorColliders = {
+	warriorCollider1: {
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.warrior1ImgPath,
+		anchor: 0.5,
+		x: 250,
+		y: 125,
+		width: 100,
+		height: 74,
+	},
+	warriorCollider2: {
+		imgPath:
+			pathDictionnary.pathToImgFolder + pathDictionnary.warrior2ImgPath,
+		anchor: 0.5,
+		x: 250,
+		y: 125,
+		width: 100,
+		height: 74,
+	},
+};
 /**
  * @type {Object}
  * @description List of floor colliders
  */
-const floorColliders = {
+const obstacleColliders = {
 	grassCollider1: {
-		imgPath: pathGlossary.pathToImgFolder + pathGlossary.grassImgPath,
+		imgPath: pathDictionnary.pathToImgFolder + pathDictionnary.grassImgPath,
 		anchor: 0.0,
 		x: 0,
 		y: 288,
@@ -2660,8 +2727,9 @@ const mobileColliders = {
 };
 
 export default {
-	wallColliders,
-	floorColliders,
+	backdrops,
+	warriorColliders,
+	obstacleColliders,
 	objectColliders,
 	decorsColliders,
 	mobileColliders,
