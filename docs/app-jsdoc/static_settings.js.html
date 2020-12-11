@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: static/settings.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: static/settings.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @type {Object}
+ * @description Settings related to app rendering
+ */
+const APP_SCREEN_SETTINGS = {
+	/**
+	 * @type {Number}
+	 * @description App screen width
+	 */
+	APP_SCREEN_WIDTH: 900,
+	/**
+	 * @type {Number}
+	 * @description App screen height
+	 */
+	APP_SCREEN_HEIGHT: 550,
+	/**
+	 * @type {Number}
+	 * @description App screen x position
+	 */
+	APP_SCREEN_X: 0,
+	/**
+	 * @type {Number}
+	 * @description App screen y position
+	 */
+	APP_SCREEN_Y: 0,
+	/**
+	 * @type {Boolean}
+	 * @description App screen transparency
+	 */
+	TRANSPARENT: true,
+	/**
+	 * @type {Boolean}
+	 * @description App screen antialiasing
+	 */
+	ANTIALIASING: true,
+};
+/**
+ * @type {Object}
+ * @description Settings related to ticker of application
+ */
+const TICKER_SETTINGS = {
+	/**
+	 * @type {Number}
+	 * @description Delta time in ms targeted between two frames rendered
+	 */
+	DELTA_TIME_TARGETED: 1,
+	/**
+	 * @type {Number}
+	 * @description App ticker maxFPS value
+	 */
+	TICKER_MAX_FPS: 1000,
+};
+/**
+ * @type {Object}
+ * @description Settings related to camera movement
+ */
+const CAMERA_SETTINGS = {
+	/**
+	 * @type {Number}
+	 * @description App left screen width area where camera movement is activated
+	 */
+	LEFT_ACTIVATION_AREA_WIDTH: 350,
+	/**
+	 * @type {Number}
+	 * @description App right screen width area where camera movement is activated
+	 */
+	RIGHT_ACTIVATION_AREA_WIDTH: 350,
+	/**
+	 * @type {Number}
+	 * @description Speed coefficient for background sprite container when camera is moving
+	 */
+	BACKGROUND_SPEED_FACTOR: 0.5,
+	/**
+	 * @type {Number}
+	 * @description Speed coefficient for middleground sprite container when camera is moving
+	 */
+	MIDDLEGROUND_SPEED_FACTOR: 0.75,
+};
+/**
+ * @type {Object}
+ * @description Settings related to sound volume for the application
+ */
+const VOLUME_SETTINGS = {
+	/**
+	 * @type {Number}
+	 * @description Volume for background sound
+	 */
+	BACKGROUND_SOUND_VOLUME: 0.4,
+	/**
+	 * @type {Number}
+	 * @description Volume for walking sound
+	 */
+	WALKING_SOUND_VOLUME: 1,
+	/**
+	 * @type {Number}
+	 * @description Volume for jumping sound
+	 */
+	JUMPING_SOUND_VOLUME: 0.5,
+	/**
+	 * @type {Number}
+	 * @description Volume for attacking sound
+	 */
+	ATTACKING_SOUND_VOLUME: 0.5,
+	/**
+	 * @type {Number}
+	 * @description Volume for treasureChest opening/closing sound
+	 */
+	TREASURE_CHEST_SOUND_VOLUME: 0.7,
+};
+/**
+ * @type {Object}
+ * @description Settings related to animated sprite rendering
+ */
+const ANIMATION_SPEED_FACTORS = {
+	/**
+	 * @type {Number}
+	 * @description Speed corrective factor applied for object animation
+	 */
+	OBJECT_ANIMATION_SPEED_FACTOR: 6,
+	/**
+	 * @type {Number}
+	 * @description Speed corrective factor applied for player animation
+	 */
+	PLAYER_ANIMATION_SPEED_FACTOR: 5,
+};
+/**
+ * @type {Object}
+ * @description Settings related to physics used in game
+ */
+const PHYSICS_SETTINGS = {
+	/**
+	 * @type {Number}
+	 * @description Player minimum speed
+	 */
+	PLAYER_MIN_SPEED: 0,
+	/**
+	 * @type {Number}
+	 * @description Player maximum speed
+	 */
+	PLAYER_MAX_SPEED: 5,
+	/**
+	 * @type {Number}
+	 * @description Player jump speed
+	 */
+	PLAYER_JUMP_SPEED: -18,
+	/**
+	 * @type {Number}
+	 * @description Gravity max force applied to player when falling
+	 */
+	GRAVITY: 15,
+	/**
+	 * @type {Number}
+	 * @description Restitution coef applied when player hits a box from below
+	 */
+	PLAYER_RESTITUTION_COEF: -0.5,
+	/**
+	 * @type {Number}
+	 * @description Mobile colliders speed
+	 */
+	MOBILE_COLLIDERS_SPEED: -2.5,
+	/**
+	 * @type {Number}
+	 * @description Delay of speed inversion for mobile colliders
+	 */
+	MOBILE_COLLIDERS_INVERSION: 100,
+};
+/**
+ * @type {Object}
+ * @description Settings related to text area of game level
+ */
+const TEXT_ZONES = {
+	/**
+	 * @type {Object}
+	 * @description Activation Area 1
+	 */
+	TEXT_ZONE_1: {
+		/**
+		 * @type {Number}
+		 * @description Min X value of activation area 1
+		 */
+		MIN_X: 0,
+		/**
+		 * @type {Number}
+		 * @description Max X value of activation area 1
+		 */
+		MAX_X: 300,
+	},
+	/**
+	 * @type {Object}
+	 * @description Activation Area 2
+	 */
+	TEXT_ZONE_2: {
+		/**
+		 * @type {Number}
+		 * @description Min X value of activation area 2
+		 */
+		MIN_X: 990,
+		/**
+		 * @type {Number}
+		 * @description Max X value of activation area 2
+		 */
+		MAX_X: 1150,
+	},
+	/**
+	 * @type {Object}
+	 * @description Activation Area 3
+	 */
+	TEXT_ZONE_3: {
+		/**
+		 * @type {Number}
+		 * @description Min X value of activation area 3
+		 */
+		MIN_X: 10000,
+		/**
+		 * @type {Number}
+		 * @description Max X value of activation area 3
+		 */
+		MAX_X: 10000,
+	},
+};
+export default {
+	APP_SCREEN_SETTINGS,
+	TICKER_SETTINGS,
+	CAMERA_SETTINGS,
+	VOLUME_SETTINGS,
+	ANIMATION_SPEED_FACTORS,
+	PHYSICS_SETTINGS,
+	TEXT_ZONES,
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#adventurerAnimationCount">adventurerAnimationCount</a></li><li><a href="global.html#ANIMATION_SPEED_FACTORS">ANIMATION_SPEED_FACTORS</a></li><li><a href="global.html#animationState">animationState</a></li><li><a href="global.html#animationStateEnum">animationStateEnum</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#APP_SCREEN_SETTINGS">APP_SCREEN_SETTINGS</a></li><li><a href="global.html#attackSound">attackSound</a></li><li><a href="global.html#backdrops">backdrops</a></li><li><a href="global.html#background">background</a></li><li><a href="global.html#bottomCollisionBox">bottomCollisionBox</a></li><li><a href="global.html#bottomToTopCollidersList">bottomToTopCollidersList</a></li><li><a href="global.html#bottomToTopForegroundSubContainer">bottomToTopForegroundSubContainer</a></li><li><a href="global.html#CAMERA_SETTINGS">CAMERA_SETTINGS</a></li><li><a href="global.html#collidersCheckList">collidersCheckList</a></li><li><a href="global.html#connectLivereload">connectLivereload</a></li><li><a href="global.html#decorsColliders">decorsColliders</a></li><li><a href="global.html#decorsCollidersList">decorsCollidersList</a></li><li><a href="global.html#direction">direction</a></li><li><a href="global.html#dirUrl">dirUrl</a></li><li><a href="global.html#displayingText">displayingText</a></li><li><a href="global.html#displayingWarningText">displayingWarningText</a></li><li><a href="global.html#dynamicText">dynamicText</a></li><li><a href="global.html#elapsedTime">elapsedTime</a></li><li><a href="global.html#express">express</a></li><li><a href="global.html#foreground">foreground</a></li><li><a href="global.html#foregroundMobileCollidersSubContainer">foregroundMobileCollidersSubContainer</a></li><li><a href="global.html#foregroundStaticCollidersSubContainer">foregroundStaticCollidersSubContainer</a></li><li><a href="global.html#fpsDelta">fpsDelta</a></li><li><a href="global.html#hasBeenDisplayedZone1">hasBeenDisplayedZone1</a></li><li><a href="global.html#hasBeenDisplayedZone2">hasBeenDisplayedZone2</a></li><li><a href="global.html#hasBeenDisplayedZone3">hasBeenDisplayedZone3</a></li><li><a href="global.html#indexOfTextList">indexOfTextList</a></li><li><a href="global.html#isAboutToCollideWithBottom">isAboutToCollideWithBottom</a></li><li><a href="global.html#isAboutToCollideWithLeft">isAboutToCollideWithLeft</a></li><li><a href="global.html#isAboutToCollideWithRight">isAboutToCollideWithRight</a></li><li><a href="global.html#isAboutToCollideWithTop">isAboutToCollideWithTop</a></li><li><a href="global.html#isJumping">isJumping</a></li><li><a href="global.html#isWarriorLeftCentered">isWarriorLeftCentered</a></li><li><a href="global.html#isWarriorRightCentered">isWarriorRightCentered</a></li><li><a href="global.html#leftCollisionBox">leftCollisionBox</a></li><li><a href="global.html#leftEdgeScreenReached">leftEdgeScreenReached</a></li><li><a href="global.html#leftEdgeStageReached">leftEdgeStageReached</a></li><li><a href="global.html#leftToRightCollidersList">leftToRightCollidersList</a></li><li><a href="global.html#leftToRightForegroundSubContainer">leftToRightForegroundSubContainer</a></li><li><a href="global.html#livereload">livereload</a></li><li><a href="global.html#liveReloadServer">liveReloadServer</a></li><li><a href="global.html#loaders">loaders</a></li><li><a href="global.html#middleground">middleground</a></li><li><a href="global.html#movementCount">movementCount</a></li><li><a href="global.html#movementSpeed">movementSpeed</a></li><li><a href="global.html#objectColliders">objectColliders</a></li><li><a href="global.html#objectCollidersList">objectCollidersList</a></li><li><a href="global.html#obstacleColliders">obstacleColliders</a></li><li><a href="global.html#obstacleCollidersList">obstacleCollidersList</a></li><li><a href="global.html#openingTreasureChestSound">openingTreasureChestSound</a></li><li><a href="global.html#opn">opn</a></li><li><a href="global.html#pathDictionnary">pathDictionnary</a></li><li><a href="global.html#pathToAnimation">pathToAnimation</a></li><li><a href="global.html#pathToImgFolder">pathToImgFolder</a></li><li><a href="global.html#pathToNextTextIcon">pathToNextTextIcon</a></li><li><a href="global.html#PHYSICS_SETTINGS">PHYSICS_SETTINGS</a></li><li><a href="global.html#playingSound">playingSound</a></li><li><a href="global.html#port">port</a></li><li><a href="global.html#rightCollisionBox">rightCollisionBox</a></li><li><a href="global.html#rightEdgeScreenReached">rightEdgeScreenReached</a></li><li><a href="global.html#rightEdgeStageReached">rightEdgeStageReached</a></li><li><a href="global.html#rightToLeftCollidersList">rightToLeftCollidersList</a></li><li><a href="global.html#rightToLeftForegroundSubContainer">rightToLeftForegroundSubContainer</a></li><li><a href="global.html#staticText">staticText</a></li><li><a href="global.html#styleConfig">styleConfig</a></li><li><a href="global.html#text">text</a></li><li><a href="global.html#TEXT_ZONES">TEXT_ZONES</a></li><li><a href="global.html#textBackGroundTexture">textBackGroundTexture</a></li><li><a href="global.html#textBox">textBox</a></li><li><a href="global.html#textDisplayZone">textDisplayZone</a></li><li><a href="global.html#textDisplayZoneEnum">textDisplayZoneEnum</a></li><li><a href="global.html#textListToShow">textListToShow</a></li><li><a href="global.html#TICKER_SETTINGS">TICKER_SETTINGS</a></li><li><a href="global.html#topCollisionBox">topCollisionBox</a></li><li><a href="global.html#topToBottomCollidersList">topToBottomCollidersList</a></li><li><a href="global.html#topToBottomForegroundSubContainer">topToBottomForegroundSubContainer</a></li><li><a href="global.html#treasureChest1">treasureChest1</a></li><li><a href="global.html#treasureChest1TextureArray">treasureChest1TextureArray</a></li><li><a href="global.html#treasureChest2">treasureChest2</a></li><li><a href="global.html#treasureChest2TextureArray">treasureChest2TextureArray</a></li><li><a href="global.html#treasureChest3">treasureChest3</a></li><li><a href="global.html#treasureChest3TextureArray">treasureChest3TextureArray</a></li><li><a href="global.html#treasureChestAnimationCount">treasureChestAnimationCount</a></li><li><a href="global.html#treasureChestOpened1">treasureChestOpened1</a></li><li><a href="global.html#treasureChestOpened2">treasureChestOpened2</a></li><li><a href="global.html#treasureChestOpened3">treasureChestOpened3</a></li><li><a href="global.html#updatedLeftEdgeScreen">updatedLeftEdgeScreen</a></li><li><a href="global.html#updatedRightEdgeScreen">updatedRightEdgeScreen</a></li><li><a href="global.html#url">url</a></li><li><a href="global.html#VOLUME_SETTINGS">VOLUME_SETTINGS</a></li><li><a href="global.html#vx">vx</a></li><li><a href="global.html#vxTimer">vxTimer</a></li><li><a href="global.html#vy">vy</a></li><li><a href="global.html#walkSound">walkSound</a></li><li><a href="global.html#warningNextTextButtonImg">warningNextTextButtonImg</a></li><li><a href="global.html#warningText">warningText</a></li><li><a href="global.html#warningTextBackGroundTexture">warningTextBackGroundTexture</a></li><li><a href="global.html#warningTextBox">warningTextBox</a></li><li><a href="global.html#warrior">warrior</a></li><li><a href="global.html#warriorBounds">warriorBounds</a></li><li><a href="global.html#warriorColliders">warriorColliders</a></li><li><a href="global.html#warriorJumpSound">warriorJumpSound</a></li><li><a href="global.html#warriorTextureArray">warriorTextureArray</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Dec 11 2020 19:56:09 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

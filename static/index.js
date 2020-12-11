@@ -1,8 +1,8 @@
 import loaders from './loaders.js';
 import spritesConfig from './sprites.js';
 import textConfig from './text.js';
+import GAME_SETTINGS from './settings.js';
 import PIXI from './pixi-legacy.js';
-
 /**
  * @type {HTMLAudioElement}
  * @description Path of sound file played when attacking
@@ -258,12 +258,12 @@ let updatedRightEdgeScreen;
  * @type {number}
  * @description Player's speed for x abscissa
  */
-let vx = 0;
+let vx = GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MIN_SPEED;
 /**
  * @type {number}
  * @description Player's speed for y abscissa
  */
-let vy = 0;
+let vy = GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MIN_SPEED;
 /**
  * @type {PIXI.Texture}
  * @description Background texture for textBox
@@ -284,12 +284,6 @@ let text = new PIXI.Text();
  * @description Container for warning text display
  */
 let warningText = new PIXI.Text();
-/**
- * @type {PIXI.Texture}
- * @description Next text button icon texture for related icon
- */
-let warningNextTextButtonImgPath = '/static/assets/images/TextBox/buttonX.png';
-
 /**
  * @type {PIXI.Sprite}
  * @description Next text button icon for warningTextBox
@@ -364,7 +358,7 @@ let movementCount = 0;
  * @type {number}
  * @description Speed for mobile platforms
  */
-let movementSpeed = -2.5;
+let movementSpeed = GAME_SETTINGS.PHYSICS_SETTINGS.MOBILE_COLLIDERS_SPEED;
 /**
  * @type {boolean}
  * @description Indicates whether sound is playing or not
@@ -413,12 +407,12 @@ let warrior;
  * @description Pixi application embedded in index.html's screen
  */
 var app = new PIXI.Application({
-	height: 550,
-	width: 900,
-	transparent: true,
-	antialias: true,
-	x: 0,
-	y: 0,
+	width: GAME_SETTINGS.APP_SCREEN_SETTINGS.APP_SCREEN_WIDTH,
+	height: GAME_SETTINGS.APP_SCREEN_SETTINGS.APP_SCREEN_HEIGHT,
+	transparent: GAME_SETTINGS.APP_SCREEN_SETTINGS.TRANSPARENT,
+	antialias: GAME_SETTINGS.APP_SCREEN_SETTINGS.ANTIALIASING,
+	x: GAME_SETTINGS.APP_SCREEN_SETTINGS.APP_SCREEN_X,
+	y: GAME_SETTINGS.APP_SCREEN_SETTINGS.APP_SCREEN_Y,
 });
 /**
  * @type {Array}
@@ -430,10 +424,46 @@ let warriorTextureArray = [];
  * @description Path to image repository
  */
 const pathToAnimation = '/static/assets/images/';
+/**
+ * @type {number}
+ * @description Time in ms since last frame was rendered
+ */
+let elapsedTime = 0;
+/**
+ * @type {number}
+ * @description Delay in ms targeted between last frame and current frame displayed
+ */
+const fpsDelta = GAME_SETTINGS.TICKER_SETTINGS.DELTA_TIME_TARGETED;
 
-initializeGame();
+// Initialization IIFE function
 
-app.ticker.add((delta) => {
+(function initializeGame() {
+	removeDefaultTicker();
+	setControls();
+	setKeyboardControls();
+	setBackgroundVolume();
+	setAudioEvents();
+	addStageToScreen();
+	buildStage();
+	getInitialEdgeScreen();
+	setTicker();
+})();
+
+//Core functions called to initialize or update game rendering
+
+function removeDefaultTicker() {
+	app.ticker.remove(app.render, app);
+}
+
+function tick(delta) {
+	elapsedTime += delta;
+	if (elapsedTime >= fpsDelta) {
+		update(elapsedTime);
+		elapsedTime = 0;
+	}
+}
+
+function update(delta) {
 	reloadIfFalling();
 	calculateWideBoxes();
 	updateCameraCheckers();
@@ -443,7 +473,11 @@ app.ticker.add((delta) => {
 	updateWarriorCollider();
 	updatingVx();
 	if (isAboutToCollideWithBottom || isAboutToCollideWithTop) {
-		vy = isAboutToCollideWithBottom ? 0 : vy <= 0 ? -0.5 * vy : vy;
+		vy = isAboutToCollideWithBottom
+			? GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MIN_SPEED
+			: vy <= GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MIN_SPEED
+			? GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_RESTITUTION_COEF * vy
+			: vy;
 		isJumping = isAboutToCollideWithBottom ? false : true;
 	}
 	updatingVy();
@@ -452,17 +486,11 @@ app.ticker.add((delta) => {
 	loadWarriorAnimation();
 	animateElements(delta);
 	manageTextContent(warrior.x);
-});
+	render();
+}
 
-// Initialization functions
-function initializeGame() {
-	setControls();
-	setKeyboardControls();
-	setBackgroundVolume();
-	setAudioEvents();
-	addStageToScreen();
-	buildStage();
-	getInitialEdgeScreen();
+function render() {
+	app.render();
 }
 
 // Build Stage functions
@@ -581,6 +609,11 @@ function getInitialEdgeScreen() {
 	updatedRightEdgeScreen = app.screen.width;
 }
 
+function setTicker() {
+	app.ticker.maxFPS = GAME_SETTINGS.TICKER_SETTINGS.TICKER_MAX_FPS;
+	app.ticker.add(tick);
+}
+
 function setStaticColliders() {
 	let obstacleCollidersObject = spritesConfig.obstacleColliders;
 	let collider;
@@ -680,7 +713,11 @@ function updateMovementCycle() {
 		bottomToTopCollidersList,
 	];
 	movementCount++;
-	if (movementCount % 100 === 0) {
+	if (
+		movementCount %
+			GAME_SETTINGS.PHYSICS_SETTINGS.MOBILE_COLLIDERS_INVERSION ===
+		0
+	) {
 		movementSpeed *= -1;
 	}
 	leftToRightForegroundSubContainer.x += movementSpeed;
@@ -860,10 +897,13 @@ function setKeyboardControls() {
 
 function move() {
 	if (detectSpriteCollision(bottomCollisionBox, collidersCheckList)) {
-		playSound(walkSound, 1);
+		playSound(
+			walkSound,
+			GAME_SETTINGS.VOLUME_SETTINGS.WALKING_SOUND_VOLUME
+		);
 		animationState = animationStateEnum.RUNNING;
 	}
-	vx = 5;
+	vx = GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MAX_SPEED;
 }
 
 function jump() {
@@ -871,21 +911,30 @@ function jump() {
 		return;
 	} else {
 		playingSound = false;
-		playSound(warriorJumpSound, 1);
+		playSound(
+			warriorJumpSound,
+			GAME_SETTINGS.VOLUME_SETTINGS.JUMPING_SOUND_VOLUME
+		);
 		animationState = animationStateEnum.JUMPING;
-		vy = -18;
+		vy = GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_JUMP_SPEED;
 		warrior.y += vy;
 		isJumping = true;
 	}
 }
 
 function smallAttack() {
-	playSound(attackSound, 1);
+	playSound(
+		attackSound,
+		GAME_SETTINGS.VOLUME_SETTINGS.ATTACKING_SOUND_VOLUME
+	);
 	animationState = animationStateEnum.ATTACKING_ONE;
 }
 
 function bigAttack() {
-	playSound(attackSound, 1);
+	playSound(
+		attackSound,
+		GAME_SETTINGS.VOLUME_SETTINGS.ATTACKING_SOUND_VOLUME
+	);
 	animationState = animationStateEnum.ATTACKING_TWO;
 }
 
@@ -901,12 +950,12 @@ function stop() {
 	playingSound = false;
 	vxTimer = setInterval(() => {
 		if (
-			vx > 0 &&
+			vx > GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MIN_SPEED &&
 			detectSpriteCollision(bottomCollisionBox, collidersCheckList)
 		) {
 			vx--;
 		}
-		if (vx === 0) {
+		if (vx === GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MIN_SPEED) {
 			animationState = animationStateEnum.IDLING;
 			clearInterval(vxTimer);
 		}
@@ -957,13 +1006,19 @@ function activateObjectAround() {
 
 function openTreasureChest(i) {
 	displayDynamicMsg();
-	playSound(openingTreasureChestSound, 0.7);
+	playSound(
+		openingTreasureChestSound,
+		GAME_SETTINGS.VOLUME_SETTINGS.TREASURE_CHEST_SOUND_VOLUME
+	);
 	loadOpeningTreasureChestTexture(i);
 	setTimeout(loadOpenedTreasureChestTexture(i), 400);
 }
 
 function closeTreasureChest(i) {
-	playSound(openingTreasureChestSound, 0.7);
+	playSound(
+		openingTreasureChestSound,
+		GAME_SETTINGS.VOLUME_SETTINGS.TREASURE_CHEST_SOUND_VOLUME
+	);
 	loadClosingTreasureChestTexture(i);
 	setTimeout(loadClosedTreasureChestTexture(i), 400);
 }
@@ -1078,7 +1133,7 @@ function updatingVy() {
 }
 
 function applyingGravity() {
-	if (vy < 15) {
+	if (vy < GAME_SETTINGS.PHYSICS_SETTINGS.GRAVITY) {
 		vy++;
 	}
 }
@@ -1087,7 +1142,8 @@ function applyingGravity() {
 
 function setBackgroundVolume() {
 	const backgroundAudio = document.getElementById('audio');
-	backgroundAudio.volume = 0.4;
+	backgroundAudio.volume =
+		GAME_SETTINGS.VOLUME_SETTINGS.BACKGROUND_SOUND_VOLUME;
 }
 
 function playSound(sound, volume) {
@@ -1110,17 +1166,11 @@ function stopSound() {
 }
 
 function setAudioEvents() {
-	attackSound.addEventListener('play', () => {
-		attackSound.volume = 0.5;
-	});
 	attackSound.addEventListener('ended', () => {
 		playingSound = false;
 	});
 	walkSound.addEventListener('ended', () => {
 		playingSound = false;
-	});
-	warriorJumpSound.addEventListener('play', () => {
-		warriorJumpSound.volume = 0.5;
 	});
 	warriorJumpSound.addEventListener('ended', () => {
 		playingSound = false;
@@ -1196,11 +1246,18 @@ function animateTreasureChest(delta) {
 function getAnimationSpeed(animatedSpriteType, delta) {
 	switch (animatedSpriteType) {
 		case 'object':
-			return delta / 6;
+			return (
+				delta /
+				GAME_SETTINGS.ANIMATION_SPEED_FACTORS
+					.OBJECT_ANIMATION_SPEED_FACTOR
+			);
 		case 'player':
-			return delta / 5;
 		default:
-			return 0;
+			return (
+				delta /
+				GAME_SETTINGS.ANIMATION_SPEED_FACTORS
+					.PLAYER_ANIMATION_SPEED_FACTOR
+			);
 	}
 }
 
@@ -1441,7 +1498,10 @@ function displayTextInTextList() {
 }
 
 function nextContent() {
-	playSound(openingTreasureChestSound, 0.7);
+	playSound(
+		openingTreasureChestSound,
+		GAME_SETTINGS.VOLUME_SETTINGS.TREASURE_CHEST_SOUND_VOLUME
+	);
 	if (indexOfTextList < textListToShow.length - 1) {
 		removeTextContent();
 		indexOfTextList++;
@@ -1467,11 +1527,20 @@ function nextContent() {
 }
 
 function updateTextDisplayZoneValue() {
-	if (warrior.x > 0 && warrior.x < 300) {
+	if (
+		warrior.x > GAME_SETTINGS.TEXT_ZONES.TEXT_ZONE_1.MIN_X &&
+		warrior.x < GAME_SETTINGS.TEXT_ZONES.TEXT_ZONE_1.MAX_X
+	) {
 		textDisplayZone = textDisplayZoneEnum.ZONE_ONE;
-	} else if (warrior.x > 990 && warrior.x < 1150) {
+	} else if (
+		warrior.x > GAME_SETTINGS.TEXT_ZONES.TEXT_ZONE_2.MIN_X &&
+		warrior.x < GAME_SETTINGS.TEXT_ZONES.TEXT_ZONE_2.MAX_X
+	) {
 		textDisplayZone = textDisplayZoneEnum.ZONE_TWO;
-	} else if (warrior.x > 10000 && warrior.x < 10000) {
+	} else if (
+		warrior.x > GAME_SETTINGS.TEXT_ZONES.TEXT_ZONE_3.MIN_X &&
+		warrior.x < GAME_SETTINGS.TEXT_ZONES.TEXT_ZONE_3.MAX_X
+	) {
 		textDisplayZone = textDisplayZoneEnum.ZONE_THREE;
 	} else {
 		textDisplayZone = textDisplayZoneEnum.NO_ZONE;
@@ -1617,8 +1686,14 @@ function removeWarningTextBox() {
 // Camera functions :
 
 function updateCameraCheckers() {
-	isWarriorLeftCentered = warrior.x <= updatedLeftEdgeScreen + 350;
-	isWarriorRightCentered = warrior.x >= updatedRightEdgeScreen - 350;
+	isWarriorLeftCentered =
+		warrior.x <=
+		updatedLeftEdgeScreen +
+			GAME_SETTINGS.CAMERA_SETTINGS.LEFT_ACTIVATION_AREA_WIDTH;
+	isWarriorRightCentered =
+		warrior.x >=
+		updatedRightEdgeScreen -
+			GAME_SETTINGS.CAMERA_SETTINGS.RIGHT_ACTIVATION_AREA_WIDTH;
 	leftEdgeStageReached = foreground.x >= app.stage.x;
 	rightEdgeStageReached = foreground.x === -app.stage.width;
 }
@@ -1643,11 +1718,15 @@ function moveCamera() {
 }
 
 function moveBackground() {
-	background.x -= vx * direction * 0.5;
+	background.x -=
+		vx * direction * GAME_SETTINGS.CAMERA_SETTINGS.BACKGROUND_SPEED_FACTOR;
 }
 
 function moveMiddleground() {
-	middleground.x -= vx * direction * 0.75;
+	middleground.x -=
+		vx *
+		direction *
+		GAME_SETTINGS.CAMERA_SETTINGS.MIDDLEGROUND_SPEED_FACTOR;
 }
 
 function moveForeground() {

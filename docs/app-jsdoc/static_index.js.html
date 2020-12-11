@@ -27,10 +27,10 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>import loaders from './loaders.js';
-import colliders from './colliders.js';
+import spritesConfig from './sprites.js';
 import textConfig from './text.js';
+import GAME_SETTINGS from './settings.js';
 import PIXI from './pixi-legacy.js';
-
 /**
  * @type {HTMLAudioElement}
  * @description Path of sound file played when attacking
@@ -69,9 +69,39 @@ let adventurerAnimationCount = 0;
 let treasureChestAnimationCount = 0;
 /**
  * @type {number}
+ * @description Index of textList array
+ */
+let indexOfTextList = 0;
+/**
+ * @type {number}
  * @description Determines whether player goes forward or backward
  */
 let direction = 1;
+/**
+ * @type {boolean}
+ * @description Indicates whether text content is been displayed or not
+ */
+let displayingText = false;
+/**
+ * @type {boolean}
+ * @description Indicates whether warning text content is been displayed or not
+ */
+let displayingWarningText = false;
+/**
+ * @type {boolean}
+ * @description Indicates whether text content for first area of level has been displayed
+ */
+let hasBeenDisplayedZone1;
+/**
+ * @type {boolean}
+ * @description Indicates whether text content for second area of level has been displayed
+ */
+let hasBeenDisplayedZone2;
+/**
+ * @type {boolean}
+ * @description Indicates whether text content for third area of level has been displayed
+ */
+let hasBeenDisplayedZone3;
 /**
  * @type {boolean}
  * @description Indicates whether player is jumping or not
@@ -84,6 +114,11 @@ let isJumping = false;
 let isAboutToCollideWithBottom = false;
 /**
  * @type {boolean}
+ * @description Top part of player's sprite used for floor collisions
+ */
+let isAboutToCollideWithTop = false;
+/**
+ * @type {boolean}
  * @description Left part of player's sprite used for wall collisions
  */
 let isAboutToCollideWithLeft = false;
@@ -94,12 +129,22 @@ let isAboutToCollideWithLeft = false;
 let isAboutToCollideWithRight = false;
 /**
  * @type {boolean}
- * @description Indicates whether treasure chest is opened or not
+ * @description Indicates whether first treasure chest is opened or not
  */
-let treasureChestOpened = false;
+let treasureChestOpened1 = false;
 /**
  * @type {boolean}
- * @description Indicates whether player is Left centered on the screen
+ * @description Indicates whether second treasure chest is opened or not
+ */
+let treasureChestOpened2 = false;
+/**
+ * @type {boolean}
+ * @description Indicates whether third treasure chest is opened or not
+ */
+let treasureChestOpened3 = false;
+/**
+ * @type {boolean}
+ * @description Indicates whether player is left centered on the screen
  */
 let isWarriorLeftCentered = false;
 /**
@@ -107,6 +152,16 @@ let isWarriorLeftCentered = false;
  * @description Indicates whether player is right centered on the screen
  */
 let isWarriorRightCentered = false;
+/**
+ * @type {boolean}
+ * @description Indicates if left edge of screen is reached by player or not
+ */
+let leftEdgeScreenReached = false;
+/**
+ * @type {boolean}
+ * @description Indicates if left edge of screen is reached by player or not
+ */
+let rightEdgeScreenReached = false;
 /**
  * @type {boolean}
  * @description Indicates if left part of stage is reached or not
@@ -119,29 +174,79 @@ let leftEdgeStageReached = false;
 let rightEdgeStageReached = false;
 /**
  * @type {Array}
- * @description ArrayList of wall colliders
+ * @description ArrayList of all colliders
  */
-let wallCollidersList = [];
+let collidersCheckList = [];
 /**
  * @type {Array}
  * @description ArrayList of floor colliders
  */
-let floorCollidersList = [];
+let obstacleCollidersList = [];
 /**
  * @type {Array}
  * @description ArrayList of object colliders
  */
 let objectCollidersList = [];
 /**
+ * @type {Array}
+ * @description ArrayList of scenery colliders
+ */
+let decorsCollidersList = [];
+/**
+ * @type {Array}
+ * @description ArrayList of mobile colliders moving from left to right
+ */
+let leftToRightCollidersList = [];
+/**
+ * @type {Array}
+ * @description ArrayList of mobile colliders moving from right to left
+ */
+let rightToLeftCollidersList = [];
+/**
+ * @type {Array}
+ * @description ArrayList of mobile colliders moving from bottom to top
+ */
+let bottomToTopCollidersList = [];
+/**
+ * @type {Array}
+ * @description ArrayList of mobile colliders moving from top to bottom
+ */
+let topToBottomCollidersList = [];
+/**
  * @type {PIXI.Sprite}
  * @description Treasure Chest sprite
  */
-let treasureChest;
+let treasureChest1 = false;
 /**
  * @type {Array}
- * @description ArrayList of Treasure Chest's textures used for cureent animation
+ * @description ArrayList of Treasure Chest's textures used for current animation
  */
-let treasureChestTextureArray = [];
+let treasureChest1TextureArray = [];
+/**
+ * @type {PIXI.Sprite}
+ * @description Treasure Chest sprite
+ */
+let treasureChest2 = false;
+/**
+ * @type {Array}
+ * @description ArrayList of Treasure Chest's textures used for current animation
+ */
+let treasureChest2TextureArray = [];
+/**
+ * @type {PIXI.Sprite}
+ * @description Treasure Chest sprite
+ */
+let treasureChest3 = false;
+/**
+ * @type {Array}
+ * @description ArrayList of Treasure Chest's textures used for current animation
+ */
+let treasureChest3TextureArray = [];
+/**
+ * @type {Array}
+ * @description ArrayList of text content used for the game
+ */
+let textListToShow = [];
 /**
  * @type {PIXI.Rectangle}
  * @description Player bounds
@@ -154,6 +259,11 @@ let warriorBounds = new PIXI.Rectangle();
 let bottomCollisionBox = new PIXI.Rectangle();
 /**
  * @type {PIXI.Rectangle}
+ * @description Player's top part bounds
+ */
+let topCollisionBox = new PIXI.Rectangle();
+/**
+ * @type {PIXI.Rectangle}
  * @description Player's left part bounds
  */
 let leftCollisionBox = new PIXI.Rectangle();
@@ -163,25 +273,60 @@ let leftCollisionBox = new PIXI.Rectangle();
  */
 let rightCollisionBox = new PIXI.Rectangle();
 /**
+ * @type {PIXI.Rectangle}
+ * @description Updated left screen limit player cannot pass
+ */
+let updatedLeftEdgeScreen;
+/**
+ * @type {PIXI.Rectangle}
+ * @description Updated right screen limit player cannot pass
+ */
+let updatedRightEdgeScreen;
+/**
  * @type {number}
  * @description Player's speed for x abscissa
  */
-let vx = 0;
+let vx = GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MIN_SPEED;
 /**
  * @type {number}
  * @description Player's speed for y abscissa
  */
-let vy = 0;
+let vy = GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MIN_SPEED;
 /**
- * @type {number}
- * @description Camera's speed for x abscissa
+ * @type {PIXI.Texture}
+ * @description Background texture for textBox
  */
-let vc = 5;
+let textBackGroundTexture = new PIXI.Sprite(PIXI.Texture.WHITE);
+/**
+ * @type {PIXI.Texture}
+ * @description Background texture for warningTextBox
+ */
+let warningTextBackGroundTexture = new PIXI.Sprite(PIXI.Texture.WHITE);
+/**
+ * @type {PIXI.Text}
+ * @description Container for text display
+ */
+let text = new PIXI.Text();
+/**
+ * @type {PIXI.Text}
+ * @description Container for warning text display
+ */
+let warningText = new PIXI.Text();
+/**
+ * @type {PIXI.Sprite}
+ * @description Next text button icon for warningTextBox
+ */
+let warningNextTextButtonImg = new PIXI.Sprite();
 /**
  * @type {PIXI.Container}
  * @description Container for text display
  */
 let textBox = new PIXI.Container();
+/**
+ * @type {PIXI.Container}
+ * @description Container for warning text display
+ */
+let warningTextBox = new PIXI.Container();
 /**
  * @type {PIXI.Container}
  * @description Container for all foreground stage elements
@@ -198,15 +343,70 @@ let middleground = new PIXI.Container();
  */
 let background = new PIXI.Container();
 /**
+ * @type {PIXI.Container}
+ * @description Child container of Foreground, contains all moving colliders
+ */
+let foregroundStaticCollidersSubContainer = new PIXI.Container();
+/**
+ * @type {PIXI.Container}
+ * @description Child container of Foreground, contains all moving colliders
+ */
+let foregroundMobileCollidersSubContainer = new PIXI.Container();
+/**
+ * @type {PIXI.Container}
+ * @description Child container of foregroundMobileCollidersSubContainer, contains all moving colliders from left to right
+ */
+let leftToRightForegroundSubContainer = new PIXI.Container();
+/**
+ * @type {PIXI.Container}
+ * @description Child container of foregroundMobileCollidersSubContainer, contains all moving colliders from right to left
+ */
+let rightToLeftForegroundSubContainer = new PIXI.Container();
+/**
+ * @type {PIXI.Container}
+ * @description Child container of foregroundMobileCollidersSubContainer, contains all moving colliders from top to bottom
+ */
+let topToBottomForegroundSubContainer = new PIXI.Container();
+/**
+ * @type {PIXI.Container}
+ * @description Child container of foregroundMobileCollidersSubContainer, contains all moving colliders from bottom to top
+ */
+let bottomToTopForegroundSubContainer = new PIXI.Container();
+/**
  * @type {NodeJS.Timeout}
  * @description Timer for vx decreasing when player stops
  */
 let vxTimer;
 /**
+ * @type {number}
+ * @description Counter for mobile platforms
+ */
+let movementCount = 0;
+/**
+ * @type {number}
+ * @description Speed for mobile platforms
+ */
+let movementSpeed = GAME_SETTINGS.PHYSICS_SETTINGS.MOBILE_COLLIDERS_SPEED;
+/**
  * @type {boolean}
  * @description Indicates whether sound is playing or not
  */
 let playingSound = false;
+/**
+ * @type {Object}
+ * @description Enumeration of all text display zone
+ */
+const textDisplayZoneEnum = {
+	ZONE_ONE: 'zoneOne',
+	ZONE_TWO: 'zoneTwo',
+	ZONE_THREE: 'zoneThree',
+	NO_ZONE: 'noZone',
+};
+/**
+ * @type {Object}
+ * @description Indicates whether warrior is in a text display zone or not
+ */
+let textDisplayZone = textDisplayZoneEnum.NO_ZONE;
 /**
  * @type {Object}
  * @description Enumeration of all possible player's animation state
@@ -235,11 +435,12 @@ let warrior;
  * @description Pixi application embedded in index.html's screen
  */
 var app = new PIXI.Application({
-	height: 550,
-	width: 900,
-	transparent: true,
-	x: 0,
-	y: 0,
+	width: GAME_SETTINGS.APP_SCREEN_SETTINGS.APP_SCREEN_WIDTH,
+	height: GAME_SETTINGS.APP_SCREEN_SETTINGS.APP_SCREEN_HEIGHT,
+	transparent: GAME_SETTINGS.APP_SCREEN_SETTINGS.TRANSPARENT,
+	antialias: GAME_SETTINGS.APP_SCREEN_SETTINGS.ANTIALIASING,
+	x: GAME_SETTINGS.APP_SCREEN_SETTINGS.APP_SCREEN_X,
+	y: GAME_SETTINGS.APP_SCREEN_SETTINGS.APP_SCREEN_Y,
 });
 /**
  * @type {Array}
@@ -248,55 +449,89 @@ var app = new PIXI.Application({
 let warriorTextureArray = [];
 /**
  * @type {string}
- * @description Path to images repository
+ * @description Path to image repository
  */
 const pathToAnimation = '/static/assets/images/';
+/**
+ * @type {number}
+ * @description Time in ms since last frame was rendered
+ */
+let elapsedTime = 0;
+/**
+ * @type {number}
+ * @description Delay in ms targeted between last frame and current frame displayed
+ */
+const fpsDelta = GAME_SETTINGS.TICKER_SETTINGS.DELTA_TIME_TARGETED;
 
-initializeGame();
+// Initialization IIFE function
 
-app.ticker.add((delta) => {
-	warriorBounds = warrior.getBounds();
-	calculateWideBoxes();
-	updateCameraCheckers();
-	updateWarriorCollider();
-	if (!isAboutToCollideWithLeft &amp;&amp; !isAboutToCollideWithRight) {
-		updatingVx();
-	}
-	if (!isAboutToCollideWithBottom) {
-		updatingVy();
-	} else if (isAboutToCollideWithBottom) {
-		vy = 0;
-		isJumping = false;
-	}
-	moveCamera();
-	updateAnimationState();
-	loadWarriorAnimation();
-	animateElements(delta);
-});
-
-// Initialization functions
-function initializeGame() {
+(function initializeGame() {
+	removeDefaultTicker();
 	setControls();
 	setKeyboardControls();
 	setBackgroundVolume();
 	setAudioEvents();
 	addStageToScreen();
 	buildStage();
-	displayInitialMsg();
+	getInitialEdgeScreen();
+	setTicker();
+})();
+
+//Core functions called to initialize or update game rendering
+
+function removeDefaultTicker() {
+	app.ticker.remove(app.render, app);
+}
+
+function tick(delta) {
+	elapsedTime += delta;
+	if (elapsedTime >= fpsDelta) {
+		update(elapsedTime);
+		elapsedTime = 0;
+	}
+}
+
+function update(delta) {
+	reloadIfFalling();
+	calculateWideBoxes();
+	updateCameraCheckers();
+	updateMovementCycle();
+	updateMobileColliders();
+	updateAllCollidersList();
+	updateWarriorCollider();
+	updatingVx();
+	if (isAboutToCollideWithBottom || isAboutToCollideWithTop) {
+		vy = isAboutToCollideWithBottom
+			? GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MIN_SPEED
+			: vy &lt;= GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MIN_SPEED
+			? GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_RESTITUTION_COEF * vy
+			: vy;
+		isJumping = isAboutToCollideWithBottom ? false : true;
+	}
+	updatingVy();
+	moveCamera();
+	updateAnimationState();
+	loadWarriorAnimation();
+	animateElements(delta);
+	manageTextContent(warrior.x);
+	render();
+}
+
+function render() {
+	app.render();
 }
 
 // Build Stage functions
 
-function addStageToScreen() {
-	document.getElementById('screen').appendChild(app.view);
-}
-
 function buildStage() {
 	setBackgroungImg();
 	setBackground();
-	setColliders(colliders);
-	setDecors(loaders);
+	setMiddleGroundImg();
+	setMiddleground();
+	setDecors();
+	setStaticColliders();
 	setObjects();
+	setMobileColliders();
 	setForeground();
 	addWarriorToStage();
 }
@@ -305,66 +540,186 @@ function setBackgroungImg() {
 	let backgroundImage = PIXI.Texture.from(
 		pathToAnimation + 'Levels/firstmaplevel_background.png'
 	);
-	let backgroundSprite = new PIXI.Sprite(backgroundImage);
-	backgroundSprite.anchor.set(0.0);
-	backgroundSprite.height = 642;
-	backgroundSprite.width = 3073;
-	background.addChild(backgroundSprite);
+	let backgroundSprite1 = new PIXI.Sprite(backgroundImage);
+	backgroundSprite1.anchor.set(0.0);
+	backgroundSprite1.x = 0;
+	backgroundSprite1.y = 0;
+	backgroundSprite1.height = 642;
+	backgroundSprite1.width = 3073;
+	background.addChild(backgroundSprite1);
+	let backgroundSprite2 = new PIXI.Sprite(backgroundImage);
+	backgroundSprite2.anchor.set(0.0);
+	backgroundSprite2.x = 3072;
+	backgroundSprite2.y = 0;
+	backgroundSprite2.height = 642;
+	backgroundSprite2.width = 3073;
+	background.addChild(backgroundSprite2);
 }
 
 function setBackground() {
 	app.stage.addChild(background);
 }
+
+function setMiddleGroundImg() {
+	let middlegroundImage = PIXI.Texture.from(
+		pathToAnimation + 'Levels/middleground_level_01.png'
+	);
+	let middlegroundSprite1 = new PIXI.Sprite(middlegroundImage);
+	middlegroundSprite1.anchor.set(0.0);
+	middlegroundSprite1.x = 0;
+	middlegroundSprite1.y = 0;
+	middlegroundSprite1.height = 642;
+	middlegroundSprite1.width = 3073;
+	middleground.addChild(middlegroundSprite1);
+	let middlegroundSprite2 = new PIXI.Sprite(middlegroundImage);
+	middlegroundSprite2.anchor.set(0.0);
+	middlegroundSprite2.x = 3072;
+	middlegroundSprite2.y = 0;
+	middlegroundSprite2.height = 642;
+	middlegroundSprite2.width = 3073;
+	middleground.addChild(middlegroundSprite2);
+}
+
+function setMiddleground() {
+	app.stage.addChild(middleground);
+}
+
 function setForeground() {
 	app.stage.addChild(foreground);
 }
 
-function setDecors(loaders) {}
+function setDecors() {
+	let decorsCollidersObject = spritesConfig.decorsColliders;
+	let collider;
+	for (const decorsConf in decorsCollidersObject) {
+		collider = createBasicCollider(decorsCollidersObject[decorsConf]);
+		foreground.addChild(collider);
+		decorsCollidersList.push(collider.getBounds());
+	}
+}
 
 function setObjects() {
-	let treasureChestTexture = PIXI.Texture.from(
-		colliders.objectColliders.treasureChest.imgPath
+	treasureChest1 = createBasicSprite(
+		treasureChest1TextureArray,
+		treasureChest1,
+		spritesConfig.objectColliders.treasureChest1
 	);
-	treasureChestTextureArray.push(treasureChestTexture);
-	treasureChest = new PIXI.Sprite(treasureChestTexture);
-	treasureChest.anchor.set(colliders.objectColliders.treasureChest.anchor);
-	treasureChest.x = colliders.objectColliders.treasureChest.x;
-	treasureChest.y = colliders.objectColliders.treasureChest.y;
-	treasureChest.width = colliders.objectColliders.treasureChest.width;
-	treasureChest.height = colliders.objectColliders.treasureChest.height;
-	foreground.addChild(treasureChest);
-	objectCollidersList.push(treasureChest);
+	treasureChest2 = createBasicSprite(
+		treasureChest2TextureArray,
+		treasureChest2,
+		spritesConfig.objectColliders.treasureChest2
+	);
+	treasureChest3 = createBasicSprite(
+		treasureChest3TextureArray,
+		treasureChest3,
+		spritesConfig.objectColliders.treasureChest3
+	);
+	foreground.addChild(treasureChest1, treasureChest2, treasureChest3);
+	objectCollidersList.push(treasureChest1, treasureChest2, treasureChest3);
 }
 
 function addWarriorToStage() {
-	let texture = PIXI.Texture.from(
-		pathToAnimation + 'Adventurer/Idle/adventurer-idle-00.png'
+	warrior = createBasicSprite(
+		warriorTextureArray,
+		warrior,
+		spritesConfig.warriorColliders.warriorCollider1
 	);
-	warriorTextureArray.push(texture);
-	warrior = new PIXI.AnimatedSprite(warriorTextureArray);
 	loadIdleTexture();
-	warrior.anchor.set(0.5);
-	warrior.scale.x = 2;
-	warrior.scale.y = 2;
-	warrior.x = app.screen.width / 2 - 350;
-	warrior.y = app.screen.height / 2 - 150;
-	app.stage.addChild(warrior);
+	foreground.addChild(warrior);
 }
 
-function setColliders(collidersConf) {
-	let floorCollidersObject = collidersConf.floorColliders;
-	let wallCollidersObject = collidersConf.wallColliders;
+function addStageToScreen() {
+	document.getElementById('screen').appendChild(app.view);
+}
+
+function getInitialEdgeScreen() {
+	updatedLeftEdgeScreen = app.screen.x;
+	updatedRightEdgeScreen = app.screen.width;
+}
+
+function setTicker() {
+	app.ticker.maxFPS = GAME_SETTINGS.TICKER_SETTINGS.TICKER_MAX_FPS;
+	app.ticker.add(tick);
+}
+
+function setStaticColliders() {
+	let obstacleCollidersObject = spritesConfig.obstacleColliders;
 	let collider;
-	for (const floorConf in floorCollidersObject) {
-		collider = createBasicCollider(floorCollidersObject[floorConf]);
+	for (const floorConf in obstacleCollidersObject) {
+		collider = createBasicCollider(obstacleCollidersObject[floorConf]);
 		foreground.addChild(collider);
-		floorCollidersList.push(collider.getBounds());
+		obstacleCollidersList.push(collider.getBounds());
 	}
-	for (const wallConf in wallCollidersObject) {
-		collider = createBasicCollider(wallCollidersObject[wallConf]);
-		foreground.addChild(collider);
-		wallCollidersList.push(collider);
+}
+
+function setMobileColliders() {
+	let collider;
+	let mobileCollidersObject = spritesConfig.mobileColliders;
+	for (const mobileCollider in mobileCollidersObject) {
+		collider = createBasicCollider(mobileCollidersObject[mobileCollider]);
+		switch (mobileCollidersObject[mobileCollider].movement) {
+			case '+1X':
+				setLeftToRightMobileSubContainer(collider);
+				break;
+			case '-1X':
+				setRightToLeftMobileSubContainer(collider);
+				break;
+			case '+1Y':
+				setTopToBottomMobileContainer(collider);
+				break;
+			case '-1Y':
+				setBottomToTopMobileSubContainer(collider);
+				break;
+		}
 	}
+	foregroundMobileCollidersSubContainer.addChild(
+		leftToRightForegroundSubContainer,
+		rightToLeftForegroundSubContainer,
+		topToBottomForegroundSubContainer,
+		bottomToTopForegroundSubContainer
+	);
+	foreground.addChild(foregroundMobileCollidersSubContainer);
+}
+
+function setLeftToRightMobileSubContainer(collider) {
+	leftToRightForegroundSubContainer.addChild(collider);
+	leftToRightCollidersList.push(collider);
+}
+
+function setRightToLeftMobileSubContainer(collider) {
+	rightToLeftForegroundSubContainer.addChild(collider);
+	rightToLeftCollidersList.push(collider);
+}
+
+function setTopToBottomMobileContainer(collider) {
+	topToBottomForegroundSubContainer.addChild(collider);
+	topToBottomCollidersList.push(collider);
+}
+
+function setBottomToTopMobileSubContainer(collider) {
+	bottomToTopForegroundSubContainer.addChild(collider);
+	bottomToTopCollidersList.push(collider);
+}
+
+function createBasicSprite(
+	spriteTextureArray,
+	spriteObjectToInitialize,
+	spriteConf
+) {
+	let texture = spriteConf.imgPath
+		? PIXI.Texture.from(spriteConf.imgPath)
+		: PIXI.Texture.WHITE;
+	if (spriteTextureArray) {
+		spriteTextureArray.push(texture);
+	}
+	spriteObjectToInitialize = new PIXI.Sprite(texture);
+	spriteObjectToInitialize.anchor.set(spriteConf.anchor);
+	spriteObjectToInitialize.x = spriteConf.x;
+	spriteObjectToInitialize.y = spriteConf.y;
+	spriteObjectToInitialize.width = spriteConf.width;
+	spriteObjectToInitialize.height = spriteConf.height;
+	if (spriteConf.tint) spriteObjectToInitialize.tint = spriteConf.tint;
+	return spriteObjectToInitialize;
 }
 
 function createBasicCollider(colliderConf) {
@@ -376,6 +731,108 @@ function createBasicCollider(colliderConf) {
 	newCollider.width = colliderConf.width;
 	newCollider.height = colliderConf.height;
 	return newCollider;
+}
+
+function updateMovementCycle() {
+	const mobileCollidersCheckList = [
+		leftToRightCollidersList,
+		rightToLeftCollidersList,
+		topToBottomCollidersList,
+		bottomToTopCollidersList,
+	];
+	movementCount++;
+	if (
+		movementCount %
+			GAME_SETTINGS.PHYSICS_SETTINGS.MOBILE_COLLIDERS_INVERSION ===
+		0
+	) {
+		movementSpeed *= -1;
+	}
+	leftToRightForegroundSubContainer.x += movementSpeed;
+	rightToLeftForegroundSubContainer.x -= movementSpeed;
+	topToBottomForegroundSubContainer.y += movementSpeed;
+	bottomToTopForegroundSubContainer.y -= movementSpeed;
+	if (detectSpriteCollision(bottomCollisionBox, mobileCollidersCheckList)) {
+		updateWarriorPositionOnMobileCollider(mobileCollidersCheckList);
+	}
+}
+
+function updateWarriorPositionOnMobileCollider(mobileCollidersCheckList) {
+	const idMobileCollidersSubList = getMobileColliderUnderWarrior(
+		bottomCollisionBox,
+		mobileCollidersCheckList
+	);
+	switch (idMobileCollidersSubList) {
+		case 0:
+			warrior.x += movementSpeed;
+			break;
+		case 1:
+			warrior.x -= movementSpeed;
+			break;
+		case 2:
+			warrior.y += movementSpeed;
+			break;
+		case 3:
+			warrior.y -= movementSpeed;
+			break;
+	}
+}
+
+function updateMobileColliders() {
+	// index = length - 2 car dernier élément ajouté à foreground correspond à warrior
+	const mobileCollidersContainersList = Array.from(
+		foreground.children[foreground.children.length - 2].children
+	);
+	leftToRightCollidersList = [];
+	rightToLeftCollidersList = [];
+	topToBottomCollidersList = [];
+	bottomToTopCollidersList = [];
+	if (
+		mobileCollidersContainersList[0] !== undefined ||
+		mobileCollidersContainersList !== null
+	) {
+		for (const mobileCollider of mobileCollidersContainersList[0]
+			.children) {
+			leftToRightCollidersList.push(mobileCollider.getBounds());
+		}
+	}
+	if (
+		mobileCollidersContainersList[1] !== undefined ||
+		mobileCollidersContainersList !== null
+	) {
+		for (const mobileCollider of mobileCollidersContainersList[1]
+			.children) {
+			rightToLeftCollidersList.push(mobileCollider.getBounds());
+		}
+	}
+	if (
+		mobileCollidersContainersList[2] !== undefined ||
+		mobileCollidersContainersList !== null
+	) {
+		for (const mobileCollider of mobileCollidersContainersList[2]
+			.children) {
+			topToBottomCollidersList.push(mobileCollider.getBounds());
+		}
+	}
+	if (
+		mobileCollidersContainersList[3] !== undefined ||
+		mobileCollidersContainersList !== null
+	) {
+		for (const mobileCollider of mobileCollidersContainersList[3]
+			.children) {
+			bottomToTopCollidersList.push(mobileCollider.getBounds());
+		}
+	}
+}
+
+function updateAllCollidersList() {
+	collidersCheckList = [
+		obstacleCollidersList,
+		leftToRightCollidersList,
+		rightToLeftCollidersList,
+		topToBottomCollidersList,
+		bottomToTopCollidersList,
+	];
 }
 
 // Controls functions :
@@ -402,63 +859,53 @@ function setControls() {
 }
 
 function setKeyboardControls() {
-	window.addEventListener(
-		'keydown',
-		(e) => {
-			if (e.defaultPrevented) {
-				return; // Ne devrait rien faire si l'événement de la touche était déjà consommé.
-			}
-			switch (e.key) {
-				case 'ArrowDown':
-					crouch();
-					break;
-				case 'ArrowUp':
-					jump();
-					break;
-				case 'ArrowLeft':
-					warrior.scale.x = -2;
-					direction = -1;
-					clearInterval(vxTimer);
-					if (!detectWallCollision(leftCollisionBox)) {
-						move();
-					}
-					break;
-				case 'ArrowRight':
-					warrior.scale.x = 2;
-					direction = 1;
-					clearInterval(vxTimer);
-					if (!detectWallCollision(rightCollisionBox)) {
-						move();
-					}
-					break;
-				case 'é':
-					takePotion();
-					break;
-				case 'a':
-					smallAttack();
-					break;
-				case 'z':
-					bigAttack();
-					break;
-				case 'e':
-					detectObjectCollision(warriorBounds)
-						? !treasureChestOpened
-							? openTreasureChest()
-							: closeTreasureChest()
-						: doNothing();
-					treasureChestOpened = !treasureChestOpened;
-				default:
-					return;
-			}
-			e.preventDefault();
-		},
-		true
-	);
+	window.addEventListener('keydown', (e) => {
+		switch (e.key) {
+			case 'ArrowDown':
+				crouch();
+				break;
+			case 'ArrowUp':
+				clearInterval(vxTimer);
+				jump();
+				break;
+			case 'ArrowLeft':
+				warrior.scale.x = -2;
+				direction = -1;
+				clearInterval(vxTimer);
+				move();
+				break;
+			case 'ArrowRight':
+				warrior.scale.x = 2;
+				direction = 1;
+				clearInterval(vxTimer);
+				move();
+				break;
+			case 'é':
+				takePotion();
+				break;
+			case 'a':
+				smallAttack();
+				break;
+			case 'z':
+				bigAttack();
+				break;
+			case 'e':
+				activateObjectAround();
+				break;
+			case 'x':
+				if (displayingText &amp;&amp; !displayingWarningText) {
+					nextContent();
+				}
+				break;
+			default:
+				return;
+		}
+		if (e.key !== 'x' &amp;&amp; displayingText &amp;&amp; !displayingWarningText) {
+			displayWarningMsg();
+		}
+	});
 
 	window.addEventListener('keyup', (e) => {
-		if (e.defaultPrevented) {
-			return; // Ne devrait rien faire si l'événement de la touche était déjà consommé.
-		}
 		switch (e.key) {
 			case 'a':
 			case 'z':
@@ -477,41 +924,45 @@ function setKeyboardControls() {
 // Move functions :
 
 function move() {
-	if (detectFloorCollision(bottomCollisionBox)) {
-		playSound(walkSound);
+	if (detectSpriteCollision(bottomCollisionBox, collidersCheckList)) {
+		playSound(
+			walkSound,
+			GAME_SETTINGS.VOLUME_SETTINGS.WALKING_SOUND_VOLUME
+		);
 		animationState = animationStateEnum.RUNNING;
 	}
-	if (
-		(isWarriorRightCentered &amp;&amp; direction === 1) ||
-		(isWarriorLeftCentered &amp;&amp;
-			direction === -1 &amp;&amp;
-			detectFloorCollision(bottomCollisionBox))
-	) {
-		return;
-	}
-	vx = 5;
+	vx = GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MAX_SPEED;
 }
 
 function jump() {
-	if (!detectFloorCollision(bottomCollisionBox)) {
+	if (!detectSpriteCollision(bottomCollisionBox, collidersCheckList)) {
 		return;
 	} else {
 		playingSound = false;
-		playSound(warriorJumpSound);
+		playSound(
+			warriorJumpSound,
+			GAME_SETTINGS.VOLUME_SETTINGS.JUMPING_SOUND_VOLUME
+		);
 		animationState = animationStateEnum.JUMPING;
-		vy = -18;
+		vy = GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_JUMP_SPEED;
 		warrior.y += vy;
 		isJumping = true;
 	}
 }
 
 function smallAttack() {
-	playSound(attackSound);
+	playSound(
+		attackSound,
+		GAME_SETTINGS.VOLUME_SETTINGS.ATTACKING_SOUND_VOLUME
+	);
 	animationState = animationStateEnum.ATTACKING_ONE;
 }
 
 function bigAttack() {
-	playSound(attackSound);
+	playSound(
+		attackSound,
+		GAME_SETTINGS.VOLUME_SETTINGS.ATTACKING_SOUND_VOLUME
+	);
 	animationState = animationStateEnum.ATTACKING_TWO;
 }
 
@@ -526,12 +977,13 @@ function takePotion() {
 function stop() {
 	playingSound = false;
 	vxTimer = setInterval(() => {
-		if (vx > 0 &amp;&amp; detectFloorCollision(bottomCollisionBox)) {
+		if (
+			vx > GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MIN_SPEED &amp;&amp;
+			detectSpriteCollision(bottomCollisionBox, collidersCheckList)
+		) {
 			vx--;
-			vc--;
 		}
-		if (vx === 0) {
-			vc = 0;
+		if (vx === GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MIN_SPEED) {
 			animationState = animationStateEnum.IDLING;
 			clearInterval(vxTimer);
 		}
@@ -547,47 +999,106 @@ function stopAttackingAnim() {
 
 // Interactive functions:
 
-function openTreasureChest() {
-	if (openingTreasureChestSound.currentTime !== 0) {
-		openingTreasureChestSound.currentTime = 0;
+function activateObjectAround() {
+	const objectIndex = getObjectAround(warriorBounds);
+	switch (objectIndex) {
+		case 0:
+			if (!treasureChestOpened1) {
+				openTreasureChest(objectIndex);
+			} else {
+				closeTreasureChest(objectIndex);
+			}
+			treasureChestOpened1 = !treasureChestOpened1;
+			break;
+		case 1:
+			if (!treasureChestOpened2) {
+				openTreasureChest(objectIndex);
+			} else {
+				closeTreasureChest(objectIndex);
+			}
+			treasureChestOpened2 = !treasureChestOpened2;
+			break;
+		case 2:
+			if (!treasureChestOpened3) {
+				openTreasureChest(objectIndex);
+			} else {
+				closeTreasureChest(objectIndex);
+			}
+			treasureChestOpened3 = !treasureChestOpened3;
+			break;
+
+		default:
+			return;
 	}
-	openingTreasureChestSound.play();
-	loadOpeningTreasureChestTexture();
-	setTimeout(loadOpenedTreasureChestTexture(), 400);
 }
 
-function closeTreasureChest() {
-	if (openingTreasureChestSound.currentTime !== 0) {
-		openingTreasureChestSound.currentTime = 0;
-	}
-	openingTreasureChestSound.play();
-	loadClosingTreasureChestTexture();
-	setTimeout(loadClosedTreasureChestTexture(), 400);
+function openTreasureChest(i) {
+	displayDynamicMsg();
+	playSound(
+		openingTreasureChestSound,
+		GAME_SETTINGS.VOLUME_SETTINGS.TREASURE_CHEST_SOUND_VOLUME
+	);
+	loadOpeningTreasureChestTexture(i);
+	setTimeout(loadOpenedTreasureChestTexture(i), 400);
 }
 
-function doNothing() {}
+function closeTreasureChest(i) {
+	playSound(
+		openingTreasureChestSound,
+		GAME_SETTINGS.VOLUME_SETTINGS.TREASURE_CHEST_SOUND_VOLUME
+	);
+	loadClosingTreasureChestTexture(i);
+	setTimeout(loadClosedTreasureChestTexture(i), 400);
+}
 
 // Physics functions:
 
+function reloadIfFalling() {
+	if (warrior.y > app.screen.height) {
+		window.location.reload();
+	}
+}
+
 function calculateWideBoxes() {
+	warriorBounds = warrior.getBounds();
 	bottomCollisionBox.x = warriorBounds.x + (1 / 3) * warriorBounds.width;
 	bottomCollisionBox.width = (1 / 3) * warriorBounds.width;
 	bottomCollisionBox.y = warriorBounds.y + (4 / 5) * warriorBounds.height;
 	bottomCollisionBox.height = (1 / 5) * warriorBounds.height + 1;
+	topCollisionBox.x = warriorBounds.x + (1 / 3) * warriorBounds.width;
+	topCollisionBox.width = (1 / 3) * warriorBounds.width;
+	topCollisionBox.y = warriorBounds.y;
+	topCollisionBox.height = (1 / 5) * warriorBounds.height + 1;
 	leftCollisionBox.x = warriorBounds.x + 10;
 	leftCollisionBox.width = warriorBounds.width / 3 - 10;
 	leftCollisionBox.y = warriorBounds.y - 1;
-	leftCollisionBox.height = warriorBounds.height + 1;
+	leftCollisionBox.height = (4 / 5) * warriorBounds.height;
 	rightCollisionBox.x = warriorBounds.x + (2 * warriorBounds.width) / 3;
 	rightCollisionBox.width = warriorBounds.width / 3 - 10;
 	rightCollisionBox.y = warriorBounds.y - 1;
-	rightCollisionBox.height = warriorBounds.height + 1;
+	rightCollisionBox.height = (4 / 5) * warriorBounds.height;
 }
 
 function updateWarriorCollider() {
-	isAboutToCollideWithBottom = detectFloorCollision(bottomCollisionBox);
-	isAboutToCollideWithLeft = detectWallCollision(leftCollisionBox);
-	isAboutToCollideWithRight = detectWallCollision(rightCollisionBox);
+	leftEdgeScreenReached = warrior.x &lt;= updatedLeftEdgeScreen;
+	rightEdgeScreenReached =
+		warrior.x + warrior.width >= updatedRightEdgeScreen;
+	isAboutToCollideWithBottom = detectSpriteCollision(
+		bottomCollisionBox,
+		collidersCheckList
+	);
+	isAboutToCollideWithTop = detectSpriteCollision(
+		topCollisionBox,
+		collidersCheckList
+	);
+	isAboutToCollideWithLeft = detectSpriteCollision(
+		leftCollisionBox,
+		collidersCheckList
+	);
+	isAboutToCollideWithRight = detectSpriteCollision(
+		rightCollisionBox,
+		collidersCheckList
+	);
 }
 
 function isColliding(playerBox, collider) {
@@ -599,54 +1110,58 @@ function isColliding(playerBox, collider) {
 	);
 }
 
-function detectWallCollision(playerBox) {
-	for (const collider of wallCollidersList) {
-		if (isColliding(playerBox, collider)) {
-			return true;
+function detectSpriteCollision(playerBox, collidersCheckList) {
+	for (const collidersSubCheckList of collidersCheckList) {
+		for (const collider of collidersSubCheckList) {
+			if (isColliding(playerBox, collider)) {
+				return true;
+			}
 		}
 	}
 	return false;
 }
 
-function detectFloorCollision(playerBox) {
-	for (const collider of floorCollidersList) {
-		if (isColliding(playerBox, collider)) {
-			return true;
+function getObjectAround(playerBox) {
+	for (let i = 0; i &lt; objectCollidersList.length; i++) {
+		if (isColliding(playerBox, objectCollidersList[i])) {
+			return i;
 		}
 	}
-	return false;
+	return null;
 }
 
-function detectObjectCollision(playerBox) {
-	for (const collider of objectCollidersList) {
-		if (isColliding(playerBox, collider)) {
-			return true;
+function getMobileColliderUnderWarrior(playerBox, mobileCollidersCheckList) {
+	for (let i = 0; i &lt; mobileCollidersCheckList.length; i++) {
+		for (const subMobileColliderList of mobileCollidersCheckList[i]) {
+			if (isColliding(playerBox, subMobileColliderList)) {
+				return i;
+			}
 		}
 	}
-	return false;
 }
 
 function updatingVx() {
 	if (
-		(isWarriorRightCentered &amp;&amp; direction === 1) ||
-		(isWarriorLeftCentered &amp;&amp;
-			direction === -1 &amp;&amp;
-			!leftEdgeStageReached &amp;&amp;
-			!rightEdgeStageReached)
+		((isAboutToCollideWithRight || rightEdgeScreenReached) &amp;&amp;
+			direction === 1) ||
+		((isAboutToCollideWithLeft || leftEdgeScreenReached) &amp;&amp;
+			direction === -1) ||
+		displayingText
 	) {
-		vc = animationState === animationStateEnum.IDLING ? 0 : 5;
 		return;
 	}
 	warrior.x += vx * direction;
 }
 
 function updatingVy() {
-	applyingGravity();
-	warrior.y += vy;
+	if (!isAboutToCollideWithBottom) {
+		applyingGravity();
+		warrior.y += vy;
+	}
 }
 
 function applyingGravity() {
-	if (vy &lt; 10) {
+	if (vy &lt; GAME_SETTINGS.PHYSICS_SETTINGS.GRAVITY) {
 		vy++;
 	}
 }
@@ -655,13 +1170,18 @@ function applyingGravity() {
 
 function setBackgroundVolume() {
 	const backgroundAudio = document.getElementById('audio');
-	backgroundAudio.volume = 0.5;
+	backgroundAudio.volume =
+		GAME_SETTINGS.VOLUME_SETTINGS.BACKGROUND_SOUND_VOLUME;
 }
 
-function playSound(sound) {
+function playSound(sound, volume) {
 	if (!playingSound) {
-		sound.currentTime = 0;
-		sound.volume = 1;
+		if (sound.currentTime !== 0) {
+			sound.currentTime = 0;
+		}
+		if (sound.currentTime !== 0 &amp;&amp; sound.volume !== volume) {
+			sound.volume = volume;
+		}
 		sound.play();
 		playingSound = true;
 	}
@@ -670,21 +1190,15 @@ function playSound(sound) {
 function stopSound() {
 	attackSound.pause();
 	walkSound.pause();
-	warriorJumpSound.pause();
+	if (isJumping === false) warriorJumpSound.pause();
 }
 
 function setAudioEvents() {
-	attackSound.addEventListener('play', () => {
-		attackSound.volume = 0.5;
-	});
 	attackSound.addEventListener('ended', () => {
 		playingSound = false;
 	});
 	walkSound.addEventListener('ended', () => {
 		playingSound = false;
-	});
-	warriorJumpSound.addEventListener('play', () => {
-		warriorJumpSound.volume = 0.5;
 	});
 	warriorJumpSound.addEventListener('ended', () => {
 		playingSound = false;
@@ -748,19 +1262,30 @@ function animateTreasureChest(delta) {
 	treasureChestAnimationCount =
 		Math.round(
 			treasureChestAnimationCount + getAnimationSpeed('object', delta)
-		) % treasureChestTextureArray.length;
-	treasureChest.texture =
-		treasureChestTextureArray[treasureChestAnimationCount];
+		) % treasureChest1TextureArray.length;
+	treasureChest1.texture =
+		treasureChest1TextureArray[treasureChestAnimationCount];
+	treasureChest2.texture =
+		treasureChest2TextureArray[treasureChestAnimationCount];
+	treasureChest3.texture =
+		treasureChest3TextureArray[treasureChestAnimationCount];
 }
 
 function getAnimationSpeed(animatedSpriteType, delta) {
 	switch (animatedSpriteType) {
 		case 'object':
-			return delta / 6;
+			return (
+				delta /
+				GAME_SETTINGS.ANIMATION_SPEED_FACTORS
+					.OBJECT_ANIMATION_SPEED_FACTOR
+			);
 		case 'player':
-			return delta / 5;
 		default:
-			return 0;
+			return (
+				delta /
+				GAME_SETTINGS.ANIMATION_SPEED_FACTORS
+					.PLAYER_ANIMATION_SPEED_FACTOR
+			);
 	}
 }
 
@@ -828,142 +1353,449 @@ function loadTakePotionTexture() {
 	);
 }
 
-function loadOpeningTreasureChestTexture() {
-	treasureChestTextureArray = [];
+function loadOpeningTreasureChestTexture(i) {
 	let loaderArray = loaders.treasureChestLoader.treasureChestOpeningAnim;
-	loaderArray.forEach((img) =>
-		treasureChestTextureArray.push(new PIXI.Texture.from(img))
-	);
+	switch (i) {
+		case 0:
+			treasureChest1TextureArray = [];
+			loaderArray.forEach((img) =>
+				treasureChest1TextureArray.push(new PIXI.Texture.from(img))
+			);
+			break;
+		case 1:
+			treasureChest2TextureArray = [];
+			loaderArray.forEach((img) =>
+				treasureChest2TextureArray.push(new PIXI.Texture.from(img))
+			);
+			break;
+		case 2:
+			treasureChest3TextureArray = [];
+			loaderArray.forEach((img) =>
+				treasureChest3TextureArray.push(new PIXI.Texture.from(img))
+			);
+			break;
+		default:
+			return;
+	}
 }
 
-function loadOpenedTreasureChestTexture() {
-	treasureChestTextureArray = [];
+function loadOpenedTreasureChestTexture(i) {
 	let loaderArray = loaders.treasureChestLoader.treasureChestOpenedAnim;
-	loaderArray.forEach((img) =>
-		treasureChestTextureArray.push(new PIXI.Texture.from(img))
-	);
+	switch (i) {
+		case 0:
+			treasureChest1TextureArray = [];
+			loaderArray.forEach((img) =>
+				treasureChest1TextureArray.push(new PIXI.Texture.from(img))
+			);
+			break;
+		case 1:
+			treasureChest2TextureArray = [];
+			loaderArray.forEach((img) =>
+				treasureChest2TextureArray.push(new PIXI.Texture.from(img))
+			);
+			break;
+		case 2:
+			treasureChest3TextureArray = [];
+			loaderArray.forEach((img) =>
+				treasureChest3TextureArray.push(new PIXI.Texture.from(img))
+			);
+			break;
+		default:
+			return;
+	}
 }
 
-function loadClosingTreasureChestTexture() {
-	treasureChestTextureArray = [];
+function loadClosingTreasureChestTexture(i) {
 	let loaderArray = loaders.treasureChestLoader.treasureChestOpeningAnim;
 	loaderArray.reverse();
-	loaderArray.forEach((img) =>
-		treasureChestTextureArray.push(new PIXI.Texture.from(img))
-	);
+	switch (i) {
+		case 0:
+			treasureChest1TextureArray = [];
+			loaderArray.forEach((img) =>
+				treasureChest1TextureArray.push(new PIXI.Texture.from(img))
+			);
+			break;
+		case 1:
+			treasureChest2TextureArray = [];
+			loaderArray.forEach((img) =>
+				treasureChest2TextureArray.push(new PIXI.Texture.from(img))
+			);
+			break;
+		case 2:
+			treasureChest3TextureArray = [];
+			loaderArray.forEach((img) =>
+				treasureChest3TextureArray.push(new PIXI.Texture.from(img))
+			);
+			break;
+	}
 }
 
-function loadClosedTreasureChestTexture() {
-	treasureChestTextureArray = [];
+function loadClosedTreasureChestTexture(i) {
 	const treasureChestClosedLoader =
 		loaders.treasureChestLoader.treasureChestClosed;
-	treasureChestTextureArray.push(
-		new PIXI.Texture.from(treasureChestClosedLoader)
-	);
+	switch (i) {
+		case 0:
+			treasureChest1TextureArray = [];
+			treasureChest1TextureArray.push(
+				new PIXI.Texture.from(treasureChestClosedLoader)
+			);
+			break;
+		case 1:
+			treasureChest2TextureArray = [];
+			treasureChest2TextureArray.push(
+				new PIXI.Texture.from(treasureChestClosedLoader)
+			);
+			break;
+		case 2:
+			treasureChest3TextureArray = [];
+			treasureChest3TextureArray.push(
+				new PIXI.Texture.from(treasureChestClosedLoader)
+			);
+			break;
+		default:
+			return;
+	}
 }
 
 // Text related functions :
 
-function buildText(textConfig) {
-	const textBackGroundTexture = new PIXI.Sprite(PIXI.Texture.WHITE);
-	textBackGroundTexture.x =
-		textConfig.narrationText.narrationText1.overlayConfig.textBox.x;
-	textBackGroundTexture.y =
-		textConfig.narrationText.narrationText1.overlayConfig.textBox.y;
-	textBackGroundTexture.width =
-		textConfig.narrationText.narrationText1.overlayConfig.textBox.width;
-	textBackGroundTexture.height =
-		textConfig.narrationText.narrationText1.overlayConfig.textBox.height;
-	textBackGroundTexture.anchor.set(
-		textConfig.narrationText.narrationText1.overlayConfig.textBox.anchor
-	);
-	textBackGroundTexture.tint =
-		textConfig.narrationText.narrationText1.overlayConfig.textBox.tint;
-	let text = new PIXI.Text(
-		textConfig.narrationText.narrationText1.pixiRequirements.text,
-		textConfig.narrationText.narrationText1.pixiRequirements.style
-	);
-	text.x = textConfig.narrationText.narrationText1.overlayConfig.text.x;
-	text.y = textConfig.narrationText.narrationText1.overlayConfig.text.y;
-	text.anchor.set(
-		textConfig.narrationText.narrationText1.overlayConfig.text.anchor
-	);
-	textBox.addChild(textBackGroundTexture, text);
-	app.stage.addChild(textBox);
+function manageTextContent(xCoordinate) {
+	updateTextList(xCoordinate);
+	updateTextDisplayZoneValue();
+	displayTextInTextList();
 }
 
-function displayInitialMsg() {
-	buildText(textConfig);
-	removeTextBox();
+function isWarriorInTextAera(xCoordinate, index) {
+	const isWarriorInTextAreaBoolean =
+		xCoordinate >
+			textConfig.staticText[index].overlayConfig.activationArea.x1 &amp;&amp;
+		xCoordinate &lt;
+			textConfig.staticText[index].overlayConfig.activationArea.x2;
+	return isWarriorInTextAreaBoolean;
+}
+
+function updateTextList(xCoordinate) {
+	for (const textIndex in textConfig.staticText) {
+		if (
+			textListToShow.includes(
+				textListToShow[textIndex] &amp;&amp;
+					isWarriorInTextAera(xCoordinate, textIndex)
+			)
+		) {
+			continue;
+		} else if (
+			isWarriorInTextAera(xCoordinate, textIndex) &amp;&amp;
+			!textListToShow.includes(textConfig.staticText[textIndex])
+		) {
+			textListToShow.push(textConfig.staticText[textIndex]);
+		} else if (
+			!isWarriorInTextAera(xCoordinate, textIndex) &amp;&amp;
+			textListToShow.includes(textConfig.staticText[textIndex])
+		) {
+			textListToShow.splice(textIndex, 1);
+		}
+	}
+	if (textListToShow.length === 0) indexOfTextList = 0;
+}
+
+function hasBeenDisplayedInTextZone() {
+	switch (textDisplayZone) {
+		case textDisplayZoneEnum.ZONE_ONE:
+			if (hasBeenDisplayedZone1) return true;
+		case textDisplayZoneEnum.ZONE_TWO:
+			if (hasBeenDisplayedZone2) return true;
+		case textDisplayZoneEnum.ZONE_THREE:
+			if (hasBeenDisplayedZone3) return true;
+		case textDisplayZoneEnum.NO_ZONE:
+		default:
+			return false;
+	}
+}
+
+function displayTextInTextList() {
+	if (
+		indexOfTextList !== textListToShow.length - 1 &amp;&amp;
+		textListToShow.length !== 0 &amp;&amp;
+		!displayingText &amp;&amp;
+		!hasBeenDisplayedInTextZone() &amp;&amp;
+		!isJumping
+	) {
+		buildTextBox(textListToShow[indexOfTextList]);
+		displayingText = true;
+	}
+}
+
+function nextContent() {
+	playSound(
+		openingTreasureChestSound,
+		GAME_SETTINGS.VOLUME_SETTINGS.TREASURE_CHEST_SOUND_VOLUME
+	);
+	if (indexOfTextList &lt; textListToShow.length - 1) {
+		removeTextContent();
+		indexOfTextList++;
+		buildTextBox(textListToShow[indexOfTextList]);
+	} else {
+		removeTextBox();
+		displayingText = false;
+		switch (textDisplayZone) {
+			case textDisplayZoneEnum.ZONE_ONE:
+				hasBeenDisplayedZone1 = true;
+				break;
+			case textDisplayZoneEnum.ZONE_TWO:
+				hasBeenDisplayedZone2 = true;
+				break;
+			case textDisplayZoneEnum.ZONE_THREE:
+				hasBeenDisplayedZone3 = true;
+				break;
+			case textDisplayZoneEnum.NO_ZONE:
+			default:
+				return;
+		}
+	}
+}
+
+function updateTextDisplayZoneValue() {
+	if (
+		warrior.x > GAME_SETTINGS.TEXT_ZONES.TEXT_ZONE_1.MIN_X &amp;&amp;
+		warrior.x &lt; GAME_SETTINGS.TEXT_ZONES.TEXT_ZONE_1.MAX_X
+	) {
+		textDisplayZone = textDisplayZoneEnum.ZONE_ONE;
+	} else if (
+		warrior.x > GAME_SETTINGS.TEXT_ZONES.TEXT_ZONE_2.MIN_X &amp;&amp;
+		warrior.x &lt; GAME_SETTINGS.TEXT_ZONES.TEXT_ZONE_2.MAX_X
+	) {
+		textDisplayZone = textDisplayZoneEnum.ZONE_TWO;
+	} else if (
+		warrior.x > GAME_SETTINGS.TEXT_ZONES.TEXT_ZONE_3.MIN_X &amp;&amp;
+		warrior.x &lt; GAME_SETTINGS.TEXT_ZONES.TEXT_ZONE_3.MAX_X
+	) {
+		textDisplayZone = textDisplayZoneEnum.ZONE_THREE;
+	} else {
+		textDisplayZone = textDisplayZoneEnum.NO_ZONE;
+	}
+}
+
+function buildTextBox(textConfig) {
+	if (textConfig) {
+		textBox = new PIXI.Container();
+		buildTextBackgroundTexture(textConfig);
+		buildText(textConfig);
+		textBox.addChild(textBackGroundTexture, text);
+		app.stage.addChild(textBox);
+	}
+}
+
+function buildWarningTextBox(textConfig) {
+	if (textConfig) {
+		warningTextBox = new PIXI.Container();
+		buildWarningTextBackgroundTexture(textConfig);
+		buildWarningText(textConfig);
+		if (textConfig.overlayConfig.nextButtonImg) {
+			buildWarningNextTextButtonImg(textConfig);
+		}
+		warningNextTextButtonImg._destroyed
+			? warningTextBox.addChild(warningTextBackGroundTexture, warningText)
+			: warningTextBox.addChild(
+					warningTextBackGroundTexture,
+					warningText,
+					warningNextTextButtonImg
+			  );
+		app.stage.addChild(warningTextBox);
+	}
+}
+
+function buildTextBackgroundTexture(textConfig) {
+	if (textBackGroundTexture._destroyed !== true) {
+		textBackGroundTexture.destroy({
+			children: true,
+			texture: true,
+			baseTexture: true,
+		});
+	}
+	textBackGroundTexture = createBasicSprite(
+		null,
+		textBackGroundTexture,
+		textConfig.overlayConfig.textBox
+	);
+}
+
+function buildWarningTextBackgroundTexture(textConfig) {
+	if (warningTextBackGroundTexture._destroyed !== true) {
+		warningTextBackGroundTexture.destroy({
+			children: false,
+			texture: true,
+			baseTexture: true,
+		});
+	}
+	warningTextBackGroundTexture = createBasicSprite(
+		null,
+		warningTextBackGroundTexture,
+		textConfig.overlayConfig.textBox
+	);
+}
+
+function buildText(textConfig) {
+	text = new PIXI.Text(
+		textConfig.pixiRequirements.text,
+		textConfig.pixiRequirements.style
+	);
+	text.x = textConfig.overlayConfig.text.x;
+	text.y = textConfig.overlayConfig.text.y;
+	text.anchor.set(textConfig.overlayConfig.text.anchor);
+}
+
+function buildWarningText(textConfig) {
+	warningText = new PIXI.Text(
+		textConfig.pixiRequirements.text,
+		textConfig.pixiRequirements.style
+	);
+	warningText.x = textConfig.overlayConfig.text.x;
+	warningText.y = textConfig.overlayConfig.text.y;
+	warningText.anchor.set(textConfig.overlayConfig.text.anchor);
+}
+
+function buildWarningNextTextButtonImg(textConfig) {
+	if (warningNextTextButtonImg._destroyed !== true) {
+		warningNextTextButtonImg.destroy({
+			children: false,
+			texture: true,
+			baseTexture: true,
+		});
+	}
+	warningNextTextButtonImg = createBasicSprite(
+		null,
+		warningNextTextButtonImg,
+		textConfig.overlayConfig.nextButtonImg
+	);
+}
+
+function displayDynamicMsg() {
+	removeTextContent();
+	buildTextBox(textConfig.dynamicText.dynamicText1);
+	const timer = setTimeout(() => {
+		removeTextBox();
+		clearTimeout(timer);
+	}, 5000);
+}
+
+function displayWarningMsg() {
+	displayingWarningText = true;
+	buildWarningTextBox(textConfig.dynamicText.dynamicText2);
+	const timer = setTimeout(() => {
+		removeWarningTextBox();
+		displayingWarningText = false;
+		clearTimeout(timer);
+	}, 2500);
+}
+
+function removeTextContent() {
+	if (text._destroyed !== true) {
+		text.destroy({children: true, texture: true, baseTexture: true});
+	}
+	text = new PIXI.Text();
 }
 
 function removeTextBox() {
-	// find better method
-	setTimeout(() => {
-		textBox.parent.removeChild(textBox);
-		textBox.destroy({children: true, texture: true, baseTexture: true});
-	}, 5000);
-	//	app.stage.removeChild(textBox);
+	if (textBox._destroyed !== true) {
+		textBox.destroy({children: false, texture: true, baseTexture: true});
+	}
+}
+
+function removeWarningTextBox() {
+	if (warningTextBox._destroyed !== true) {
+		warningTextBox.destroy({
+			children: false,
+			texture: true,
+			baseTexture: true,
+		});
+	}
 }
 
 // Camera functions :
 
 function updateCameraCheckers() {
-	isWarriorLeftCentered = warrior.x &lt;= app.screen.x + 250;
-	isWarriorRightCentered = warrior.x >= app.screen.width - 250;
+	isWarriorLeftCentered =
+		warrior.x &lt;=
+		updatedLeftEdgeScreen +
+			GAME_SETTINGS.CAMERA_SETTINGS.LEFT_ACTIVATION_AREA_WIDTH;
+	isWarriorRightCentered =
+		warrior.x >=
+		updatedRightEdgeScreen -
+			GAME_SETTINGS.CAMERA_SETTINGS.RIGHT_ACTIVATION_AREA_WIDTH;
 	leftEdgeStageReached = foreground.x >= app.stage.x;
 	rightEdgeStageReached = foreground.x === -app.stage.width;
 }
 
 function moveCamera() {
 	if (
+		(leftEdgeStageReached &amp;&amp; direction === -1) ||
+		(rightEdgeStageReached &amp;&amp; direction === 1)
+	) {
+		return;
+	}
+	if (
 		(isWarriorRightCentered &amp;&amp; direction === 1) ||
-		(isWarriorLeftCentered &amp;&amp;
-			direction === -1 &amp;&amp;
-			!leftEdgeStageReached &amp;&amp;
-			!rightEdgeStageReached)
+		(isWarriorLeftCentered &amp;&amp; direction === -1)
 	) {
 		moveBackground();
+		moveMiddleground();
 		moveForeground();
+		updateEdgeScreenValue();
 		updateForegroundCollidersPosition();
 	}
 }
 
 function moveBackground() {
-	background.x -= vc * direction * 0.5;
+	background.x -=
+		vx * direction * GAME_SETTINGS.CAMERA_SETTINGS.BACKGROUND_SPEED_FACTOR;
+}
+
+function moveMiddleground() {
+	middleground.x -=
+		vx *
+		direction *
+		GAME_SETTINGS.CAMERA_SETTINGS.MIDDLEGROUND_SPEED_FACTOR;
 }
 
 function moveForeground() {
-	foreground.x -= vc * direction;
+	foreground.x -= vx * direction;
+}
+
+function updateEdgeScreenValue() {
+	updatedLeftEdgeScreen += vx * direction;
+	updatedRightEdgeScreen += vx * direction;
 }
 
 function updateForegroundCollidersPosition() {
-	const floorColliderListLength = floorCollidersList.length;
-	const wallCollidersListLength = wallCollidersList.length;
+	const decorsColliderListLength = decorsCollidersList.length;
+	const obstacleColliderListLength = obstacleCollidersList.length;
 	const objectCollidersListLength = objectCollidersList.length;
-	floorCollidersList = [];
-	wallCollidersList = [];
+	decorsCollidersList = [];
+	obstacleCollidersList = [];
 	objectCollidersList = [];
-	for (let i = 0; i &lt; floorColliderListLength; i++) {
-		floorCollidersList.push(foreground.children[i].getBounds());
+	leftToRightCollidersList = [];
+	rightToLeftCollidersList = [];
+	for (let i = 0; i &lt; decorsColliderListLength; i++) {
+		decorsCollidersList.push(foreground.children[i].getBounds());
 	}
 	for (
-		let i = floorColliderListLength;
-		i &lt; floorColliderListLength + wallCollidersListLength;
+		let i = decorsColliderListLength;
+		i &lt; decorsColliderListLength + obstacleColliderListLength;
 		i++
 	) {
-		wallCollidersList.push(foreground.children[i].getBounds());
+		obstacleCollidersList.push(foreground.children[i].getBounds());
 	}
 	for (
-		let i = floorColliderListLength + wallCollidersListLength;
+		let i = decorsColliderListLength + obstacleColliderListLength;
 		i &lt;
-		floorColliderListLength +
-			wallCollidersListLength +
+		decorsColliderListLength +
+			obstacleColliderListLength +
 			objectCollidersListLength;
 		i++
 	) {
 		objectCollidersList.push(foreground.children[i].getBounds());
 	}
+	updateMobileColliders();
 }
 </code></pre>
         </article>
@@ -975,13 +1807,13 @@ function updateForegroundCollidersPosition() {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#adventurerAnimationCount">adventurerAnimationCount</a></li><li><a href="global.html#animationState">animationState</a></li><li><a href="global.html#animationStateEnum">animationStateEnum</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#attackSound">attackSound</a></li><li><a href="global.html#background">background</a></li><li><a href="global.html#bottomCollisionBox">bottomCollisionBox</a></li><li><a href="global.html#connectLivereload">connectLivereload</a></li><li><a href="global.html#dialogText">dialogText</a></li><li><a href="global.html#direction">direction</a></li><li><a href="global.html#dirUrl">dirUrl</a></li><li><a href="global.html#express">express</a></li><li><a href="global.html#floorColliders">floorColliders</a></li><li><a href="global.html#floorCollidersList">floorCollidersList</a></li><li><a href="global.html#foreground">foreground</a></li><li><a href="global.html#helpText">helpText</a></li><li><a href="global.html#isAboutToCollideWithBottom">isAboutToCollideWithBottom</a></li><li><a href="global.html#isAboutToCollideWithLeft">isAboutToCollideWithLeft</a></li><li><a href="global.html#isAboutToCollideWithRight">isAboutToCollideWithRight</a></li><li><a href="global.html#isJumping">isJumping</a></li><li><a href="global.html#isWarriorLeftCentered">isWarriorLeftCentered</a></li><li><a href="global.html#isWarriorRightCentered">isWarriorRightCentered</a></li><li><a href="global.html#leftCollisionBox">leftCollisionBox</a></li><li><a href="global.html#leftEdgeStageReached">leftEdgeStageReached</a></li><li><a href="global.html#livereload">livereload</a></li><li><a href="global.html#liveReloadServer">liveReloadServer</a></li><li><a href="global.html#loaders">loaders</a></li><li><a href="global.html#middleground">middleground</a></li><li><a href="global.html#narrationText">narrationText</a></li><li><a href="global.html#objectColliders">objectColliders</a></li><li><a href="global.html#objectCollidersList">objectCollidersList</a></li><li><a href="global.html#objectiveText">objectiveText</a></li><li><a href="global.html#openingTreasureChestSound">openingTreasureChestSound</a></li><li><a href="global.html#opn">opn</a></li><li><a href="global.html#pathToAnimation">pathToAnimation</a></li><li><a href="global.html#pathToImgFolder">pathToImgFolder</a></li><li><a href="global.html#playingSound">playingSound</a></li><li><a href="global.html#port">port</a></li><li><a href="global.html#rightCollisionBox">rightCollisionBox</a></li><li><a href="global.html#rightEdgeStageReached">rightEdgeStageReached</a></li><li><a href="global.html#textBox">textBox</a></li><li><a href="global.html#treasureChest">treasureChest</a></li><li><a href="global.html#treasureChestAnimationCount">treasureChestAnimationCount</a></li><li><a href="global.html#treasureChestOpened">treasureChestOpened</a></li><li><a href="global.html#treasureChestTextureArray">treasureChestTextureArray</a></li><li><a href="global.html#url">url</a></li><li><a href="global.html#vc">vc</a></li><li><a href="global.html#vx">vx</a></li><li><a href="global.html#vxTimer">vxTimer</a></li><li><a href="global.html#vy">vy</a></li><li><a href="global.html#walkSound">walkSound</a></li><li><a href="global.html#wallColliders">wallColliders</a></li><li><a href="global.html#wallCollidersList">wallCollidersList</a></li><li><a href="global.html#warrior">warrior</a></li><li><a href="global.html#warriorBounds">warriorBounds</a></li><li><a href="global.html#warriorJumpSound">warriorJumpSound</a></li><li><a href="global.html#warriorTextureArray">warriorTextureArray</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#adventurerAnimationCount">adventurerAnimationCount</a></li><li><a href="global.html#ANIMATION_SPEED_FACTORS">ANIMATION_SPEED_FACTORS</a></li><li><a href="global.html#animationState">animationState</a></li><li><a href="global.html#animationStateEnum">animationStateEnum</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#APP_SCREEN_SETTINGS">APP_SCREEN_SETTINGS</a></li><li><a href="global.html#attackSound">attackSound</a></li><li><a href="global.html#backdrops">backdrops</a></li><li><a href="global.html#background">background</a></li><li><a href="global.html#bottomCollisionBox">bottomCollisionBox</a></li><li><a href="global.html#bottomToTopCollidersList">bottomToTopCollidersList</a></li><li><a href="global.html#bottomToTopForegroundSubContainer">bottomToTopForegroundSubContainer</a></li><li><a href="global.html#CAMERA_SETTINGS">CAMERA_SETTINGS</a></li><li><a href="global.html#collidersCheckList">collidersCheckList</a></li><li><a href="global.html#connectLivereload">connectLivereload</a></li><li><a href="global.html#decorsColliders">decorsColliders</a></li><li><a href="global.html#decorsCollidersList">decorsCollidersList</a></li><li><a href="global.html#direction">direction</a></li><li><a href="global.html#dirUrl">dirUrl</a></li><li><a href="global.html#displayingText">displayingText</a></li><li><a href="global.html#displayingWarningText">displayingWarningText</a></li><li><a href="global.html#dynamicText">dynamicText</a></li><li><a href="global.html#elapsedTime">elapsedTime</a></li><li><a href="global.html#express">express</a></li><li><a href="global.html#foreground">foreground</a></li><li><a href="global.html#foregroundMobileCollidersSubContainer">foregroundMobileCollidersSubContainer</a></li><li><a href="global.html#foregroundStaticCollidersSubContainer">foregroundStaticCollidersSubContainer</a></li><li><a href="global.html#fpsDelta">fpsDelta</a></li><li><a href="global.html#hasBeenDisplayedZone1">hasBeenDisplayedZone1</a></li><li><a href="global.html#hasBeenDisplayedZone2">hasBeenDisplayedZone2</a></li><li><a href="global.html#hasBeenDisplayedZone3">hasBeenDisplayedZone3</a></li><li><a href="global.html#indexOfTextList">indexOfTextList</a></li><li><a href="global.html#isAboutToCollideWithBottom">isAboutToCollideWithBottom</a></li><li><a href="global.html#isAboutToCollideWithLeft">isAboutToCollideWithLeft</a></li><li><a href="global.html#isAboutToCollideWithRight">isAboutToCollideWithRight</a></li><li><a href="global.html#isAboutToCollideWithTop">isAboutToCollideWithTop</a></li><li><a href="global.html#isJumping">isJumping</a></li><li><a href="global.html#isWarriorLeftCentered">isWarriorLeftCentered</a></li><li><a href="global.html#isWarriorRightCentered">isWarriorRightCentered</a></li><li><a href="global.html#leftCollisionBox">leftCollisionBox</a></li><li><a href="global.html#leftEdgeScreenReached">leftEdgeScreenReached</a></li><li><a href="global.html#leftEdgeStageReached">leftEdgeStageReached</a></li><li><a href="global.html#leftToRightCollidersList">leftToRightCollidersList</a></li><li><a href="global.html#leftToRightForegroundSubContainer">leftToRightForegroundSubContainer</a></li><li><a href="global.html#livereload">livereload</a></li><li><a href="global.html#liveReloadServer">liveReloadServer</a></li><li><a href="global.html#loaders">loaders</a></li><li><a href="global.html#middleground">middleground</a></li><li><a href="global.html#movementCount">movementCount</a></li><li><a href="global.html#movementSpeed">movementSpeed</a></li><li><a href="global.html#objectColliders">objectColliders</a></li><li><a href="global.html#objectCollidersList">objectCollidersList</a></li><li><a href="global.html#obstacleColliders">obstacleColliders</a></li><li><a href="global.html#obstacleCollidersList">obstacleCollidersList</a></li><li><a href="global.html#openingTreasureChestSound">openingTreasureChestSound</a></li><li><a href="global.html#opn">opn</a></li><li><a href="global.html#pathDictionnary">pathDictionnary</a></li><li><a href="global.html#pathToAnimation">pathToAnimation</a></li><li><a href="global.html#pathToImgFolder">pathToImgFolder</a></li><li><a href="global.html#pathToNextTextIcon">pathToNextTextIcon</a></li><li><a href="global.html#PHYSICS_SETTINGS">PHYSICS_SETTINGS</a></li><li><a href="global.html#playingSound">playingSound</a></li><li><a href="global.html#port">port</a></li><li><a href="global.html#rightCollisionBox">rightCollisionBox</a></li><li><a href="global.html#rightEdgeScreenReached">rightEdgeScreenReached</a></li><li><a href="global.html#rightEdgeStageReached">rightEdgeStageReached</a></li><li><a href="global.html#rightToLeftCollidersList">rightToLeftCollidersList</a></li><li><a href="global.html#rightToLeftForegroundSubContainer">rightToLeftForegroundSubContainer</a></li><li><a href="global.html#staticText">staticText</a></li><li><a href="global.html#styleConfig">styleConfig</a></li><li><a href="global.html#text">text</a></li><li><a href="global.html#TEXT_ZONES">TEXT_ZONES</a></li><li><a href="global.html#textBackGroundTexture">textBackGroundTexture</a></li><li><a href="global.html#textBox">textBox</a></li><li><a href="global.html#textDisplayZone">textDisplayZone</a></li><li><a href="global.html#textDisplayZoneEnum">textDisplayZoneEnum</a></li><li><a href="global.html#textListToShow">textListToShow</a></li><li><a href="global.html#TICKER_SETTINGS">TICKER_SETTINGS</a></li><li><a href="global.html#topCollisionBox">topCollisionBox</a></li><li><a href="global.html#topToBottomCollidersList">topToBottomCollidersList</a></li><li><a href="global.html#topToBottomForegroundSubContainer">topToBottomForegroundSubContainer</a></li><li><a href="global.html#treasureChest1">treasureChest1</a></li><li><a href="global.html#treasureChest1TextureArray">treasureChest1TextureArray</a></li><li><a href="global.html#treasureChest2">treasureChest2</a></li><li><a href="global.html#treasureChest2TextureArray">treasureChest2TextureArray</a></li><li><a href="global.html#treasureChest3">treasureChest3</a></li><li><a href="global.html#treasureChest3TextureArray">treasureChest3TextureArray</a></li><li><a href="global.html#treasureChestAnimationCount">treasureChestAnimationCount</a></li><li><a href="global.html#treasureChestOpened1">treasureChestOpened1</a></li><li><a href="global.html#treasureChestOpened2">treasureChestOpened2</a></li><li><a href="global.html#treasureChestOpened3">treasureChestOpened3</a></li><li><a href="global.html#updatedLeftEdgeScreen">updatedLeftEdgeScreen</a></li><li><a href="global.html#updatedRightEdgeScreen">updatedRightEdgeScreen</a></li><li><a href="global.html#url">url</a></li><li><a href="global.html#VOLUME_SETTINGS">VOLUME_SETTINGS</a></li><li><a href="global.html#vx">vx</a></li><li><a href="global.html#vxTimer">vxTimer</a></li><li><a href="global.html#vy">vy</a></li><li><a href="global.html#walkSound">walkSound</a></li><li><a href="global.html#warningNextTextButtonImg">warningNextTextButtonImg</a></li><li><a href="global.html#warningText">warningText</a></li><li><a href="global.html#warningTextBackGroundTexture">warningTextBackGroundTexture</a></li><li><a href="global.html#warningTextBox">warningTextBox</a></li><li><a href="global.html#warrior">warrior</a></li><li><a href="global.html#warriorBounds">warriorBounds</a></li><li><a href="global.html#warriorColliders">warriorColliders</a></li><li><a href="global.html#warriorJumpSound">warriorJumpSound</a></li><li><a href="global.html#warriorTextureArray">warriorTextureArray</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Thu Nov 26 2020 23:59:13 GMT+0100 (Central European Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Dec 11 2020 19:56:09 GMT+0100 (Central European Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

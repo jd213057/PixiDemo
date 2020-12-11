@@ -27,11 +27,45 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * @type {Object}
- * @description List of narrative texts
+ * @type {string}
+ * @description File path to images's folder
  */
-const narrationText = {
-	narrationText1: {
+const pathToImgFolder = '/static/assets/images/';
+/**
+ * @type {string}
+ * @description File path to next text icon from images's folder
+ */
+const pathToNextTextIcon = 'TextBox/buttonX.png';
+/**
+ * @type {Object}
+ * @description Config setup for text styling
+ */
+const styleConfig = {
+	staticConfig: {
+		fontFamily: 'Wariorus',
+		fontSize: 14,
+		fill: ['#FF1010'],
+		align: 'left',
+		wordWrap: true,
+		wordWrapWidth: 230,
+		lineHeight: 18,
+	},
+	dynamicConfig: {
+		fontFamily: 'Wariorus',
+		fontSize: 14,
+		fill: ['#f9f00d'],
+		align: 'left',
+		wordWrap: true,
+		wordWrapWidth: 350,
+		lineHeight: 22,
+	},
+};
+/**
+ * @type {Object}
+ * @description List of static texts
+ */
+const staticText = {
+	staticText1: {
 		overlayConfig: {
 			text: {
 				anchor: 0.0,
@@ -43,42 +77,395 @@ const narrationText = {
 				x: 30,
 				width: 260,
 				y: 30,
-				height: 120,
+				height: 90,
 				tint: '#000000',
+			},
+			activationArea: {
+				x1: 0,
+				x2: 300,
+			},
+		},
+		pixiRequirements: {
+			text: "Warrior: What a good day! Let's go for a morning walk.",
+			style: styleConfig.staticConfig,
+		},
+	},
+	staticText2: {
+		overlayConfig: {
+			text: {
+				anchor: 0.0,
+				x: 50,
+				y: 50,
+			},
+			textBox: {
+				anchor: 0.0,
+				x: 30,
+				width: 260,
+				y: 30,
+				height: 90,
+				tint: '#000000',
+			},
+			activationArea: {
+				x1: 0,
+				x2: 300,
+			},
+		},
+		pixiRequirements: {
+			text: 'Use the right arrow to go towards right of the screen.',
+			style: styleConfig.staticConfig,
+		},
+	},
+	staticText3: {
+		overlayConfig: {
+			text: {
+				anchor: 0.0,
+				x: 50,
+				y: 50,
+			},
+			textBox: {
+				anchor: 0.0,
+				x: 30,
+				width: 260,
+				y: 30,
+				height: 105,
+				tint: '#000000',
+			},
+			activationArea: {
+				x1: 990,
+				x2: 1150,
 			},
 		},
 		pixiRequirements: {
 			text:
-				'What a strange place! Where has gone everyone? Maybe I should go right and see...',
-			style: {
-				fontFamily: 'Wariorus',
-				fontSize: 14,
-				fill: ['#FF1010'],
-				align: 'left',
-				wordWrap: true,
-				wordWrapWidth: 230,
-				lineHeight: 18 
+				'Warrior: Hey you! You seem to be worried about something... Maybe I can help!',
+			style: styleConfig.staticConfig,
+		},
+	},
+	staticText4: {
+		overlayConfig: {
+			text: {
+				anchor: 0.0,
+				x: 50,
+				y: 50,
 			},
+			textBox: {
+				anchor: 0.0,
+				x: 30,
+				width: 260,
+				y: 30,
+				height: 140,
+				tint: '#000000',
+			},
+			activationArea: {
+				x1: 990,
+				x2: 1150,
+			},
+		},
+		pixiRequirements: {
+			text:
+				'Guy: Oh my Lord! I come from the other side of the valley. My Princess, princess Lemona sent me for help...',
+			style: styleConfig.staticConfig,
+		},
+	},
+	staticText5: {
+		overlayConfig: {
+			text: {
+				anchor: 0.0,
+				x: 50,
+				y: 50,
+			},
+			textBox: {
+				anchor: 0.0,
+				x: 30,
+				width: 260,
+				y: 30,
+				height: 80,
+				tint: '#000000',
+			},
+			activationArea: {
+				x1: 990,
+				x2: 1150,
+			},
+		},
+		pixiRequirements: {
+			text: 'Warrior: What is wrong ?',
+			style: styleConfig.staticConfig,
+		},
+	},
+	staticText6: {
+		overlayConfig: {
+			text: {
+				anchor: 0.0,
+				x: 50,
+				y: 50,
+			},
+			textBox: {
+				anchor: 0.0,
+				x: 30,
+				width: 260,
+				y: 30,
+				height: 170,
+				tint: '#000000',
+			},
+			activationArea: {
+				x1: 990,
+				x2: 1150,
+			},
+		},
+		pixiRequirements: {
+			text:
+				'Guy: Princess Lemona recently received some threats from a famous and powerful wizard named Corona. She thinks she might be in danger.',
+			style: styleConfig.staticConfig,
+		},
+	},
+	staticText7: {
+		overlayConfig: {
+			text: {
+				anchor: 0.0,
+				x: 50,
+				y: 50,
+			},
+			textBox: {
+				anchor: 0.0,
+				x: 30,
+				width: 260,
+				y: 30,
+				height: 105,
+				tint: '#000000',
+			},
+			activationArea: {
+				x1: 990,
+				x2: 1150,
+			},
+		},
+		pixiRequirements: {
+			text:
+				'Warrior: Well I see! I will go see her and make sure she is allright then.',
+			style: styleConfig.staticConfig,
+		},
+	},
+	staticText8: {
+		overlayConfig: {
+			text: {
+				anchor: 0.0,
+				x: 50,
+				y: 50,
+			},
+			textBox: {
+				anchor: 0.0,
+				x: 30,
+				width: 260,
+				y: 30,
+				height: 225,
+				tint: '#000000',
+			},
+			activationArea: {
+				x1: 990,
+				x2: 1150,
+			},
+		},
+		pixiRequirements: {
+			text:
+				'Guy: Thank you my Lord! As I said, princess Lemona is on the other side of the valley. The journey may be long and you may encounter many enemies and traps. Please be careful my Lord!',
+			style: styleConfig.staticConfig,
+		},
+	},
+	staticText9: {
+		overlayConfig: {
+			text: {
+				anchor: 0.0,
+				x: 50,
+				y: 50,
+			},
+			textBox: {
+				anchor: 0.0,
+				x: 30,
+				width: 260,
+				y: 30,
+				height: 170,
+				tint: '#000000',
+			},
+			activationArea: {
+				x1: 990,
+				x2: 1150,
+			},
+		},
+		pixiRequirements: {
+			text:
+				"Guy: One last thing! During your trip you will find some treasure chests. Don't hesitate to open them, their content may help you!",
+			style: styleConfig.staticConfig,
+		},
+	},
+	staticText10: {
+		overlayConfig: {
+			text: {
+				anchor: 0.0,
+				x: 50,
+				y: 50,
+			},
+			textBox: {
+				anchor: 0.0,
+				x: 30,
+				width: 260,
+				y: 30,
+				height: 90,
+				tint: '#000000',
+			},
+			activationArea: {
+				x1: null,
+				x2: null,
+			},
+		},
+		pixiRequirements: {
+			text:
+				'Guy: Oh my Lord! Princess Lemona is not in here anymore... I found this letter on the floor. It says that she was kidnapped by this wizard.',
+			style: styleConfig.staticConfig,
+		},
+	},
+	staticText11: {
+		overlayConfig: {
+			text: {
+				anchor: 0.0,
+				x: 50,
+				y: 50,
+			},
+			textBox: {
+				anchor: 0.0,
+				x: 30,
+				width: 260,
+				y: 30,
+				height: 90,
+				tint: '#000000',
+			},
+			activationArea: {
+				x1: null,
+				x2: null,
+			},
+		},
+		pixiRequirements: {
+			text:
+				'Warrior: What a tragedy! Listen...Hummm....What is your name?',
+			style: styleConfig.staticConfig,
+		},
+	},
+	staticText12: {
+		overlayConfig: {
+			text: {
+				anchor: 0.0,
+				x: 50,
+				y: 50,
+			},
+			textBox: {
+				anchor: 0.0,
+				x: 30,
+				width: 260,
+				y: 30,
+				height: 90,
+				tint: '#000000',
+			},
+			activationArea: {
+				x1: null,
+				x2: null,
+			},
+		},
+		pixiRequirements: {
+			text: 'Guy: My name...Grogu, my Lord.',
+			style: styleConfig.staticConfig,
+		},
+	},
+	staticText13: {
+		overlayConfig: {
+			text: {
+				anchor: 0.0,
+				x: 50,
+				y: 50,
+			},
+			textBox: {
+				anchor: 0.0,
+				x: 30,
+				width: 260,
+				y: 30,
+				height: 90,
+				tint: '#000000',
+			},
+			activationArea: {
+				x1: null,
+				x2: null,
+			},
+		},
+		pixiRequirements: {
+			text:
+				'Warrior: Well Grogu, I will rescue princess Lemona from this Corona! That is my word and duty. May this valley be peaceful again...',
+			style: styleConfig.staticConfig,
 		},
 	},
 };
 /**
  * @type {Object}
- * @description List of dialog texts
+ * @description List of dynamic texts
  */
-const dialogText = {};
-/**
- * @type {Object}
- * @description List of mission texts
- */
-const objectiveText = {};
-/**
- * @type {Object}
- * @description List of tutorial texts
- */
-const helpText = {};
+const dynamicText = {
+	dynamicText1: {
+		overlayConfig: {
+			text: {
+				anchor: 0.0,
+				x: 50,
+				y: 50,
+			},
+			textBox: {
+				anchor: 0.0,
+				x: 30,
+				width: 260,
+				y: 30,
+				height: 90,
+				tint: '#000000',
+			},
+			activationArea: {
+				x1: null,
+				x2: null,
+			},
+		},
+		pixiRequirements: {
+			text: 'Treasure chest opened! You have won this item.',
+			style: styleConfig.staticConfig,
+		},
+	},
+	dynamicText2: {
+		overlayConfig: {
+			text: {
+				anchor: 0.0,
+				x: 300,
+				y: 255,
+			},
+			nextButtonImg: {
+				imgPath: pathToImgFolder + pathToNextTextIcon,
+				anchor: 0.0,
+				x: 358,
+				width: 40,
+				y: 240,
+				height: 40,
+			},
+			textBox: {
+				anchor: 0.0,
+				x: 275,
+				width: 400,
+				y: 230,
+				height: 80,
+				tint: '#000000',
+			},
+			activationArea: {
+				x1: null,
+				x2: null,
+			},
+		},
+		pixiRequirements: {
+			text: 'Press       to read all text content. Then you can move...',
+			style: styleConfig.dynamicConfig,
+		},
+	},
+};
 
-export default {narrationText, dialogText, objectiveText, helpText};
+export default {staticText, dynamicText};
 </code></pre>
         </article>
     </section>
@@ -89,13 +476,13 @@ export default {narrationText, dialogText, objectiveText, helpText};
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#adventurerAnimationCount">adventurerAnimationCount</a></li><li><a href="global.html#animationState">animationState</a></li><li><a href="global.html#animationStateEnum">animationStateEnum</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#attackSound">attackSound</a></li><li><a href="global.html#background">background</a></li><li><a href="global.html#bottomCollisionBox">bottomCollisionBox</a></li><li><a href="global.html#connectLivereload">connectLivereload</a></li><li><a href="global.html#dialogText">dialogText</a></li><li><a href="global.html#direction">direction</a></li><li><a href="global.html#dirUrl">dirUrl</a></li><li><a href="global.html#express">express</a></li><li><a href="global.html#floorColliders">floorColliders</a></li><li><a href="global.html#floorCollidersList">floorCollidersList</a></li><li><a href="global.html#foreground">foreground</a></li><li><a href="global.html#helpText">helpText</a></li><li><a href="global.html#isAboutToCollideWithBottom">isAboutToCollideWithBottom</a></li><li><a href="global.html#isAboutToCollideWithLeft">isAboutToCollideWithLeft</a></li><li><a href="global.html#isAboutToCollideWithRight">isAboutToCollideWithRight</a></li><li><a href="global.html#isJumping">isJumping</a></li><li><a href="global.html#isWarriorLeftCentered">isWarriorLeftCentered</a></li><li><a href="global.html#isWarriorRightCentered">isWarriorRightCentered</a></li><li><a href="global.html#leftCollisionBox">leftCollisionBox</a></li><li><a href="global.html#leftEdgeStageReached">leftEdgeStageReached</a></li><li><a href="global.html#livereload">livereload</a></li><li><a href="global.html#liveReloadServer">liveReloadServer</a></li><li><a href="global.html#loaders">loaders</a></li><li><a href="global.html#middleground">middleground</a></li><li><a href="global.html#narrationText">narrationText</a></li><li><a href="global.html#objectColliders">objectColliders</a></li><li><a href="global.html#objectCollidersList">objectCollidersList</a></li><li><a href="global.html#objectiveText">objectiveText</a></li><li><a href="global.html#openingTreasureChestSound">openingTreasureChestSound</a></li><li><a href="global.html#opn">opn</a></li><li><a href="global.html#pathToAnimation">pathToAnimation</a></li><li><a href="global.html#pathToImgFolder">pathToImgFolder</a></li><li><a href="global.html#playingSound">playingSound</a></li><li><a href="global.html#port">port</a></li><li><a href="global.html#rightCollisionBox">rightCollisionBox</a></li><li><a href="global.html#rightEdgeStageReached">rightEdgeStageReached</a></li><li><a href="global.html#textBox">textBox</a></li><li><a href="global.html#treasureChest">treasureChest</a></li><li><a href="global.html#treasureChestAnimationCount">treasureChestAnimationCount</a></li><li><a href="global.html#treasureChestOpened">treasureChestOpened</a></li><li><a href="global.html#treasureChestTextureArray">treasureChestTextureArray</a></li><li><a href="global.html#url">url</a></li><li><a href="global.html#vc">vc</a></li><li><a href="global.html#vx">vx</a></li><li><a href="global.html#vxTimer">vxTimer</a></li><li><a href="global.html#vy">vy</a></li><li><a href="global.html#walkSound">walkSound</a></li><li><a href="global.html#wallColliders">wallColliders</a></li><li><a href="global.html#wallCollidersList">wallCollidersList</a></li><li><a href="global.html#warrior">warrior</a></li><li><a href="global.html#warriorBounds">warriorBounds</a></li><li><a href="global.html#warriorJumpSound">warriorJumpSound</a></li><li><a href="global.html#warriorTextureArray">warriorTextureArray</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#adventurerAnimationCount">adventurerAnimationCount</a></li><li><a href="global.html#ANIMATION_SPEED_FACTORS">ANIMATION_SPEED_FACTORS</a></li><li><a href="global.html#animationState">animationState</a></li><li><a href="global.html#animationStateEnum">animationStateEnum</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#APP_SCREEN_SETTINGS">APP_SCREEN_SETTINGS</a></li><li><a href="global.html#attackSound">attackSound</a></li><li><a href="global.html#backdrops">backdrops</a></li><li><a href="global.html#background">background</a></li><li><a href="global.html#bottomCollisionBox">bottomCollisionBox</a></li><li><a href="global.html#bottomToTopCollidersList">bottomToTopCollidersList</a></li><li><a href="global.html#bottomToTopForegroundSubContainer">bottomToTopForegroundSubContainer</a></li><li><a href="global.html#CAMERA_SETTINGS">CAMERA_SETTINGS</a></li><li><a href="global.html#collidersCheckList">collidersCheckList</a></li><li><a href="global.html#connectLivereload">connectLivereload</a></li><li><a href="global.html#decorsColliders">decorsColliders</a></li><li><a href="global.html#decorsCollidersList">decorsCollidersList</a></li><li><a href="global.html#direction">direction</a></li><li><a href="global.html#dirUrl">dirUrl</a></li><li><a href="global.html#displayingText">displayingText</a></li><li><a href="global.html#displayingWarningText">displayingWarningText</a></li><li><a href="global.html#dynamicText">dynamicText</a></li><li><a href="global.html#elapsedTime">elapsedTime</a></li><li><a href="global.html#express">express</a></li><li><a href="global.html#foreground">foreground</a></li><li><a href="global.html#foregroundMobileCollidersSubContainer">foregroundMobileCollidersSubContainer</a></li><li><a href="global.html#foregroundStaticCollidersSubContainer">foregroundStaticCollidersSubContainer</a></li><li><a href="global.html#fpsDelta">fpsDelta</a></li><li><a href="global.html#hasBeenDisplayedZone1">hasBeenDisplayedZone1</a></li><li><a href="global.html#hasBeenDisplayedZone2">hasBeenDisplayedZone2</a></li><li><a href="global.html#hasBeenDisplayedZone3">hasBeenDisplayedZone3</a></li><li><a href="global.html#indexOfTextList">indexOfTextList</a></li><li><a href="global.html#isAboutToCollideWithBottom">isAboutToCollideWithBottom</a></li><li><a href="global.html#isAboutToCollideWithLeft">isAboutToCollideWithLeft</a></li><li><a href="global.html#isAboutToCollideWithRight">isAboutToCollideWithRight</a></li><li><a href="global.html#isAboutToCollideWithTop">isAboutToCollideWithTop</a></li><li><a href="global.html#isJumping">isJumping</a></li><li><a href="global.html#isWarriorLeftCentered">isWarriorLeftCentered</a></li><li><a href="global.html#isWarriorRightCentered">isWarriorRightCentered</a></li><li><a href="global.html#leftCollisionBox">leftCollisionBox</a></li><li><a href="global.html#leftEdgeScreenReached">leftEdgeScreenReached</a></li><li><a href="global.html#leftEdgeStageReached">leftEdgeStageReached</a></li><li><a href="global.html#leftToRightCollidersList">leftToRightCollidersList</a></li><li><a href="global.html#leftToRightForegroundSubContainer">leftToRightForegroundSubContainer</a></li><li><a href="global.html#livereload">livereload</a></li><li><a href="global.html#liveReloadServer">liveReloadServer</a></li><li><a href="global.html#loaders">loaders</a></li><li><a href="global.html#middleground">middleground</a></li><li><a href="global.html#movementCount">movementCount</a></li><li><a href="global.html#movementSpeed">movementSpeed</a></li><li><a href="global.html#objectColliders">objectColliders</a></li><li><a href="global.html#objectCollidersList">objectCollidersList</a></li><li><a href="global.html#obstacleColliders">obstacleColliders</a></li><li><a href="global.html#obstacleCollidersList">obstacleCollidersList</a></li><li><a href="global.html#openingTreasureChestSound">openingTreasureChestSound</a></li><li><a href="global.html#opn">opn</a></li><li><a href="global.html#pathDictionnary">pathDictionnary</a></li><li><a href="global.html#pathToAnimation">pathToAnimation</a></li><li><a href="global.html#pathToImgFolder">pathToImgFolder</a></li><li><a href="global.html#pathToNextTextIcon">pathToNextTextIcon</a></li><li><a href="global.html#PHYSICS_SETTINGS">PHYSICS_SETTINGS</a></li><li><a href="global.html#playingSound">playingSound</a></li><li><a href="global.html#port">port</a></li><li><a href="global.html#rightCollisionBox">rightCollisionBox</a></li><li><a href="global.html#rightEdgeScreenReached">rightEdgeScreenReached</a></li><li><a href="global.html#rightEdgeStageReached">rightEdgeStageReached</a></li><li><a href="global.html#rightToLeftCollidersList">rightToLeftCollidersList</a></li><li><a href="global.html#rightToLeftForegroundSubContainer">rightToLeftForegroundSubContainer</a></li><li><a href="global.html#staticText">staticText</a></li><li><a href="global.html#styleConfig">styleConfig</a></li><li><a href="global.html#text">text</a></li><li><a href="global.html#TEXT_ZONES">TEXT_ZONES</a></li><li><a href="global.html#textBackGroundTexture">textBackGroundTexture</a></li><li><a href="global.html#textBox">textBox</a></li><li><a href="global.html#textDisplayZone">textDisplayZone</a></li><li><a href="global.html#textDisplayZoneEnum">textDisplayZoneEnum</a></li><li><a href="global.html#textListToShow">textListToShow</a></li><li><a href="global.html#TICKER_SETTINGS">TICKER_SETTINGS</a></li><li><a href="global.html#topCollisionBox">topCollisionBox</a></li><li><a href="global.html#topToBottomCollidersList">topToBottomCollidersList</a></li><li><a href="global.html#topToBottomForegroundSubContainer">topToBottomForegroundSubContainer</a></li><li><a href="global.html#treasureChest1">treasureChest1</a></li><li><a href="global.html#treasureChest1TextureArray">treasureChest1TextureArray</a></li><li><a href="global.html#treasureChest2">treasureChest2</a></li><li><a href="global.html#treasureChest2TextureArray">treasureChest2TextureArray</a></li><li><a href="global.html#treasureChest3">treasureChest3</a></li><li><a href="global.html#treasureChest3TextureArray">treasureChest3TextureArray</a></li><li><a href="global.html#treasureChestAnimationCount">treasureChestAnimationCount</a></li><li><a href="global.html#treasureChestOpened1">treasureChestOpened1</a></li><li><a href="global.html#treasureChestOpened2">treasureChestOpened2</a></li><li><a href="global.html#treasureChestOpened3">treasureChestOpened3</a></li><li><a href="global.html#updatedLeftEdgeScreen">updatedLeftEdgeScreen</a></li><li><a href="global.html#updatedRightEdgeScreen">updatedRightEdgeScreen</a></li><li><a href="global.html#url">url</a></li><li><a href="global.html#VOLUME_SETTINGS">VOLUME_SETTINGS</a></li><li><a href="global.html#vx">vx</a></li><li><a href="global.html#vxTimer">vxTimer</a></li><li><a href="global.html#vy">vy</a></li><li><a href="global.html#walkSound">walkSound</a></li><li><a href="global.html#warningNextTextButtonImg">warningNextTextButtonImg</a></li><li><a href="global.html#warningText">warningText</a></li><li><a href="global.html#warningTextBackGroundTexture">warningTextBackGroundTexture</a></li><li><a href="global.html#warningTextBox">warningTextBox</a></li><li><a href="global.html#warrior">warrior</a></li><li><a href="global.html#warriorBounds">warriorBounds</a></li><li><a href="global.html#warriorColliders">warriorColliders</a></li><li><a href="global.html#warriorJumpSound">warriorJumpSound</a></li><li><a href="global.html#warriorTextureArray">warriorTextureArray</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Thu Nov 26 2020 23:59:13 GMT+0100 (Central European Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Dec 11 2020 19:56:09 GMT+0100 (Central European Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>
