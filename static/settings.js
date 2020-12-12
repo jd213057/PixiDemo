@@ -155,6 +155,11 @@ const PHYSICS_SETTINGS = {
 	PLAYER_RESTITUTION_COEF: -0.5,
 	/**
 	 * @type {Number}
+	 * @description Indicates when to fire stop function from app's ticker perspective
+	 */
+	PLAYER_DECREASING_SPEED_FACTOR: 4,
+	/**
+	 * @type {Number}
 	 * @description Mobile colliders speed
 	 */
 	MOBILE_COLLIDERS_SPEED: -2.5,

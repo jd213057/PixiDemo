@@ -145,6 +145,11 @@ let leftEdgeStageReached = false;
  */
 let rightEdgeStageReached = false;
 /**
+ * @type {boolean}
+ * @description Indicates whether player is stopping or not
+ */
+let stopping = false;
+/**
  * @type {Array}
  * @description ArrayList of all colliders
  */
@@ -345,11 +350,6 @@ let topToBottomForegroundSubContainer = new PIXI.Container();
  */
 let bottomToTopForegroundSubContainer = new PIXI.Container();
 /**
- * @type {NodeJS.Timeout}
- * @description Timer for vx decreasing when player stops
- */
-let vxTimer;
-/**
  * @type {number}
  * @description Counter for mobile platforms
  */
@@ -386,10 +386,11 @@ let textDisplayZone = textDisplayZoneEnum.NO_ZONE;
 const animationStateEnum = {
 	ATTACKING_ONE: 'attackingOne',
 	ATTACKING_TWO: 'attackingTwo',
-	JUMPING: 'jumping',
-	IDLING: 'idling',
-	RUNNING: 'running',
 	CROUCHING: 'crouching',
+	DYING: 'dying',
+	IDLING: 'idling',
+	JUMPING: 'jumping',
+	RUNNING: 'running',
 	TAKING_POTION: 'takingPotion',
 };
 /**
@@ -426,6 +427,11 @@ let warriorTextureArray = [];
 const pathToAnimation = '/static/assets/images/';
 /**
  * @type {number}
+ * @description Indicates when to stop warrior
+ */
+let stopCounter = 0;
+/**
+ * @type {number}
  * @description Time in ms since last frame was rendered
  */
 let elapsedTime = 0;
@@ -439,7 +445,6 @@ const fpsDelta = GAME_SETTINGS.TICKER_SETTINGS.DELTA_TIME_TARGETED;
 
 (function initializeGame() {
 	removeDefaultTicker();
-	setControls();
 	setKeyboardControls();
 	setBackgroundVolume();
 	setAudioEvents();
@@ -472,14 +477,6 @@ function update(delta) {
 	updateAllCollidersList();
 	updateWarriorCollider();
 	updatingVx();
-	if (isAboutToCollideWithBottom || isAboutToCollideWithTop) {
-		vy = isAboutToCollideWithBottom
-			? GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MIN_SPEED
-			: vy <= GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MIN_SPEED
-			? GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_RESTITUTION_COEF * vy
-			: vy;
-		isJumping = isAboutToCollideWithBottom ? false : true;
-	}
 	updatingVy();
 	moveCamera();
 	updateAnimationState();
@@ -496,19 +493,16 @@ function render() {
 // Build Stage functions
 
 function buildStage() {
-	setBackgroungImg();
-	setBackground();
-	setMiddleGroundImg();
-	setMiddleground();
-	setDecors();
-	setStaticColliders();
-	setObjects();
-	setMobileColliders();
-	setForeground();
-	addWarriorToStage();
+	setBackgroundContainer();
+	setMiddleGroundContainer();
+	setForegroundContainer();
 }
 
-function setBackgroungImg() {
+function addContainerToStage(container) {
+	app.stage.addChild(container);
+}
+
+function setBackgroundContainer() {
 	let backgroundImage = PIXI.Texture.from(
 		pathToAnimation + 'Levels/firstmaplevel_background.png'
 	);
@@ -526,13 +520,10 @@ function setBackgroungImg() {
 	backgroundSprite2.height = 642;
 	backgroundSprite2.width = 3073;
 	background.addChild(backgroundSprite2);
+	addContainerToStage(background);
 }
 
-function setBackground() {
-	app.stage.addChild(background);
-}
-
-function setMiddleGroundImg() {
+function setMiddleGroundContainer() {
 	let middlegroundImage = PIXI.Texture.from(
 		pathToAnimation + 'Levels/middleground_level_01.png'
 	);
@@ -550,54 +541,108 @@ function setMiddleGroundImg() {
 	middlegroundSprite2.height = 642;
 	middlegroundSprite2.width = 3073;
 	middleground.addChild(middlegroundSprite2);
+	addContainerToStage(middleground);
 }
 
-function setMiddleground() {
-	app.stage.addChild(middleground);
+function setForegroundContainer() {
+	(function setDecors() {
+		let decorsCollidersObject = spritesConfig.decorsColliders;
+		let collider;
+		for (const decorsConf in decorsCollidersObject) {
+			collider = createBasicCollider(decorsCollidersObject[decorsConf]);
+			foreground.addChild(collider);
+			decorsCollidersList.push(collider.getBounds());
+		}
+	})();
+	(function setStaticColliders() {
+		Object.entries(spritesConfig.obstacleColliders).forEach((e) => {
+			let collider = createBasicCollider(e[1]);
+			foreground.addChild(collider);
+			obstacleCollidersList.push(collider.getBounds());
+		});
+	})();
+	(function setObjects() {
+		treasureChest1 = createBasicSprite(
+			treasureChest1TextureArray,
+			treasureChest1,
+			spritesConfig.objectColliders.treasureChest1
+		);
+		treasureChest2 = createBasicSprite(
+			treasureChest2TextureArray,
+			treasureChest2,
+			spritesConfig.objectColliders.treasureChest2
+		);
+		treasureChest3 = createBasicSprite(
+			treasureChest3TextureArray,
+			treasureChest3,
+			spritesConfig.objectColliders.treasureChest3
+		);
+		foreground.addChild(treasureChest1, treasureChest2, treasureChest3);
+		objectCollidersList.push(
+			treasureChest1,
+			treasureChest2,
+			treasureChest3
+		);
+	})();
+	(function setMobileColliders() {
+		Object.entries(spritesConfig.mobileColliders).forEach((e) => {
+			let collider = createBasicCollider(e[1]);
+			switch (e[1].movement) {
+				case '+1X':
+					setMobileSubContainer(
+						leftToRightForegroundSubContainer,
+						leftToRightCollidersList,
+						collider
+					);
+					break;
+				case '-1X':
+					setMobileSubContainer(
+						rightToLeftForegroundSubContainer,
+						rightToLeftCollidersList,
+						collider
+					);
+					break;
+				case '+1Y':
+					setMobileSubContainer(
+						topToBottomForegroundSubContainer,
+						topToBottomCollidersList,
+						collider
+					);
+					break;
+				case '-1Y':
+					setMobileSubContainer(
+						bottomToTopForegroundSubContainer,
+						bottomToTopCollidersList,
+						collider
+					);
+					break;
+				default:
+					return;
+			}
+		});
+		foregroundMobileCollidersSubContainer.addChild(
+			leftToRightForegroundSubContainer,
+			rightToLeftForegroundSubContainer,
+			topToBottomForegroundSubContainer,
+			bottomToTopForegroundSubContainer
+		);
+		foreground.addChild(foregroundMobileCollidersSubContainer);
+	})();
+	(function addWarriorToStage() {
+		warrior = createBasicSprite(
+			warriorTextureArray,
+			warrior,
+			spritesConfig.warriorColliders.warriorCollider1
+		);
+		animationState = animationStateEnum.IDLING;
+		foreground.addChild(warrior);
+	})();
+	addContainerToStage(foreground);
 }
 
-function setForeground() {
-	app.stage.addChild(foreground);
-}
-
-function setDecors() {
-	let decorsCollidersObject = spritesConfig.decorsColliders;
-	let collider;
-	for (const decorsConf in decorsCollidersObject) {
-		collider = createBasicCollider(decorsCollidersObject[decorsConf]);
-		foreground.addChild(collider);
-		decorsCollidersList.push(collider.getBounds());
-	}
-}
-
-function setObjects() {
-	treasureChest1 = createBasicSprite(
-		treasureChest1TextureArray,
-		treasureChest1,
-		spritesConfig.objectColliders.treasureChest1
-	);
-	treasureChest2 = createBasicSprite(
-		treasureChest2TextureArray,
-		treasureChest2,
-		spritesConfig.objectColliders.treasureChest2
-	);
-	treasureChest3 = createBasicSprite(
-		treasureChest3TextureArray,
-		treasureChest3,
-		spritesConfig.objectColliders.treasureChest3
-	);
-	foreground.addChild(treasureChest1, treasureChest2, treasureChest3);
-	objectCollidersList.push(treasureChest1, treasureChest2, treasureChest3);
-}
-
-function addWarriorToStage() {
-	warrior = createBasicSprite(
-		warriorTextureArray,
-		warrior,
-		spritesConfig.warriorColliders.warriorCollider1
-	);
-	loadIdleTexture();
-	foreground.addChild(warrior);
+function setMobileSubContainer(subContainer, subColliderList, collider) {
+	subContainer.addChild(collider);
+	subColliderList.push(collider);
 }
 
 function addStageToScreen() {
@@ -612,65 +657,6 @@ function getInitialEdgeScreen() {
 function setTicker() {
 	app.ticker.maxFPS = GAME_SETTINGS.TICKER_SETTINGS.TICKER_MAX_FPS;
 	app.ticker.add(tick);
-}
-
-function setStaticColliders() {
-	let obstacleCollidersObject = spritesConfig.obstacleColliders;
-	let collider;
-	for (const floorConf in obstacleCollidersObject) {
-		collider = createBasicCollider(obstacleCollidersObject[floorConf]);
-		foreground.addChild(collider);
-		obstacleCollidersList.push(collider.getBounds());
-	}
-}
-
-function setMobileColliders() {
-	let collider;
-	let mobileCollidersObject = spritesConfig.mobileColliders;
-	for (const mobileCollider in mobileCollidersObject) {
-		collider = createBasicCollider(mobileCollidersObject[mobileCollider]);
-		switch (mobileCollidersObject[mobileCollider].movement) {
-			case '+1X':
-				setLeftToRightMobileSubContainer(collider);
-				break;
-			case '-1X':
-				setRightToLeftMobileSubContainer(collider);
-				break;
-			case '+1Y':
-				setTopToBottomMobileContainer(collider);
-				break;
-			case '-1Y':
-				setBottomToTopMobileSubContainer(collider);
-				break;
-		}
-	}
-	foregroundMobileCollidersSubContainer.addChild(
-		leftToRightForegroundSubContainer,
-		rightToLeftForegroundSubContainer,
-		topToBottomForegroundSubContainer,
-		bottomToTopForegroundSubContainer
-	);
-	foreground.addChild(foregroundMobileCollidersSubContainer);
-}
-
-function setLeftToRightMobileSubContainer(collider) {
-	leftToRightForegroundSubContainer.addChild(collider);
-	leftToRightCollidersList.push(collider);
-}
-
-function setRightToLeftMobileSubContainer(collider) {
-	rightToLeftForegroundSubContainer.addChild(collider);
-	rightToLeftCollidersList.push(collider);
-}
-
-function setTopToBottomMobileContainer(collider) {
-	topToBottomForegroundSubContainer.addChild(collider);
-	topToBottomCollidersList.push(collider);
-}
-
-function setBottomToTopMobileSubContainer(collider) {
-	bottomToTopForegroundSubContainer.addChild(collider);
-	bottomToTopCollidersList.push(collider);
 }
 
 function createBasicSprite(
@@ -730,11 +716,12 @@ function updateMovementCycle() {
 }
 
 function updateWarriorPositionOnMobileCollider(mobileCollidersCheckList) {
-	const idMobileCollidersSubList = getMobileColliderUnderWarrior(
-		bottomCollisionBox,
-		mobileCollidersCheckList
-	);
-	switch (idMobileCollidersSubList) {
+	switch (
+		getMobileColliderUnderWarrior(
+			bottomCollisionBox,
+			mobileCollidersCheckList
+		)
+	) {
 		case 0:
 			warrior.x += movementSpeed;
 			break;
@@ -763,37 +750,33 @@ function updateMobileColliders() {
 		mobileCollidersContainersList[0] !== undefined ||
 		mobileCollidersContainersList !== null
 	) {
-		for (const mobileCollider of mobileCollidersContainersList[0]
-			.children) {
-			leftToRightCollidersList.push(mobileCollider.getBounds());
-		}
+		mobileCollidersContainersList[0].children.forEach((e) =>
+			leftToRightCollidersList.push(e.getBounds())
+		);
 	}
 	if (
 		mobileCollidersContainersList[1] !== undefined ||
 		mobileCollidersContainersList !== null
 	) {
-		for (const mobileCollider of mobileCollidersContainersList[1]
-			.children) {
-			rightToLeftCollidersList.push(mobileCollider.getBounds());
-		}
+		mobileCollidersContainersList[1].children.forEach((e) =>
+			rightToLeftCollidersList.push(e.getBounds())
+		);
 	}
 	if (
 		mobileCollidersContainersList[2] !== undefined ||
 		mobileCollidersContainersList !== null
 	) {
-		for (const mobileCollider of mobileCollidersContainersList[2]
-			.children) {
-			topToBottomCollidersList.push(mobileCollider.getBounds());
-		}
+		mobileCollidersContainersList[2].children.forEach((e) =>
+			topToBottomCollidersList.push(e.getBounds())
+		);
 	}
 	if (
 		mobileCollidersContainersList[3] !== undefined ||
 		mobileCollidersContainersList !== null
 	) {
-		for (const mobileCollider of mobileCollidersContainersList[3]
-			.children) {
-			bottomToTopCollidersList.push(mobileCollider.getBounds());
-		}
+		mobileCollidersContainersList[3].children.forEach((e) =>
+			bottomToTopCollidersList.push(e.getBounds())
+		);
 	}
 }
 
@@ -809,27 +792,6 @@ function updateAllCollidersList() {
 
 // Controls functions :
 
-function setControls() {
-	document.getElementById('Attack').addEventListener('click', () => {
-		loadSmallAttackTexture();
-	});
-	document.getElementById('Attack2').addEventListener('click', () => {
-		loadBigAttackTexture();
-	});
-	document.getElementById('Idle').addEventListener('click', () => {
-		loadIdleTexture();
-	});
-	document.getElementById('Jump').addEventListener('click', () => {
-		loadJumpTexture();
-	});
-	document.getElementById('Die').addEventListener('click', () => {
-		loadDieTexture();
-	});
-	document.getElementById('Run').addEventListener('click', () => {
-		loadRunTexture();
-	});
-}
-
 function setKeyboardControls() {
 	window.addEventListener('keydown', (e) => {
 		switch (e.key) {
@@ -837,19 +799,19 @@ function setKeyboardControls() {
 				crouch();
 				break;
 			case 'ArrowUp':
-				clearInterval(vxTimer);
+				stopping = false;
 				jump();
 				break;
 			case 'ArrowLeft':
 				warrior.scale.x = -2;
 				direction = -1;
-				clearInterval(vxTimer);
+				stopping = false;
 				move();
 				break;
 			case 'ArrowRight':
 				warrior.scale.x = 2;
 				direction = 1;
-				clearInterval(vxTimer);
+				stopping = false;
 				move();
 				break;
 			case 'é':
@@ -888,7 +850,7 @@ function setKeyboardControls() {
 			case 'ArrowRight':
 			case 'ArrowLeft':
 			default:
-				stop();
+				stopping = true;
 		}
 	});
 }
@@ -943,25 +905,24 @@ function crouch() {
 }
 
 function takePotion() {
-	loadTakePotionTexture();
+	animationState = animationStateEnum.TAKING_POTION;
 }
 
 function stop() {
 	playingSound = false;
-	vxTimer = setInterval(() => {
-		if (
-			vx > GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MIN_SPEED &&
-			detectSpriteCollision(bottomCollisionBox, collidersCheckList)
-		) {
-			vx--;
-		}
-		if (vx === GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MIN_SPEED) {
-			animationState = animationStateEnum.IDLING;
-			clearInterval(vxTimer);
-		}
-	}, 100);
+	if (
+		vx > GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MIN_SPEED &&
+		detectSpriteCollision(bottomCollisionBox, collidersCheckList)
+	) {
+		vx--;
+	}
+	if (vx === GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MIN_SPEED) {
+		animationState = animationStateEnum.IDLING;
+		stopping = false;
+	}
 	stopSound();
 }
+
 function stopAttackingAnim() {
 	const timer = setTimeout(() => {
 		animationState = animationStateEnum.IDLING;
@@ -1122,10 +1083,26 @@ function updatingVx() {
 	) {
 		return;
 	}
+	if (
+		stopping &&
+		stopCounter %
+			GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_DECREASING_SPEED_FACTOR ===
+			0
+	)
+		stop();
 	warrior.x += vx * direction;
+	stopCounter++;
 }
 
 function updatingVy() {
+	if (isAboutToCollideWithBottom || isAboutToCollideWithTop) {
+		vy = isAboutToCollideWithBottom
+			? GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MIN_SPEED
+			: vy <= GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MIN_SPEED
+			? GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_RESTITUTION_COEF * vy
+			: vy;
+		isJumping = isAboutToCollideWithBottom ? false : true;
+	}
 	if (!isAboutToCollideWithBottom) {
 		applyingGravity();
 		warrior.y += vy;
@@ -1166,15 +1143,9 @@ function stopSound() {
 }
 
 function setAudioEvents() {
-	attackSound.addEventListener('ended', () => {
-		playingSound = false;
-	});
-	walkSound.addEventListener('ended', () => {
-		playingSound = false;
-	});
-	warriorJumpSound.addEventListener('ended', () => {
-		playingSound = false;
-	});
+	attackSound.addEventListener('ended', () => (playingSound = false));
+	walkSound.addEventListener('ended', () => (playingSound = false));
+	warriorJumpSound.addEventListener('ended', () => (playingSound = false));
 }
 
 // TextureLoader functions :
@@ -1191,30 +1162,41 @@ function updateAnimationState() {
 }
 
 function loadWarriorAnimation() {
+	if (!!Array.from(animationStateEnum).includes(animationState)) {
+		return;
+	}
+	warriorTextureArray = [];
+	let loaderArray = [];
 	switch (animationState) {
 		case animationStateEnum.JUMPING:
-			loadJumpTexture();
+			loaderArray = loaders.adventurerLoader.adventurerJumpingAnim;
 			break;
 		case animationStateEnum.RUNNING:
-			loadRunTexture();
+			loaderArray = loaders.adventurerLoader.adventurerRunningAnim;
 			break;
 		case animationStateEnum.CROUCHING:
-			loadCrouchTexture();
+			loaderArray = loaders.adventurerLoader.adventurerCrouchingAnim;
 			break;
 		case animationStateEnum.ATTACKING_ONE:
-			loadSmallAttackTexture();
+			loaderArray = loaders.adventurerLoader.adventurerAttacking1Anim;
 			break;
 		case animationStateEnum.ATTACKING_TWO:
-			loadBigAttackTexture();
+			loaderArray = loaders.adventurerLoader.adventurerAttacking2Anim;
 			break;
 		case animationState.TAKING_POTION:
-			loadTakePotionTexture();
+			loaderArray = loaders.adventurerLoader.adventurerTakingPotionAnim;
+			break;
+		case animationState.DYING:
+			loaderArray = loaders.adventurerLoader.adventurerDyingAnim;
 			break;
 		case animationStateEnum.IDLING:
 		default:
-			loadIdleTexture();
+			loaderArray = loaders.adventurerLoader.adventurerIdlingAnim;
 			break;
 	}
+	loaderArray.forEach((img) =>
+		warriorTextureArray.push(new PIXI.Texture.from(img))
+	);
 }
 
 function animateElements(delta) {
@@ -1259,70 +1241,6 @@ function getAnimationSpeed(animatedSpriteType, delta) {
 					.PLAYER_ANIMATION_SPEED_FACTOR
 			);
 	}
-}
-
-function loadSmallAttackTexture() {
-	warriorTextureArray = [];
-	let loaderArray = loaders.adventurerLoader.adventurerAttacking1Anim;
-	loaderArray.forEach((img) =>
-		warriorTextureArray.push(new PIXI.Texture.from(img))
-	);
-}
-
-function loadBigAttackTexture() {
-	warriorTextureArray = [];
-	let loaderArray = loaders.adventurerLoader.adventurerAttacking2Anim;
-	loaderArray.forEach((img) =>
-		warriorTextureArray.push(new PIXI.Texture.from(img))
-	);
-}
-
-function loadIdleTexture() {
-	warriorTextureArray = [];
-	let loaderArray = loaders.adventurerLoader.adventurerIdlingAnim;
-	loaderArray.forEach((img) =>
-		warriorTextureArray.push(new PIXI.Texture.from(img))
-	);
-}
-
-function loadJumpTexture() {
-	warriorTextureArray = [];
-	let loaderArray = loaders.adventurerLoader.adventurerJumpingAnim;
-	loaderArray.forEach((img) =>
-		warriorTextureArray.push(new PIXI.Texture.from(img))
-	);
-}
-
-function loadRunTexture() {
-	warriorTextureArray = [];
-	let loaderArray = loaders.adventurerLoader.adventurerRunningAnim;
-	loaderArray.forEach((img) =>
-		warriorTextureArray.push(new PIXI.Texture.from(img))
-	);
-}
-
-function loadDieTexture() {
-	warriorTextureArray = [];
-	let loaderArray = loaders.adventurerLoader.adventurerDyingAnim;
-	loaderArray.forEach((img) =>
-		warriorTextureArray.push(new PIXI.Texture.from(img))
-	);
-}
-
-function loadCrouchTexture() {
-	warriorTextureArray = [];
-	let loaderArray = loaders.adventurerLoader.adventurerCrouchingAnim;
-	loaderArray.forEach((img) =>
-		warriorTextureArray.push(new PIXI.Texture.from(img))
-	);
-}
-
-function loadTakePotionTexture() {
-	warriorTextureArray = [];
-	let loaderArray = loaders.adventurerLoader.adventurerTakingPotionAnim;
-	loaderArray.forEach((img) =>
-		warriorTextureArray.push(new PIXI.Texture.from(img))
-	);
 }
 
 function loadOpeningTreasureChestTexture(i) {
@@ -1709,28 +1627,22 @@ function moveCamera() {
 		(isWarriorRightCentered && direction === 1) ||
 		(isWarriorLeftCentered && direction === -1)
 	) {
-		moveBackground();
-		moveMiddleground();
-		moveForeground();
+		moveGroundContainer(
+			background,
+			GAME_SETTINGS.CAMERA_SETTINGS.BACKGROUND_SPEED_FACTOR
+		);
+		moveGroundContainer(
+			middleground,
+			GAME_SETTINGS.CAMERA_SETTINGS.MIDDLEGROUND_SPEED_FACTOR
+		);
+		moveGroundContainer(foreground, null);
 		updateEdgeScreenValue();
 		updateForegroundCollidersPosition();
 	}
 }
 
-function moveBackground() {
-	background.x -=
-		vx * direction * GAME_SETTINGS.CAMERA_SETTINGS.BACKGROUND_SPEED_FACTOR;
-}
-
-function moveMiddleground() {
-	middleground.x -=
-		vx *
-		direction *
-		GAME_SETTINGS.CAMERA_SETTINGS.MIDDLEGROUND_SPEED_FACTOR;
-}
-
-function moveForeground() {
-	foreground.x -= vx * direction;
+function moveGroundContainer(groundContainer, speedFactor) {
+	groundContainer.x -= vx * direction * (speedFactor ? speedFactor : 1);
 }
 
 function updateEdgeScreenValue() {
