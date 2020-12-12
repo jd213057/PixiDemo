@@ -858,6 +858,7 @@ function setKeyboardControls() {
 // Move functions :
 
 function move() {
+	if (displayingText) return;
 	if (detectSpriteCollision(bottomCollisionBox, collidersCheckList)) {
 		playSound(
 			walkSound,
@@ -1365,41 +1366,38 @@ function isWarriorInTextAera(xCoordinate, index) {
 }
 
 function updateTextList(xCoordinate) {
-	for (const textIndex in textConfig.staticText) {
+	Object.entries(textConfig.staticText).forEach((e) => {
 		if (
 			textListToShow.includes(
-				textListToShow[textIndex] &&
-					isWarriorInTextAera(xCoordinate, textIndex)
+				e[1] && isWarriorInTextAera(xCoordinate, e[0])
 			)
-		) {
-			continue;
-		} else if (
-			isWarriorInTextAera(xCoordinate, textIndex) &&
-			!textListToShow.includes(textConfig.staticText[textIndex])
-		) {
-			textListToShow.push(textConfig.staticText[textIndex]);
-		} else if (
-			!isWarriorInTextAera(xCoordinate, textIndex) &&
-			textListToShow.includes(textConfig.staticText[textIndex])
-		) {
-			textListToShow.splice(textIndex, 1);
-		}
-	}
-	if (textListToShow.length === 0) indexOfTextList = 0;
+		)
+			return;
+		else if (
+			isWarriorInTextAera(xCoordinate, e[0]) &&
+			!textListToShow.includes(e[1])
+		)
+			textListToShow.push(e[1]);
+		else if (
+			!isWarriorInTextAera(xCoordinate, e[0]) &&
+			textListToShow.includes(e[1])
+		)
+			textListToShow.splice(e[0], 1);
+		if (textListToShow.length === 0) indexOfTextList = 0;
+	});
 }
 
 function hasBeenDisplayedInTextZone() {
-	switch (textDisplayZone) {
-		case textDisplayZoneEnum.ZONE_ONE:
-			if (hasBeenDisplayedZone1) return true;
-		case textDisplayZoneEnum.ZONE_TWO:
-			if (hasBeenDisplayedZone2) return true;
-		case textDisplayZoneEnum.ZONE_THREE:
-			if (hasBeenDisplayedZone3) return true;
-		case textDisplayZoneEnum.NO_ZONE:
-		default:
-			return false;
-	}
+	if (
+		(hasBeenDisplayedZone1 &&
+			textDisplayZone === textDisplayZoneEnum.ZONE_ONE) ||
+		(hasBeenDisplayedZone2 &&
+			textDisplayZone === textDisplayZoneEnum.ZONE_TWO) ||
+		(hasBeenDisplayedZone3 &&
+			textDisplayZone === textDisplayZoneEnum.ZONE_THREE)
+	)
+		return true;
+	else return false;
 }
 
 function displayTextInTextList() {
@@ -1421,11 +1419,11 @@ function nextContent() {
 		GAME_SETTINGS.VOLUME_SETTINGS.TREASURE_CHEST_SOUND_VOLUME
 	);
 	if (indexOfTextList < textListToShow.length - 1) {
-		removeTextContent();
+		removeTextElement(text);
 		indexOfTextList++;
 		buildTextBox(textListToShow[indexOfTextList]);
 	} else {
-		removeTextBox();
+		removeTextElement(textBox);
 		displayingText = false;
 		switch (textDisplayZone) {
 			case textDisplayZoneEnum.ZONE_ONE:
@@ -1448,28 +1446,29 @@ function updateTextDisplayZoneValue() {
 	if (
 		warrior.x > GAME_SETTINGS.TEXT_ZONES.TEXT_ZONE_1.MIN_X &&
 		warrior.x < GAME_SETTINGS.TEXT_ZONES.TEXT_ZONE_1.MAX_X
-	) {
+	)
 		textDisplayZone = textDisplayZoneEnum.ZONE_ONE;
-	} else if (
+	else if (
 		warrior.x > GAME_SETTINGS.TEXT_ZONES.TEXT_ZONE_2.MIN_X &&
 		warrior.x < GAME_SETTINGS.TEXT_ZONES.TEXT_ZONE_2.MAX_X
-	) {
+	)
 		textDisplayZone = textDisplayZoneEnum.ZONE_TWO;
-	} else if (
+	else if (
 		warrior.x > GAME_SETTINGS.TEXT_ZONES.TEXT_ZONE_3.MIN_X &&
 		warrior.x < GAME_SETTINGS.TEXT_ZONES.TEXT_ZONE_3.MAX_X
-	) {
+	)
 		textDisplayZone = textDisplayZoneEnum.ZONE_THREE;
-	} else {
-		textDisplayZone = textDisplayZoneEnum.NO_ZONE;
-	}
+	else textDisplayZone = textDisplayZoneEnum.NO_ZONE;
 }
 
 function buildTextBox(textConfig) {
 	if (textConfig) {
 		textBox = new PIXI.Container();
-		buildTextBackgroundTexture(textConfig);
-		buildText(textConfig);
+		textBackGroundTexture = buildTextBackgroundTexture(
+			textBackGroundTexture,
+			textConfig
+		);
+		text = buildText(text, textConfig);
 		textBox.addChild(textBackGroundTexture, text);
 		app.stage.addChild(textBox);
 	}
@@ -1478,8 +1477,11 @@ function buildTextBox(textConfig) {
 function buildWarningTextBox(textConfig) {
 	if (textConfig) {
 		warningTextBox = new PIXI.Container();
-		buildWarningTextBackgroundTexture(textConfig);
-		buildWarningText(textConfig);
+		warningTextBackGroundTexture = buildTextBackgroundTexture(
+			warningTextBackGroundTexture,
+			textConfig
+		);
+		warningText = buildText(warningText, textConfig);
 		if (textConfig.overlayConfig.nextButtonImg) {
 			buildWarningNextTextButtonImg(textConfig);
 		}
@@ -1494,54 +1496,30 @@ function buildWarningTextBox(textConfig) {
 	}
 }
 
-function buildTextBackgroundTexture(textConfig) {
-	if (textBackGroundTexture._destroyed !== true) {
-		textBackGroundTexture.destroy({
+function buildTextBackgroundTexture(backgroundTexture, textConfig) {
+	if (backgroundTexture._destroyed !== true) {
+		backgroundTexture.destroy({
 			children: true,
 			texture: true,
 			baseTexture: true,
 		});
 	}
-	textBackGroundTexture = createBasicSprite(
+	return (backgroundTexture = createBasicSprite(
 		null,
-		textBackGroundTexture,
+		backgroundTexture,
 		textConfig.overlayConfig.textBox
-	);
+	));
 }
 
-function buildWarningTextBackgroundTexture(textConfig) {
-	if (warningTextBackGroundTexture._destroyed !== true) {
-		warningTextBackGroundTexture.destroy({
-			children: false,
-			texture: true,
-			baseTexture: true,
-		});
-	}
-	warningTextBackGroundTexture = createBasicSprite(
-		null,
-		warningTextBackGroundTexture,
-		textConfig.overlayConfig.textBox
-	);
-}
-
-function buildText(textConfig) {
-	text = new PIXI.Text(
+function buildText(textObject, textConfig) {
+	textObject = new PIXI.Text(
 		textConfig.pixiRequirements.text,
 		textConfig.pixiRequirements.style
 	);
-	text.x = textConfig.overlayConfig.text.x;
-	text.y = textConfig.overlayConfig.text.y;
-	text.anchor.set(textConfig.overlayConfig.text.anchor);
-}
-
-function buildWarningText(textConfig) {
-	warningText = new PIXI.Text(
-		textConfig.pixiRequirements.text,
-		textConfig.pixiRequirements.style
-	);
-	warningText.x = textConfig.overlayConfig.text.x;
-	warningText.y = textConfig.overlayConfig.text.y;
-	warningText.anchor.set(textConfig.overlayConfig.text.anchor);
+	textObject.x = textConfig.overlayConfig.text.x;
+	textObject.y = textConfig.overlayConfig.text.y;
+	textObject.anchor.set(textConfig.overlayConfig.text.anchor);
+	return textObject;
 }
 
 function buildWarningNextTextButtonImg(textConfig) {
@@ -1560,10 +1538,9 @@ function buildWarningNextTextButtonImg(textConfig) {
 }
 
 function displayDynamicMsg() {
-	removeTextContent();
 	buildTextBox(textConfig.dynamicText.dynamicText1);
 	const timer = setTimeout(() => {
-		removeTextBox();
+		removeTextElement(textBox);
 		clearTimeout(timer);
 	}, 5000);
 }
@@ -1572,28 +1549,15 @@ function displayWarningMsg() {
 	displayingWarningText = true;
 	buildWarningTextBox(textConfig.dynamicText.dynamicText2);
 	const timer = setTimeout(() => {
-		removeWarningTextBox();
+		removeTextElement(warningTextBox);
 		displayingWarningText = false;
 		clearTimeout(timer);
 	}, 2500);
 }
 
-function removeTextContent() {
-	if (text._destroyed !== true) {
-		text.destroy({children: true, texture: true, baseTexture: true});
-	}
-	text = new PIXI.Text();
-}
-
-function removeTextBox() {
-	if (textBox._destroyed !== true) {
-		textBox.destroy({children: false, texture: true, baseTexture: true});
-	}
-}
-
-function removeWarningTextBox() {
-	if (warningTextBox._destroyed !== true) {
-		warningTextBox.destroy({
+function removeTextElement(textElement) {
+	if (textElement._destroyed !== true) {
+		textElement.destroy({
 			children: false,
 			texture: true,
 			baseTexture: true,

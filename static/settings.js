@@ -157,7 +157,7 @@ const PHYSICS_SETTINGS = {
 	 * @type {Number}
 	 * @description Indicates when to fire stop function from app's ticker perspective
 	 */
-	PLAYER_DECREASING_SPEED_FACTOR: 4,
+	PLAYER_DECREASING_SPEED_FACTOR: 3,
 	/**
 	 * @type {Number}
 	 * @description Mobile colliders speed
