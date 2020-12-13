@@ -1,5 +1,6 @@
+import Collider from './collider.js';
 import loaders from './loaders.js';
-import spritesConfig from './sprites.js';
+import spritesConfig from './spritesConfig.js';
 import textConfig from './text.js';
 import GAME_SETTINGS from './settings.js';
 import PIXI from './pixi-legacy.js';
@@ -59,6 +60,11 @@ let displayingText = false;
  * @description Indicates whether warning text content is been displayed or not
  */
 let displayingWarningText = false;
+/**
+ * @type {boolean}
+ * @description Indicates whether dynamic text content is been displayed or not
+ */
+let displayDynamicText = false;
 /**
  * @type {boolean}
  * @description Indicates whether text content for first area of level has been displayed
@@ -323,11 +329,6 @@ let background = new PIXI.Container();
  * @type {PIXI.Container}
  * @description Child container of Foreground, contains all moving colliders
  */
-let foregroundStaticCollidersSubContainer = new PIXI.Container();
-/**
- * @type {PIXI.Container}
- * @description Child container of Foreground, contains all moving colliders
- */
 let foregroundMobileCollidersSubContainer = new PIXI.Container();
 /**
  * @type {PIXI.Container}
@@ -392,6 +393,16 @@ const animationStateEnum = {
 	JUMPING: 'jumping',
 	RUNNING: 'running',
 	TAKING_POTION: 'takingPotion',
+};
+/**
+ * @type {Object}
+ * @description Enumeration of all possible treasureChest's animation state
+ */
+const treasureChestAnimationEnum = {
+	OPENING: 'opening',
+	OPENED: 'opened',
+	CLOSING: 'closing',
+	CLOSED: 'closed',
 };
 /**
  * @type {Object}
@@ -547,32 +558,35 @@ function setMiddleGroundContainer() {
 function setForegroundContainer() {
 	(function setDecors() {
 		let decorsCollidersObject = spritesConfig.decorsColliders;
-		let collider;
 		for (const decorsConf in decorsCollidersObject) {
-			collider = createBasicCollider(decorsCollidersObject[decorsConf]);
+			const collider = new Collider(
+				null,
+				new PIXI.Sprite(),
+				decorsCollidersObject[decorsConf]
+			);
 			foreground.addChild(collider);
 			decorsCollidersList.push(collider.getBounds());
 		}
 	})();
 	(function setStaticColliders() {
 		Object.entries(spritesConfig.obstacleColliders).forEach((e) => {
-			let collider = createBasicCollider(e[1]);
+			const collider = new Collider(null, new PIXI.Sprite(), e[1]);
 			foreground.addChild(collider);
 			obstacleCollidersList.push(collider.getBounds());
 		});
 	})();
 	(function setObjects() {
-		treasureChest1 = createBasicSprite(
+		treasureChest1 = new Collider(
 			treasureChest1TextureArray,
 			treasureChest1,
 			spritesConfig.objectColliders.treasureChest1
 		);
-		treasureChest2 = createBasicSprite(
+		treasureChest2 = new Collider(
 			treasureChest2TextureArray,
 			treasureChest2,
 			spritesConfig.objectColliders.treasureChest2
 		);
-		treasureChest3 = createBasicSprite(
+		treasureChest3 = new Collider(
 			treasureChest3TextureArray,
 			treasureChest3,
 			spritesConfig.objectColliders.treasureChest3
@@ -586,7 +600,7 @@ function setForegroundContainer() {
 	})();
 	(function setMobileColliders() {
 		Object.entries(spritesConfig.mobileColliders).forEach((e) => {
-			let collider = createBasicCollider(e[1]);
+			const collider = new Collider(null, new PIXI.Sprite(), e[1]);
 			switch (e[1].movement) {
 				case '+1X':
 					setMobileSubContainer(
@@ -629,7 +643,7 @@ function setForegroundContainer() {
 		foreground.addChild(foregroundMobileCollidersSubContainer);
 	})();
 	(function addWarriorToStage() {
-		warrior = createBasicSprite(
+		warrior = new Collider(
 			warriorTextureArray,
 			warrior,
 			spritesConfig.warriorColliders.warriorCollider1
@@ -657,38 +671,6 @@ function getInitialEdgeScreen() {
 function setTicker() {
 	app.ticker.maxFPS = GAME_SETTINGS.TICKER_SETTINGS.TICKER_MAX_FPS;
 	app.ticker.add(tick);
-}
-
-function createBasicSprite(
-	spriteTextureArray,
-	spriteObjectToInitialize,
-	spriteConf
-) {
-	let texture = spriteConf.imgPath
-		? PIXI.Texture.from(spriteConf.imgPath)
-		: PIXI.Texture.WHITE;
-	if (spriteTextureArray) {
-		spriteTextureArray.push(texture);
-	}
-	spriteObjectToInitialize = new PIXI.Sprite(texture);
-	spriteObjectToInitialize.anchor.set(spriteConf.anchor);
-	spriteObjectToInitialize.x = spriteConf.x;
-	spriteObjectToInitialize.y = spriteConf.y;
-	spriteObjectToInitialize.width = spriteConf.width;
-	spriteObjectToInitialize.height = spriteConf.height;
-	if (spriteConf.tint) spriteObjectToInitialize.tint = spriteConf.tint;
-	return spriteObjectToInitialize;
-}
-
-function createBasicCollider(colliderConf) {
-	let newTexture = PIXI.Texture.from(colliderConf.imgPath);
-	let newCollider = new PIXI.Sprite(newTexture);
-	newCollider.anchor.set(colliderConf.anchor);
-	newCollider.x = colliderConf.x;
-	newCollider.y = colliderConf.y;
-	newCollider.width = colliderConf.width;
-	newCollider.height = colliderConf.height;
-	return newCollider;
 }
 
 function updateMovementCycle() {
@@ -938,25 +920,25 @@ function activateObjectAround() {
 	switch (objectIndex) {
 		case 0:
 			if (!treasureChestOpened1) {
-				openTreasureChest(objectIndex);
+				openTreasureChest(treasureChest1TextureArray);
 			} else {
-				closeTreasureChest(objectIndex);
+				closeTreasureChest(treasureChest1TextureArray);
 			}
 			treasureChestOpened1 = !treasureChestOpened1;
 			break;
 		case 1:
 			if (!treasureChestOpened2) {
-				openTreasureChest(objectIndex);
+				openTreasureChest(treasureChest2TextureArray);
 			} else {
-				closeTreasureChest(objectIndex);
+				closeTreasureChest(treasureChest2TextureArray);
 			}
 			treasureChestOpened2 = !treasureChestOpened2;
 			break;
 		case 2:
 			if (!treasureChestOpened3) {
-				openTreasureChest(objectIndex);
+				openTreasureChest(treasureChest3TextureArray);
 			} else {
-				closeTreasureChest(objectIndex);
+				closeTreasureChest(treasureChest3TextureArray);
 			}
 			treasureChestOpened3 = !treasureChestOpened3;
 			break;
@@ -966,23 +948,41 @@ function activateObjectAround() {
 	}
 }
 
-function openTreasureChest(i) {
-	displayDynamicMsg();
+function openTreasureChest(treasureChestTextureArray) {
+	if (!displayDynamicText) displayDynamicMsg();
 	playSound(
 		openingTreasureChestSound,
 		GAME_SETTINGS.VOLUME_SETTINGS.TREASURE_CHEST_SOUND_VOLUME
 	);
-	loadOpeningTreasureChestTexture(i);
-	setTimeout(loadOpenedTreasureChestTexture(i), 400);
+	loadTreasureChestAnimation(
+		treasureChestTextureArray,
+		treasureChestAnimationEnum.OPENING
+	);
+	setTimeout(
+		loadTreasureChestAnimation(
+			treasureChestTextureArray,
+			treasureChestAnimationEnum.OPENED
+		),
+		400
+	);
 }
 
-function closeTreasureChest(i) {
+function closeTreasureChest(treasureChestTextureArray) {
 	playSound(
 		openingTreasureChestSound,
 		GAME_SETTINGS.VOLUME_SETTINGS.TREASURE_CHEST_SOUND_VOLUME
 	);
-	loadClosingTreasureChestTexture(i);
-	setTimeout(loadClosedTreasureChestTexture(i), 400);
+	loadTreasureChestAnimation(
+		treasureChestTextureArray,
+		treasureChestAnimationEnum.CLOSING
+	);
+	setTimeout(
+		loadTreasureChestAnimation(
+			treasureChestTextureArray,
+			treasureChestAnimationEnum.CLOSED
+		),
+		400
+	);
 }
 
 // Physics functions:
@@ -995,22 +995,50 @@ function reloadIfFalling() {
 
 function calculateWideBoxes() {
 	warriorBounds = warrior.getBounds();
-	bottomCollisionBox.x = warriorBounds.x + (1 / 3) * warriorBounds.width;
-	bottomCollisionBox.width = (1 / 3) * warriorBounds.width;
-	bottomCollisionBox.y = warriorBounds.y + (4 / 5) * warriorBounds.height;
-	bottomCollisionBox.height = (1 / 5) * warriorBounds.height + 1;
-	topCollisionBox.x = warriorBounds.x + (1 / 3) * warriorBounds.width;
-	topCollisionBox.width = (1 / 3) * warriorBounds.width;
-	topCollisionBox.y = warriorBounds.y;
-	topCollisionBox.height = (1 / 5) * warriorBounds.height + 1;
-	leftCollisionBox.x = warriorBounds.x + 10;
-	leftCollisionBox.width = warriorBounds.width / 3 - 10;
-	leftCollisionBox.y = warriorBounds.y - 1;
-	leftCollisionBox.height = (4 / 5) * warriorBounds.height;
-	rightCollisionBox.x = warriorBounds.x + (2 * warriorBounds.width) / 3;
-	rightCollisionBox.width = warriorBounds.width / 3 - 10;
-	rightCollisionBox.y = warriorBounds.y - 1;
-	rightCollisionBox.height = (4 / 5) * warriorBounds.height;
+	bottomCollisionBox = new Collider(
+		null,
+		bottomCollisionBox,
+		{
+			x: warriorBounds.x + (1 / 3) * warriorBounds.width,
+			width: (1 / 3) * warriorBounds.width,
+			y: warriorBounds.y + (4 / 5) * warriorBounds.height,
+			height: (1 / 5) * warriorBounds.height + 1,
+		},
+		false
+	);
+	topCollisionBox = new Collider(
+		null,
+		topCollisionBox,
+		{
+			x: warriorBounds.x + (1 / 3) * warriorBounds.width,
+			width: (1 / 3) * warriorBounds.width,
+			y: warriorBounds.y,
+			height: (1 / 5) * warriorBounds.height + 1,
+		},
+		false
+	);
+	leftCollisionBox = new Collider(
+		null,
+		leftCollisionBox,
+		{
+			x: warriorBounds.x + 10,
+			width: warriorBounds.width / 3 - 10,
+			y: warriorBounds.y - 1,
+			height: (4 / 5) * warriorBounds.height,
+		},
+		false
+	);
+	rightCollisionBox = new Collider(
+		null,
+		rightCollisionBox,
+		{
+			x: warriorBounds.x + (2 * warriorBounds.width) / 3,
+			width: warriorBounds.width / 3 - 10,
+			y: warriorBounds.y - 1,
+			height: (4 / 5) * warriorBounds.height,
+		},
+		false
+	);
 }
 
 function updateWarriorCollider() {
@@ -1166,7 +1194,7 @@ function loadWarriorAnimation() {
 	if (!!Array.from(animationStateEnum).includes(animationState)) {
 		return;
 	}
-	warriorTextureArray = [];
+	warriorTextureArray.length = 0;
 	let loaderArray = [];
 	switch (animationState) {
 		case animationStateEnum.JUMPING:
@@ -1244,108 +1272,29 @@ function getAnimationSpeed(animatedSpriteType, delta) {
 	}
 }
 
-function loadOpeningTreasureChestTexture(i) {
-	let loaderArray = loaders.treasureChestLoader.treasureChestOpeningAnim;
-	switch (i) {
-		case 0:
-			treasureChest1TextureArray = [];
-			loaderArray.forEach((img) =>
-				treasureChest1TextureArray.push(new PIXI.Texture.from(img))
-			);
+function loadTreasureChestAnimation(treasureChestTextureArray, animation) {
+	let loaderArray;
+	switch (animation) {
+		case treasureChestAnimationEnum.OPENING:
+		case treasureChestAnimationEnum.CLOSING:
+			loaderArray = loaders.treasureChestLoader.treasureChestOpeningAnim;
+			if (animation === treasureChestAnimationEnum.CLOSING)
+				loaderArray.reverse();
 			break;
-		case 1:
-			treasureChest2TextureArray = [];
-			loaderArray.forEach((img) =>
-				treasureChest2TextureArray.push(new PIXI.Texture.from(img))
-			);
+		case treasureChestAnimationEnum.OPENED:
+			loaderArray = loaders.treasureChestLoader.treasureChestOpenedAnim;
 			break;
-		case 2:
-			treasureChest3TextureArray = [];
-			loaderArray.forEach((img) =>
-				treasureChest3TextureArray.push(new PIXI.Texture.from(img))
-			);
-			break;
+		case treasureChestAnimationEnum.CLOSED:
 		default:
-			return;
-	}
-}
-
-function loadOpenedTreasureChestTexture(i) {
-	let loaderArray = loaders.treasureChestLoader.treasureChestOpenedAnim;
-	switch (i) {
-		case 0:
-			treasureChest1TextureArray = [];
-			loaderArray.forEach((img) =>
-				treasureChest1TextureArray.push(new PIXI.Texture.from(img))
-			);
-			break;
-		case 1:
-			treasureChest2TextureArray = [];
-			loaderArray.forEach((img) =>
-				treasureChest2TextureArray.push(new PIXI.Texture.from(img))
-			);
-			break;
-		case 2:
-			treasureChest3TextureArray = [];
-			loaderArray.forEach((img) =>
-				treasureChest3TextureArray.push(new PIXI.Texture.from(img))
-			);
-			break;
-		default:
-			return;
-	}
-}
-
-function loadClosingTreasureChestTexture(i) {
-	let loaderArray = loaders.treasureChestLoader.treasureChestOpeningAnim;
-	loaderArray.reverse();
-	switch (i) {
-		case 0:
-			treasureChest1TextureArray = [];
-			loaderArray.forEach((img) =>
-				treasureChest1TextureArray.push(new PIXI.Texture.from(img))
-			);
-			break;
-		case 1:
-			treasureChest2TextureArray = [];
-			loaderArray.forEach((img) =>
-				treasureChest2TextureArray.push(new PIXI.Texture.from(img))
-			);
-			break;
-		case 2:
-			treasureChest3TextureArray = [];
-			loaderArray.forEach((img) =>
-				treasureChest3TextureArray.push(new PIXI.Texture.from(img))
-			);
+			loaderArray = loaders.treasureChestLoader.treasureChestClosed;
 			break;
 	}
-}
-
-function loadClosedTreasureChestTexture(i) {
-	const treasureChestClosedLoader =
-		loaders.treasureChestLoader.treasureChestClosed;
-	switch (i) {
-		case 0:
-			treasureChest1TextureArray = [];
-			treasureChest1TextureArray.push(
-				new PIXI.Texture.from(treasureChestClosedLoader)
-			);
-			break;
-		case 1:
-			treasureChest2TextureArray = [];
-			treasureChest2TextureArray.push(
-				new PIXI.Texture.from(treasureChestClosedLoader)
-			);
-			break;
-		case 2:
-			treasureChest3TextureArray = [];
-			treasureChest3TextureArray.push(
-				new PIXI.Texture.from(treasureChestClosedLoader)
-			);
-			break;
-		default:
-			return;
-	}
+	treasureChestTextureArray.length = 0;
+	animation !== treasureChestAnimationEnum.CLOSED
+		? loaderArray.forEach((img) =>
+				treasureChestTextureArray.push(new PIXI.Texture.from(img))
+		  )
+		: treasureChestTextureArray.push(new PIXI.Texture.from(loaderArray));
 }
 
 // Text related functions :
@@ -1504,7 +1453,7 @@ function buildTextBackgroundTexture(backgroundTexture, textConfig) {
 			baseTexture: true,
 		});
 	}
-	return (backgroundTexture = createBasicSprite(
+	return (backgroundTexture = new Collider(
 		null,
 		backgroundTexture,
 		textConfig.overlayConfig.textBox
@@ -1525,12 +1474,12 @@ function buildText(textObject, textConfig) {
 function buildWarningNextTextButtonImg(textConfig) {
 	if (warningNextTextButtonImg._destroyed !== true) {
 		warningNextTextButtonImg.destroy({
-			children: false,
+			children: true,
 			texture: true,
 			baseTexture: true,
 		});
 	}
-	warningNextTextButtonImg = createBasicSprite(
+	warningNextTextButtonImg = new Collider(
 		null,
 		warningNextTextButtonImg,
 		textConfig.overlayConfig.nextButtonImg
@@ -1538,9 +1487,11 @@ function buildWarningNextTextButtonImg(textConfig) {
 }
 
 function displayDynamicMsg() {
+	displayDynamicText = true;
 	buildTextBox(textConfig.dynamicText.dynamicText1);
 	const timer = setTimeout(() => {
 		removeTextElement(textBox);
+		displayDynamicText = false;
 		clearTimeout(timer);
 	}, 5000);
 }
@@ -1558,7 +1509,7 @@ function displayWarningMsg() {
 function removeTextElement(textElement) {
 	if (textElement._destroyed !== true) {
 		textElement.destroy({
-			children: false,
+			children: true,
 			texture: true,
 			baseTexture: true,
 		});
@@ -1584,9 +1535,8 @@ function moveCamera() {
 	if (
 		(leftEdgeStageReached && direction === -1) ||
 		(rightEdgeStageReached && direction === 1)
-	) {
+	)
 		return;
-	}
 	if (
 		(isWarriorRightCentered && direction === 1) ||
 		(isWarriorLeftCentered && direction === -1)
@@ -1618,30 +1568,27 @@ function updateForegroundCollidersPosition() {
 	const decorsColliderListLength = decorsCollidersList.length;
 	const obstacleColliderListLength = obstacleCollidersList.length;
 	const objectCollidersListLength = objectCollidersList.length;
-	decorsCollidersList = [];
-	obstacleCollidersList = [];
-	objectCollidersList = [];
-	leftToRightCollidersList = [];
-	rightToLeftCollidersList = [];
-	for (let i = 0; i < decorsColliderListLength; i++) {
-		decorsCollidersList.push(foreground.children[i].getBounds());
-	}
-	for (
-		let i = decorsColliderListLength;
-		i < decorsColliderListLength + obstacleColliderListLength;
-		i++
-	) {
-		obstacleCollidersList.push(foreground.children[i].getBounds());
-	}
-	for (
-		let i = decorsColliderListLength + obstacleColliderListLength;
-		i <
-		decorsColliderListLength +
-			obstacleColliderListLength +
-			objectCollidersListLength;
-		i++
-	) {
-		objectCollidersList.push(foreground.children[i].getBounds());
-	}
+	decorsCollidersList.length = 0;
+	obstacleCollidersList.length = 0;
+	objectCollidersList.length = 0;
+	let index = 0;
+	foreground.children.forEach((e) => {
+		if (index < decorsColliderListLength)
+			decorsCollidersList.push(e.getBounds());
+		if (
+			index >= decorsColliderListLength &&
+			index < decorsColliderListLength + obstacleColliderListLength
+		)
+			obstacleCollidersList.push(e.getBounds());
+		if (
+			index >= decorsColliderListLength + obstacleColliderListLength &&
+			index <
+				decorsColliderListLength +
+					obstacleColliderListLength +
+					objectCollidersListLength
+		)
+			objectCollidersList.push(e.getBounds());
+		index++;
+	});
 	updateMobileColliders();
 }
