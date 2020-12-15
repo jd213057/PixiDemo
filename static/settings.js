@@ -121,7 +121,7 @@ const ANIMATION_SPEED_FACTORS = {
 	 * @type {Number}
 	 * @description Speed corrective factor applied for player animation
 	 */
-	PLAYER_ANIMATION_SPEED_FACTOR: 5,
+	PLAYER_ANIMATION_SPEED_FACTOR: 4,
 };
 /**
  * @type {Object}
@@ -135,9 +135,14 @@ const PHYSICS_SETTINGS = {
 	PLAYER_MIN_SPEED: 0,
 	/**
 	 * @type {Number}
-	 * @description Player maximum speed
+	 * @description Player maximum speed when on ground
 	 */
-	PLAYER_MAX_SPEED: 5,
+	PLAYER_MAX_GROUNDSPEED: 6,
+	/**
+	 * @type {Number}
+	 * @description Player maximum speed when jumping
+	 */
+	PLAYER_MAX_AIRSPEED: 5,
 	/**
 	 * @type {Number}
 	 * @description Player jump speed

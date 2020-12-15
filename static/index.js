@@ -493,7 +493,7 @@ function update(delta) {
 	updateAnimationState();
 	loadWarriorAnimation();
 	animateElements(delta);
-	manageTextContent(warrior.x);
+	manageTextContent();
 	render();
 }
 
@@ -557,16 +557,11 @@ function setMiddleGroundContainer() {
 
 function setForegroundContainer() {
 	(function setDecors() {
-		let decorsCollidersObject = spritesConfig.decorsColliders;
-		for (const decorsConf in decorsCollidersObject) {
-			const collider = new Collider(
-				null,
-				new PIXI.Sprite(),
-				decorsCollidersObject[decorsConf]
-			);
+		Object.entries(spritesConfig.decorsColliders).forEach((e) => {
+			const collider = new Collider(null, new PIXI.Sprite(), e[1]);
 			foreground.addChild(collider);
 			decorsCollidersList.push(collider.getBounds());
-		}
+		});
 	})();
 	(function setStaticColliders() {
 		Object.entries(spritesConfig.obstacleColliders).forEach((e) => {
@@ -692,14 +687,14 @@ function updateMovementCycle() {
 	rightToLeftForegroundSubContainer.x -= movementSpeed;
 	topToBottomForegroundSubContainer.y += movementSpeed;
 	bottomToTopForegroundSubContainer.y -= movementSpeed;
-	if (detectSpriteCollision(bottomCollisionBox, mobileCollidersCheckList)) {
+	if (Collider.detectCollider(bottomCollisionBox, mobileCollidersCheckList)) {
 		updateWarriorPositionOnMobileCollider(mobileCollidersCheckList);
 	}
 }
 
 function updateWarriorPositionOnMobileCollider(mobileCollidersCheckList) {
 	switch (
-		getMobileColliderUnderWarrior(
+		Collider.getMobileColliderAround(
 			bottomCollisionBox,
 			mobileCollidersCheckList
 		)
@@ -841,18 +836,18 @@ function setKeyboardControls() {
 
 function move() {
 	if (displayingText) return;
-	if (detectSpriteCollision(bottomCollisionBox, collidersCheckList)) {
+	if (Collider.detectCollider(bottomCollisionBox, collidersCheckList)) {
 		playSound(
 			walkSound,
 			GAME_SETTINGS.VOLUME_SETTINGS.WALKING_SOUND_VOLUME
 		);
 		animationState = animationStateEnum.RUNNING;
 	}
-	vx = GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MAX_SPEED;
+	vx = GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MAX_GROUNDSPEED;
 }
 
 function jump() {
-	if (!detectSpriteCollision(bottomCollisionBox, collidersCheckList)) {
+	if (!Collider.detectCollider(bottomCollisionBox, collidersCheckList)) {
 		return;
 	} else {
 		playingSound = false;
@@ -895,7 +890,7 @@ function stop() {
 	playingSound = false;
 	if (
 		vx > GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MIN_SPEED &&
-		detectSpriteCollision(bottomCollisionBox, collidersCheckList)
+		Collider.detectCollider(bottomCollisionBox, collidersCheckList)
 	) {
 		vx--;
 	}
@@ -916,7 +911,7 @@ function stopAttackingAnim() {
 // Interactive functions:
 
 function activateObjectAround() {
-	const objectIndex = getObjectAround(warriorBounds);
+	const objectIndex = Collider.getObjectAroundCollider(warriorBounds);
 	switch (objectIndex) {
 		case 0:
 			if (!treasureChestOpened1) {
@@ -1045,61 +1040,22 @@ function updateWarriorCollider() {
 	leftEdgeScreenReached = warrior.x <= updatedLeftEdgeScreen;
 	rightEdgeScreenReached =
 		warrior.x + warrior.width >= updatedRightEdgeScreen;
-	isAboutToCollideWithBottom = detectSpriteCollision(
+	isAboutToCollideWithBottom = Collider.detectCollider(
 		bottomCollisionBox,
 		collidersCheckList
 	);
-	isAboutToCollideWithTop = detectSpriteCollision(
+	isAboutToCollideWithTop = Collider.detectCollider(
 		topCollisionBox,
 		collidersCheckList
 	);
-	isAboutToCollideWithLeft = detectSpriteCollision(
+	isAboutToCollideWithLeft = Collider.detectCollider(
 		leftCollisionBox,
 		collidersCheckList
 	);
-	isAboutToCollideWithRight = detectSpriteCollision(
+	isAboutToCollideWithRight = Collider.detectCollider(
 		rightCollisionBox,
 		collidersCheckList
 	);
-}
-
-function isColliding(playerBox, collider) {
-	return (
-		playerBox.x + playerBox.width > collider.x &&
-		playerBox.x < collider.x + collider.width &&
-		playerBox.y + playerBox.height > collider.y &&
-		playerBox.y < collider.y + collider.height
-	);
-}
-
-function detectSpriteCollision(playerBox, collidersCheckList) {
-	for (const collidersSubCheckList of collidersCheckList) {
-		for (const collider of collidersSubCheckList) {
-			if (isColliding(playerBox, collider)) {
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
-function getObjectAround(playerBox) {
-	for (let i = 0; i < objectCollidersList.length; i++) {
-		if (isColliding(playerBox, objectCollidersList[i])) {
-			return i;
-		}
-	}
-	return null;
-}
-
-function getMobileColliderUnderWarrior(playerBox, mobileCollidersCheckList) {
-	for (let i = 0; i < mobileCollidersCheckList.length; i++) {
-		for (const subMobileColliderList of mobileCollidersCheckList[i]) {
-			if (isColliding(playerBox, subMobileColliderList)) {
-				return i;
-			}
-		}
-	}
 }
 
 function updatingVx() {
@@ -1119,6 +1075,13 @@ function updatingVx() {
 			0
 	)
 		stop();
+	vx =
+		vx === GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MAX_GROUNDSPEED &&
+		isJumping
+			? GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MAX_AIRSPEED
+			: vx < GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MAX_GROUNDSPEED
+			? vx
+			: GAME_SETTINGS.PHYSICS_SETTINGS.PLAYER_MAX_GROUNDSPEED;
 	warrior.x += vx * direction;
 	stopCounter++;
 }
@@ -1299,8 +1262,8 @@ function loadTreasureChestAnimation(treasureChestTextureArray, animation) {
 
 // Text related functions :
 
-function manageTextContent(xCoordinate) {
-	updateTextList(xCoordinate);
+function manageTextContent() {
+	updateTextList(warrior.x);
 	updateTextDisplayZoneValue();
 	displayTextInTextList();
 }
