@@ -78,7 +78,7 @@ export default class Collider {
 		return false;
 	}
 
-	static getObjectAroundCollider(playerBox) {
+	static getObjectAroundCollider(playerBox, objectCollidersList) {
 		for (let i = 0; i < objectCollidersList.length; i++) {
 			if (this.isColliding(playerBox, objectCollidersList[i])) {
 				return i;

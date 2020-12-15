@@ -911,7 +911,10 @@ function stopAttackingAnim() {
 // Interactive functions:
 
 function activateObjectAround() {
-	const objectIndex = Collider.getObjectAroundCollider(warriorBounds);
+	const objectIndex = Collider.getObjectAroundCollider(
+		warriorBounds,
+		objectCollidersList
+	);
 	switch (objectIndex) {
 		case 0:
 			if (!treasureChestOpened1) {
